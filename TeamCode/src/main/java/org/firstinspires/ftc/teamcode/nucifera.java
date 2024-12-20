@@ -167,7 +167,7 @@ public class nucifera extends LinearOpMode{
         if (isStopRequested()) return;
 
         scC.setPosition(0.3);
-        resetSlideEncoders();
+        //resetSlideEncoders();
 
 
         while (opModeIsActive())
@@ -236,7 +236,12 @@ public class nucifera extends LinearOpMode{
                         inArmL.setPosition(0.3);
                         inUD.setPosition(0.88);
                         inTwi.setPosition(0.56);
+                        inR.setPower(-1);
                         inL.setPower(1);
+                        if(gamepad1.triangle){
+                            inR.setPower(1);
+                            inL.setPower(-1);
+                        }
                         //         //runIntake(red, blue, green);
                         break;
 
