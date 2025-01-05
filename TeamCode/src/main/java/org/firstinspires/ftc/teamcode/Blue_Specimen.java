@@ -443,24 +443,24 @@ public class Blue_Specimen extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        //scoring.scoringArmScore(),
+                        scoring.scoringArmScore(),
                         initToScoreTrajectory,
                         claw.openClaw(),
                         scoreToPushTrajectory,
                         scoring.scoringArmIntake(),
                         claw.closeClaw(),
                         pickUpToScoreTrajectory,
-                        //scoring.scoringArmScore(),
+                        scoring.scoringArmScore(),
                         scoreToPickUpTrajectory,
                         scoring.scoringArmIntake(),
                         pickUpToScoreTrajectory,
                         claw.closeClaw(),
-                        //scoring.scoringArmScore(),
+                        scoring.scoringArmScore(),
                         scoreToPickUpTrajectory,
                         scoring.scoringArmIntake(),
                         claw.closeClaw(),
                         pickUpToScoreTrajectory,
-                        //scoring.scoringArmScore(),
+                        scoring.scoringArmScore(),
                         TrajectoryActionCloseOut
 
 
