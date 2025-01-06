@@ -27,8 +27,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Config
-@Autonomous(name = "Blue Specimen", group = "Autonomous")
-public class Blue_Specimen extends LinearOpMode {
+@Autonomous(name = "Red Specimen", group = "Autonomous")
+public class Red_Specimen extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
 
