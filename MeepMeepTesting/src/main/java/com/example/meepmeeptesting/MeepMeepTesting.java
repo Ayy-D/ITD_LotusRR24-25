@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(600);
+        MeepMeep meepMeep = new MeepMeep(800);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -20,48 +20,61 @@ public class MeepMeepTesting {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 60, Math.toRadians(270)))
                         //Preload Specimen Score
                         .lineToY(34.5)
+                                .waitSeconds(0.5)
 
                         //Move to grab floor spec 1
                         .strafeToLinearHeading(new Vector2d(-34, 42), Math.toRadians(45))
+                                .waitSeconds(0.5)
 
                         //Move to drop floor spec 1
                         .strafeToLinearHeading(new Vector2d(-36, 48), Math.toRadians(315))
+                                .waitSeconds(0.5)
 
                         //Move to grab floor spec 2
                         .strafeToLinearHeading(new Vector2d(-44, 42), Math.toRadians(45))
+                                .waitSeconds(0.5)
 
                         //Move to drop floor spec 2
                         .strafeToLinearHeading(new Vector2d(-48, 48), Math.toRadians(315))
+                                .waitSeconds(0.5)
 
                         //Move to grab floor spec 3
                         .strafeToLinearHeading(new Vector2d(-54, 42), Math.toRadians(45))
+                                .waitSeconds(0.5)
 
                         //Move to drop floor spec 3
                         .strafeToLinearHeading(new Vector2d(-54, 48), Math.toRadians(315))
+                                .waitSeconds(0.5)
 
                         //Move to grab spec 1 from wall
                         .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
                         .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(90))
+                                .waitSeconds(0.5)
 
                         //Move to score spec 1
-                        .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(270))
+                        .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(-90))
+                                .waitSeconds(0.5)
 
                         //Move to grab spec 2 from wall
-                        .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(89.9999))
                         .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(90))
+                                .waitSeconds(0.5)
 
                         //Move to score spec 2
-                        .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(270))
+                        .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(-90))
+                                .waitSeconds(0.5)
 
                         //Move to grab spec 3 from wall
-                        .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(89.9999))
                         .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(90))
+                                .waitSeconds(0.5)
 
                         //Move to score spec 3
-                        .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(270))
+                        .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(-90))
+                                .waitSeconds(0.5)
 
                         //Park
-                        .strafeToLinearHeading(new Vector2d(-24, 45), Math.toRadians(315))
+                        .strafeToLinearHeading(new Vector2d(-24, 47), Math.toRadians(315))
 
 
 
