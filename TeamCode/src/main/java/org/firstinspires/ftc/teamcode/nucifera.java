@@ -32,10 +32,6 @@ import java.util.concurrent.TimeUnit;
 public class nucifera extends LinearOpMode{
     String placeholder = "----";
 
-    //pid stuffs
-
-    public static int target = 0;
-
 
     //Directionally named motors based on view from opposite of back odo pod side
 
