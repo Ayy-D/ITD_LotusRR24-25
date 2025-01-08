@@ -349,18 +349,81 @@ public class SPECIMEN_Auto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pose2d initialPose = new Pose2d(0, 60, Math.toRadians(270));
-        Pose2d scoringPose = new Pose2d(0,35.5, Math.toRadians(270));
+        double[] xPose = {
+                0, // initial pose
+                0, // scoring pose 1
 
-        Pose2d pick1Pose = new Pose2d(-34, 42, Math.toRadians(45));
-        Pose2d human1Pose = new Pose2d(-36, 48, Math.toRadians(315));
-        Pose2d pick2Pose = new Pose2d(-44, 42, Math.toRadians(45));
-        Pose2d human2Pose = new Pose2d(-48, 48, Math.toRadians(315));
-        Pose2d pick3Pose = new Pose2d(-54, 42, Math.toRadians(45));
-        Pose2d human3Pose = new Pose2d(-54, 48, Math.toRadians(315));
-        Pose2d firstWallGrabPose = new Pose2d(-40, 58, Math.toRadians(90));
+                -34, // ground pick 1
+                -36, // human drop 1
+                -44, // ground pick 2
+                -48, // human drop 2
+                -54, // ground pick 3
+                -54, // human drop 3
 
-        Pose2d intakePose = new Pose2d(-48, 58, Math.toRadians(90));
+                -40, // first wall grab
+                0, // first score
+                -40, // second wall grab
+                0, // second score
+                -40, // third wall grab
+                0 // third score
+        };
+
+        double[] yPose = {
+                60, // initial pose
+                34.5, // scoring pose 1
+
+                42, // ground pick 1
+                48, // human drop 1
+                42, // ground pick 2
+                48, // human drop 2
+                42, // ground pick 3
+                48, // human drop 3
+
+                58, // first wall grab
+                33, // first score
+                58.5, // second wall grab
+                33, // second score
+                58.5, // third wall grab
+                45 // third score
+        };
+
+        double[] angles = {
+                Math.toRadians(270), // initial pose
+                Math.toRadians(270), // scoring pose
+
+                Math.toRadians(45), // ground pick 1
+                Math.toRadians(315), // human drop 1
+                Math.toRadians(45), // ground pick 2
+                Math.toRadians(315), // human drop 2
+                Math.toRadians(45), // ground pick 3
+                Math.toRadians(315), // human drop 3
+
+                Math.toRadians(90), // first wall grab
+                Math.toRadians(-90), // first score
+                Math.toRadians(92), // second wall grab
+                Math.toRadians(-90), // second score
+                Math.toRadians(92), // third wall grab
+                Math.toRadians(-90), // third score
+        };
+
+        Pose2d initialPose = new Pose2d(xPose[0], yPose[0], angles[0]);
+        Pose2d scoringPose = new Pose2d(xPose[1], yPose[1], angles[1]);
+
+        Pose2d pick1Pose = new Pose2d(xPose[2], yPose[2], angles[2]);
+        Pose2d human1Pose = new Pose2d(xPose[3], yPose[3], angles[3]);
+        Pose2d pick2Pose = new Pose2d(xPose[4], yPose[4], angles[4]);
+        Pose2d human2Pose = new Pose2d(xPose[5], yPose[5], angles[5]);
+        Pose2d pick3Pose = new Pose2d(xPose[6], yPose[6], angles[6]);
+        Pose2d human3Pose = new Pose2d(xPose[7], yPose[7], angles[7]);
+
+
+        Pose2d firstWallGrabPose = new Pose2d(xPose[8], yPose[8], angles[8]);
+        Pose2d firstScorePose = new Pose2d(xPose[9], yPose[9], angles[9]);
+        Pose2d secondWallGrabPose = new Pose2d(xPose[10], yPose[10], angles[10]);
+        Pose2d secondScorePose = new Pose2d(xPose[11], yPose[11], angles[11]);
+        Pose2d thirdWallGrabPose = new Pose2d(xPose[12], yPose[12], angles[12]);
+        Pose2d thirdScorePose = new Pose2d(xPose[13], yPose[13], angles[13]);
+
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
@@ -372,67 +435,79 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Preload Specimen Score
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .lineToYConstantHeading(34)
+                .lineToYConstantHeading(yPose[1])
                 .waitSeconds(0.5);
 
         //Move to grab floor spec 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(-34, 42), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(xPose[2], yPose[2]), angles[2])
                 .waitSeconds(0.5);
 
         //Move to drop floor spec 1
         TrajectoryActionBuilder tab3 = drive.actionBuilder(pick1Pose)
-                .strafeToLinearHeading(new Vector2d(-36, 48), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(xPose[3], yPose[3]), angles[3])
                 .waitSeconds(0.25);
 
         //Move to grab floor spec 2
         TrajectoryActionBuilder tab4 = drive.actionBuilder(human1Pose)
-                .strafeToLinearHeading(new Vector2d(-44, 42), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(xPose[4], yPose[4]), angles[4])
                 .waitSeconds(0.5);
 
         //Move to drop floor spec 2
         TrajectoryActionBuilder tab5 = drive.actionBuilder(pick2Pose)
-                .strafeToLinearHeading(new Vector2d(-48, 48), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(xPose[5], yPose[5]), angles[5])
                 .waitSeconds(0.25);
 
         //Move to grab floor spec 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(human2Pose)
-                .strafeToLinearHeading(new Vector2d(-54, 42), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(xPose[6], yPose[6]), angles[6])
                 .waitSeconds(0.5);
 
         //Move to drop floor spec 3
         TrajectoryActionBuilder tab7 = drive.actionBuilder(pick3Pose)
-                .strafeToLinearHeading(new Vector2d(-48, 48), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(xPose[7], yPose[7]), angles[7])
                 .waitSeconds(0.25);
 
         //Move to grab spec 1 from wall
         TrajectoryActionBuilder tab8 = drive.actionBuilder(human3Pose)
                 .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
                     .waitSeconds(0.1)
-                .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8])
                     .waitSeconds(0.25);
 
         //Move to score specimen 1 from wall
         TrajectoryActionBuilder tab9 = drive.actionBuilder(firstWallGrabPose)
-                .strafeToLinearHeading(new Vector2d(0, 34), Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(xPose[9], yPose[9]), angles[9])
                     .waitSeconds(0.5);
 
 
-        //Move to wall grab spec 2/3
-        TrajectoryActionBuilder tab10 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
+        //Move to wall grab spec 2
+        TrajectoryActionBuilder tab10 = drive.actionBuilder(firstScorePose)
+                .strafeToLinearHeading(new Vector2d(-40, 55), Math.toRadians(89.99999))
                     .waitSeconds(0.1)
-                .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(xPose[10], yPose[10]), angles[10])
                     .waitSeconds(0.25);
 
-        //Move to score specimen 2/3 from wall
-        TrajectoryActionBuilder tab11 = drive.actionBuilder(intakePose)
-                .strafeToLinearHeading(new Vector2d(0, 34), Math.toRadians(-90))
+        //Move to score specimen 2 from wall
+        TrajectoryActionBuilder tab11 = drive.actionBuilder(secondWallGrabPose)
+                .strafeToLinearHeading(new Vector2d(xPose[11], yPose[11]), angles[11])
                     .waitSeconds(0.5);
+
+        //Move to wall grab spec 2
+        TrajectoryActionBuilder tab12 = drive.actionBuilder(secondScorePose)
+                .strafeToLinearHeading(new Vector2d(-40, 55), Math.toRadians(89.99999))
+                .waitSeconds(0.1)
+                .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), angles[12])
+                .waitSeconds(0.25);
+
+        //Move to score specimen 2 from wall
+        TrajectoryActionBuilder tab13 = drive.actionBuilder(thirdWallGrabPose)
+                .strafeToLinearHeading(new Vector2d(xPose[13], yPose[13]), angles[13])
+                .waitSeconds(0.5);
 
 
         //Park
-        Action TrajectoryActionPark = drive.actionBuilder(scoringPose)
+        Action TrajectoryActionPark = drive.actionBuilder(thirdScorePose)
                 .strafeToLinearHeading(new Vector2d(-24, 45), Math.toRadians(315))
                 .build();
 
@@ -466,11 +541,12 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         Action wallToScore1 = tab9.build();
 
-        Action scoreToHumanTrajectory = tab10.build();
-        Action humanToScoreTrajectory = tab11.build();
-
         Action scoreToHumanTrajectory2 = tab10.build();
         Action humanToScoreTrajectory2 = tab11.build();
+
+        Action scoreToHumanTrajectory3 = tab12.build();
+        Action humanToScoreTrajectory3 = tab13.build();
+
 
 
         Actions.runBlocking(
@@ -487,10 +563,10 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         human3ToWall, // move to first wall spec
                         wallToScore1, // score first wall spec
 
-                        scoreToHumanTrajectory, // move to second wall spec
-                        humanToScoreTrajectory, // score second wall spec
-                        scoreToHumanTrajectory2, // move to third wall spec
-                        humanToScoreTrajectory2, // score third wall spec
+                        scoreToHumanTrajectory2, // move to second wall spec
+                        humanToScoreTrajectory2, // score second wall spec
+                        scoreToHumanTrajectory3, // move to third wall spec
+                        humanToScoreTrajectory3, // score third wall spec
                         TrajectoryActionPark
 
 
