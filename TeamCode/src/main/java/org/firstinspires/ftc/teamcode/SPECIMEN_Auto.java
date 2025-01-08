@@ -25,8 +25,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "Blue Specimen", group = "Autonomous")
-public class Blue_Specimen extends LinearOpMode {
+@Autonomous(name = "SPECIMEN Auto", group = "Autonomous")
+public class SPECIMEN_Auto extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
 

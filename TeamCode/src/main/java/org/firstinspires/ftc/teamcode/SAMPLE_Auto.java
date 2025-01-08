@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -23,9 +25,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Config
-@Autonomous(name = "Red Sample", group = "Autonomous")
-public class Red_Sample extends LinearOpMode {
+@Autonomous(name = "SAMPLE Auto", group = "Autonomous")
+public class SAMPLE_Auto extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
 
@@ -368,11 +371,11 @@ public class Red_Sample extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-38, -60, Math.toRadians(270));
-        Pose2d scoringPose = new Pose2d(-54,-54, Math.toRadians(225));
-        Pose2d pickup1 = new Pose2d(-48,-48, Math.toRadians(270));
-        Pose2d pickup2 = new Pose2d(-57,-48, Math.toRadians(270));
-        Pose2d pickup3 = new Pose2d(-57,-46, Math.toRadians(305));
+        Pose2d initialPose = new Pose2d(38, 60, Math.toRadians(90));
+        Pose2d scoringPose = new Pose2d(54,54, Math.toRadians(45));
+        Pose2d pickup1 = new Pose2d(48,48, Math.toRadians(90));
+        Pose2d pickup2 = new Pose2d(57,48, Math.toRadians(90));
+        Pose2d pickup3 = new Pose2d(57,46, Math.toRadians(125));
         //Pose2d intakePose = new Pose2d(-48, 46, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
@@ -387,44 +390,44 @@ public class Red_Sample extends LinearOpMode {
 
         //init to score
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
                 .waitSeconds(0.5);
 
         // Build the trajectory
         //score to pickup 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(-47.5, -48), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(47.5, 48), Math.toRadians(90))
                 .waitSeconds(0.5);
 
         // pickup 1 to score
         TrajectoryActionBuilder tab3 = drive.actionBuilder(pickup1)
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
                 .waitSeconds(0.5);
 
         // score to pickup 2
         TrajectoryActionBuilder tab4 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(-57.5, -48), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(57.5, 48), Math.toRadians(90))
                 .waitSeconds(0.5);
 
         //pickup 2 to score
         TrajectoryActionBuilder tab5 = drive.actionBuilder(pickup2)
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
                 .waitSeconds(0.5);
 
         //score to pickup 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(-57, -46), Math.toRadians(305))
+                .strafeToLinearHeading(new Vector2d(57, 46), Math.toRadians(125))
                 .waitSeconds(0.5);
 
         //pickup 3 to score
         TrajectoryActionBuilder tab7 = drive.actionBuilder(pickup3)
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
                 .waitSeconds(0.5);
 
         //park in observation zone
         Action TrajectoryActionCloseOut = tab1.endTrajectory().fresh()
-                .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(34.5, -57))
+                .turnTo(Math.toRadians(90))
+                .strafeTo(new Vector2d(-34.5, 57))
                 .build();
 
 
