@@ -429,8 +429,8 @@ public class Red_Sample extends LinearOpMode {
 
 
 
-        Actions.runBlocking(claw.closeClaw());
-        Actions.runBlocking(intakeHold.intakeHoldBase());
+        //Actions.runBlocking(claw.closeClaw());
+        //Actions.runBlocking(intakeHold.intakeHoldBase());
         /***
          while (!isStopRequested() && !opModeIsActive()) {
          telemetry.update();
