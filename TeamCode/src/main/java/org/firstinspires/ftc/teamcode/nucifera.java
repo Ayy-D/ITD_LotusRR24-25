@@ -81,44 +81,46 @@ public class nucifera extends LinearOpMode{
 
         //drivetrain motors
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftFront.setDirection(DcMotorEx.Direction.REVERSE);
 
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
 
 
         //Linear Slide Rotation Motors
         rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
-        //rotR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rotR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rotR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rotR.setDirection(DcMotor.Direction.REVERSE);
+        //rotR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rotR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rotR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        //rotR.setDirection(DcMotorEx.Direction.REVERSE);
 
 
         rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
 
-        //rotL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rotL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rotL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //rotL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rotL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rotL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rotL.setDirection(DcMotorEx.Direction.REVERSE);
+
 
 
         //LS Motors
         sL = hardwareMap.get(DcMotorEx.class, "slideL");
-        sL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        sL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        sL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         sR = hardwareMap.get(DcMotorEx.class, "slideR");
-        sR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        sR.setDirection(DcMotor.Direction.REVERSE);
+        sR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        sR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        sR.setDirection(DcMotorEx.Direction.REVERSE);
 
 
         //Control Hub Servos (Intake)
@@ -185,7 +187,7 @@ public class nucifera extends LinearOpMode{
             boolean rightBumperState = gamepad1.right_bumper; // intaking++
             boolean leftBumperState = gamepad1.left_bumper; // intaking--
 
-            /*
+
             if(gamepad2.right_trigger > 0.75){
 
                cycleCase = 1;
@@ -197,7 +199,7 @@ public class nucifera extends LinearOpMode{
                 inCurrCase = 0;
                 scCurrCase = 0;
             }
-            */
+
 
             if(rightBumperState && !inLastButtonStateR){
                 inCurrCase = (inCurrCase + 1) % 6;
@@ -301,21 +303,6 @@ public class nucifera extends LinearOpMode{
 
                     // Check and reset slide encoders only when switching to Case 0
                     if (scCurrCase == 0 && !hasResetEncoders) {
-                        while(sL.getCurrentPosition() > 100){
-                            scR.setPosition(0.98);
-                            scL.setPosition(0.98);
-                            sL.setPower(0.9);
-                            sL.setTargetPosition(0);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
-                            sR.setTargetPosition(0);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                            drive  = gamepad1.left_stick_y  / 1.8;  // Reduce drive rate to 66%.
-                            strafe = gamepad1.left_stick_x  / 1.4;  // Reduce strafe rate to 100%.
-                            turn   = -gamepad1.right_stick_x / 2;  // Reduce turn rate to 40%.
-                            moveRobot(drive, strafe, turn);
-                        }
                         resetSlideEncoders(); // Call the reset function
                         hasResetEncoders = true; // Mark encoders as reset
 
@@ -327,10 +314,10 @@ public class nucifera extends LinearOpMode{
                         case 0:
                             timer.reset();
                             rotL.setPower(0.4);
-                            rotL.setTargetPosition(200);
+                            rotL.setTargetPosition(195);
                             rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             rotR.setPower(0.4);
-                            rotR.setTargetPosition(200);
+                            rotR.setTargetPosition(195);
                             rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
@@ -347,10 +334,10 @@ public class nucifera extends LinearOpMode{
 
                         case 1:
                             rotL.setPower(0.4);
-                            rotL.setTargetPosition(200);
+                            rotL.setTargetPosition(195);
                             rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             rotR.setPower(0.4);
-                            rotR.setTargetPosition(200);
+                            rotR.setTargetPosition(195);
                             rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
@@ -363,10 +350,10 @@ public class nucifera extends LinearOpMode{
 
                         case 2:
                             rotL.setPower(0.4);
-                            rotL.setTargetPosition(200);
+                            rotL.setTargetPosition(195);
                             rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             rotR.setPower(0.4);
-                            rotR.setTargetPosition(200);
+                            rotR.setTargetPosition(195);
                             rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
@@ -460,58 +447,24 @@ public class nucifera extends LinearOpMode{
 
                     scLastButtonState = xButtonState;
 
+
                     // Check and reset slide encoders only when switching to Case 0
                     if (scCurrCase == 0 && !hasResetEncoders) {
-                        sL.setPower(0.9);
-                        sL.setTargetPosition(100);
-                        sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        sR.setPower(0.9);
-                        sR.setTargetPosition(100);
-                        sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                        scR.setPosition(0.5);
-                        scL.setPosition(0.5);
                         resetSlideEncoders(); // Call the reset function
                         hasResetEncoders = true; // Mark encoders as reset
                     } else if (scCurrCase != 0) {
                         hasResetEncoders = false; // Reset the flag for future resets
                     }
+
+
                     switch(scCurrCase){
-                        case 0: // rest out of the way
-
+                        case 0: // grab from wall
                             rotL.setPower(0.4);
-                            rotL.setTargetPosition(200);
+                            rotL.setTargetPosition(195);
                             rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             rotR.setPower(0.4);
-                            rotR.setTargetPosition(200);
+                            rotR.setTargetPosition(195);
                             rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                            sL.setPower(0.9);
-                            sL.setTargetPosition(15);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
-                            sR.setTargetPosition(15);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                            scR.setPosition(0.4);
-                            scL.setPosition(0.4);
-                            scUD.setPosition(0.9);
-                            break;
-
-                        case 1: // grab from wall
-                            rotL.setPower(0.4);
-                            rotL.setTargetPosition(215);
-                            rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rotR.setPower(0.4);
-                            rotR.setTargetPosition(215);
-                            rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                            sL.setPower(0.2);
-                            sL.setTargetPosition(15);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.2);
-                            sR.setTargetPosition(15);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             scR.setPosition(0.12);
                             scL.setPosition(0.12);
@@ -519,78 +472,43 @@ public class nucifera extends LinearOpMode{
                             scC.setPosition(0.9);
                             break;
 
-                        case 2: // out to score
+                        case 1: // out to score
                             timer.reset();
-                            scC.setPosition(0.25);
-                            scCurrCase = 3;
+                            scC.setPosition(0.3);
+                            scCurrCase = 2;
                             break;
 
-                        case 3: // wait for delay
-                            if (timer.milliseconds() > 500 && triangleCounter != 1) {
-                                // Execute the motor commands
-                                rotL.setPower(0.1);
-                                rotL.setTargetPosition(220);
-                                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        case 2: // wait for delay
+                            if(timer.milliseconds() > 250){
+                                 sL.setPower(0.9);
+                                 sL.setTargetPosition(1050);
+                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                                rotR.setPower(0.1);
-                                rotR.setTargetPosition(220);
-                                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                                if(timer.milliseconds() > 1500){
-                                    sL.setPower(0.9);
-                                    sL.setTargetPosition(400);
-                                    sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                                    sR.setPower(0.9);
-                                    sR.setTargetPosition(4000);
-                                    sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                                    scR.setPosition(0.25);
-                                    scL.setPosition(0.25);
-                                    scUD.setPosition(0.9);
-                                }
+                                 sR.setPower(0.9);
+                                 sR.setTargetPosition(1050);
+                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             }
 
-//                            if (timer.milliseconds() > 500 && triangleCounter == 1) {
-//                                scUD.setDirection(Servo.Direction.REVERSE);
-//                                // Execute the motor commands
-//                                scC.setPosition(0.8);
-//
-//                                rotL.setPower(0.4);
-//                                rotL.setTargetPosition(100);
-//                                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//                                rotR.setPower(0.4);
-//                                rotR.setTargetPosition(100);
-//                                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//                                sL.setPower(0.3);
-//                                sL.setTargetPosition(200);
-//                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//                                sR.setPower(0.3);
-//                                sR.setTargetPosition(200);
-//                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//                            }
-
-                            if(gamepad2.triangle){ //push to clip
+                            if(timer.milliseconds() > 500 && gamepad2.triangle){ //push to clip
                                 timer.reset();
                                 scUD.setDirection(Servo.Direction.FORWARD);
                                 scUD.setPosition(0.5);
 
                                 sL.setPower(0.9);
-                                sL.setTargetPosition(950);
+                                sL.setTargetPosition(550);
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 sR.setPower(0.9);
-                                sR.setTargetPosition(950);
+                                sR.setTargetPosition(550);
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                                //scUD.setPosition(0.8);
-
                                 triangleCounter = 1;
+                                scCurrCase = 3;
                             }
 
+                        case 3: //claw open
+                            if(timer.milliseconds() > 250) { scC.setPosition(0.9); }
                             break;
+
                     }
 
                 }
