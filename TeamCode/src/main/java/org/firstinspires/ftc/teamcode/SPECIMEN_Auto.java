@@ -384,7 +384,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 58.5, // second wall grab
                 33, // second score
                 58.5, // third wall grab
-                45 // third score
+                33 // third score
         };
 
         double[] angles = {
@@ -508,7 +508,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Park
         Action TrajectoryActionPark = drive.actionBuilder(thirdScorePose)
-                .strafeToLinearHeading(new Vector2d(-24, 45), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(-28, 40), Math.toRadians(315))
                 .build();
 
 
