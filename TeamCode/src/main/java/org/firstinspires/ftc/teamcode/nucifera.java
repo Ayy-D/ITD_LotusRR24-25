@@ -456,7 +456,6 @@ public class nucifera extends LinearOpMode{
                         hasResetEncoders = false; // Reset the flag for future resets
                     }
 
-
                     switch(scCurrCase){
                         case 0: // grab from wall
                             rotL.setPower(0.4);
