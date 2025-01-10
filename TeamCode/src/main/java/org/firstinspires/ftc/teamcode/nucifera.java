@@ -447,13 +447,19 @@ public class nucifera extends LinearOpMode{
 
                     scLastButtonState = xButtonState;
 
-
+                    /*
                     // Check and reset slide encoders only when switching to Case 0
                     if (scCurrCase == 0 && !hasResetEncoders) {
                         resetSlideEncoders(); // Call the reset function
                         hasResetEncoders = true; // Mark encoders as reset
                     } else if (scCurrCase != 0) {
                         hasResetEncoders = false; // Reset the flag for future resets
+                    }
+
+                     */
+
+                    if(scCurrCase == 0 && ( sL.getCurrentPosition() < 100 && sR.getCurrentPosition() < 100 ) && ( sL.getCurrent(CurrentUnit.AMPS) > 5 || sR.getCurrent(CurrentUnit.AMPS) > 5 ) ){
+                        resetSlideEncoders();
                     }
 
                     switch(scCurrCase){
@@ -537,41 +543,6 @@ public class nucifera extends LinearOpMode{
             }
             telemetry.update();
 
-            /*
-            keep in case of motor change, tick test
-            if(gamepad1.dpad_up){
-                sL.setPower(0.5);
-                sL.setTargetPosition(sL.getCurrentPosition()+1000);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.5);
-                sR.setTargetPosition(sR.getCurrentPosition()+1000);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if(gamepad1.dpad_down){
-                sL.setPower(0.5);
-                sL.setTargetPosition(sL.getCurrentPosition()-1000);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.5);
-                sR.setTargetPosition(sR.getCurrentPosition()-1000);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if(gamepad1.dpad_left){
-                sL.setPower(0.5);
-                sL.setTargetPosition(sL.getCurrentPosition()-100);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.5);
-                sR.setTargetPosition(sR.getCurrentPosition()-100);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if(gamepad1.dpad_right){
-                sL.setPower(0.5);
-                sL.setTargetPosition(sL.getCurrentPosition()+100);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.5);
-                sR.setTargetPosition(sR.getCurrentPosition()+100);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            */
 
         }
     }
@@ -621,51 +592,6 @@ public class nucifera extends LinearOpMode{
 
     }
 
-//    public void resetArmEncoders() {
-//        telemetry.addData("Status", "Resetting encoders...");
-//        telemetry.update();
-//
-//        rotL.setTargetPosition(0);
-//        rotR.setTargetPosition(0);
-//
-//        rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        rotL.setPower(0.5);
-//        rotR.setPower(0.5);
-//
-//        long startTime = System.currentTimeMillis();
-//        boolean stalled = false;
-//
-//        while (opModeIsActive() && !stalled) {
-//            if (!stalled && Math.abs(rotL.getCurrentPosition() - rotL.getTargetPosition()) < 5) {
-//                if (System.currentTimeMillis() - startTime > 100) {
-//
-//                    rotR.setPower(0);
-//                    rotR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//                    rotL.setPower(0);
-//                    rotL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//                    telemetry.addData("Arm Right Stalled", rotR.getCurrentPosition());
-//                    telemetry.addData("Arm Left Stalled", rotL.getCurrentPosition());
-//                    break;
-//                }
-//            }
-//
-//
-//
-//            telemetry.update();
-//        }
-//
-//        // Stop motors after reset
-//        rotL.setPower(0);
-//        rotR.setPower(0);
-//
-//        rotL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        rotR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//        telemetry.addData("Status", "Arm Encoders reset complete");
-//        telemetry.update();
-//    }
     public void runIntake(int red, int blue, int green){
         telemetry.addData("Intake ON!", placeholder);
         telemetry.update();
