@@ -72,6 +72,50 @@ public class SAMPLE_Auto extends LinearOpMode {
         private DcMotorEx rotR;
         private DcMotorEx rotL;
 
+        public LS_Scoring(HardwareMap hardwareMap) {
+            scL = hardwareMap.get(Servo.class, "scArmL"); //0.95 goes toward intake, 0 goes outward from robot
+            scR = hardwareMap.get(Servo.class, "scArmR"); //0.95 goes toward intake, 0 goes outward from robot
+            scUD = hardwareMap.get(Servo.class, "scUD"); //1 is the position for depositing an element, 0.8 for intake, <0.8 to keep it up
+            scUD.setDirection(Servo.Direction.REVERSE);
+            scC = hardwareMap.get(Servo.class, "scClaw"); //0.35 close, 0.9 open)
+
+            sL = hardwareMap.get(DcMotorEx.class, "slideL");
+            sR = hardwareMap.get(DcMotorEx.class, "slideR");
+
+            rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
+            rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
+
+            //RUN Encoders
+            rotR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rotL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            sL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            sR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //ROTATION BRAKE Behavior
+            rotR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rotL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            //ROTATION Set Direction
+            rotR.setDirection(DcMotorSimple.Direction.REVERSE);
+            rotL.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            //RESET Encoders
+            sL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            sR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rotL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rotR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            //SLIDE BRAKE Behavior
+            sR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            sL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            //SLIDE Set Direction
+            sL.setDirection(DcMotorSimple.Direction.FORWARD);
+            sR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        }
+
         public class LS_ArmBase implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
