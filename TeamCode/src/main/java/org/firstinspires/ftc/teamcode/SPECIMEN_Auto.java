@@ -119,7 +119,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         }
 
-        public class LS_ArmBasePos implements Action {
+        public class LS_ArmBase implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
@@ -136,60 +136,59 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                 rotL.setPower(0.4);
                 rotR.setPower(0.4);
-                rotL.setTargetPosition(200);
-                rotR.setTargetPosition(200);
+                rotL.setTargetPosition(195);
+                rotR.setTargetPosition(195);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 return false;
             }
         }
-        public  Action LS_ArmBase() {
-            return new LS_ArmBasePos();
+        public  Action LS_ArmBasePos() {
+            return new LS_Scoring.LS_ArmBase();
         }
 
-        public class LS_ArmScorePos implements Action {
+        public class LS_ArmSPECScore implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
-                scL.setPosition(0.6); //verify
-                scR.setPosition(0.6);
-                scUD.setPosition(1); //verify
-
-                sL.setPower(0.8);
-                sR.setPower(0.8);
-                sL.setTargetPosition(845);
-                sR.setTargetPosition(845);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+                scR.setPosition(0.48);
+                scL.setPosition(0.48);
+                scUD.setPosition(0.4);
 
                 rotL.setPower(0.4);
-                rotR.setPower(0.4);
-                rotL.setTargetPosition(200);
-                rotR.setTargetPosition(200);
+                rotL.setTargetPosition(195);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotR.setPower(0.4);
+                rotR.setTargetPosition(195);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                sL.setPower(0.9);
+                sL.setTargetPosition(1835);
+                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sR.setPower(0.9);
+                sR.setTargetPosition(1820);
+                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 return false;
             }
         }
-        public Action LS_ArmScore() {
-            return new LS_ArmScorePos();
+        public Action LS_ArmSPECScorePos() {
+            return new LS_Scoring.LS_ArmSPECScore();
         }
 
         public class LS_ArmScorePull implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
-                scL.setPosition(0.6); //verify
-                scR.setPosition(0.6);
-                scUD.setPosition(1); //verify
+                scR.setPosition(0.12);
+                scL.setPosition(0.12);
+                scUD.setPosition(0.85);
 
                 sL.setPower(0.8);
                 sR.setPower(0.8);
-                sL.setTargetPosition(700);
-                sR.setTargetPosition(700);
+                sL.setTargetPosition(550);
+                sR.setTargetPosition(550);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -203,11 +202,49 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action LS_ArmScorePull() {
-            return new LS_ArmScorePos();
+        public Action LS_ArmScorePullPos() {
+            return new LS_Scoring.LS_ArmScorePull();
         }
 
-        public class LS_Arm_TeleOpPos implements Action {
+        public class LS_ArmSAMPLEScore implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                scR.setPosition(0.48);
+                scL.setPosition(0.48);
+                scUD.setPosition(0.4);
+
+                rotL.setPower(0.4);
+                rotL.setTargetPosition(195);
+                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotR.setPower(0.4);
+                rotR.setTargetPosition(195);
+                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                sL.setPower(0.9);
+                sL.setTargetPosition(1835);
+                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sR.setPower(0.9);
+                sR.setTargetPosition(1820);
+                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                return false;
+            }
+        }
+        public Action LS_ArmSAMPLEScorePos() {
+            return new LS_Scoring.LS_ArmSAMPLEScore();
+        }
+
+        public class LS_ARM_BucketTip implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                scUD.setPosition(0.7);
+                return false;
+            }
+        }
+        public Action LS_ARM_BucketTipPos() { return new LS_Scoring.LS_ARM_BucketTip(); }
+
+        public class LS_Arm_TeleOp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotL.setPower(0.4);
@@ -232,7 +269,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action LS_Arm_TeleOpPrep() { return new LS_Arm_TeleOpPos(); }
+        public Action LS_Arm_TeleOpPos() { return new LS_Scoring.LS_Arm_TeleOp(); }
     }
 
 
@@ -267,12 +304,13 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeInit() {
-            return new IntakeInit();
+        public Action intakeInitPos() {
+            return new IntakeHold.IntakeInit();
         }
 
 
-        public class IntakeBasePos implements Action {
+
+        public class IntakeBase implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmL.setPosition(0.14);
@@ -283,9 +321,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeBasePos() { return new IntakeBasePos(); }
+        public Action intakeBasePos() { return new IntakeHold.IntakeBase(); }
 
-        public class IntakeHalfwayPos implements Action {
+        public class IntakeHalfway implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.25);
@@ -296,9 +334,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeHalfwayPos() { return new IntakeHalfwayPos(); }
+        public Action intakeHalfwayPos() { return new IntakeHold.IntakeHalfway(); }
 
-        public class IntakeFullOutPos implements Action {
+        public class IntakeFullOut implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.33);
@@ -309,7 +347,22 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeFullOutPos() { return new IntakeFullOutPos(); }
+        public Action intakeFullOutPos() { return new IntakeHold.IntakeFullOut(); }
+
+        public class IntakeTransfer implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                inArmR.setPosition(0.12);
+                inArmL.setPosition(0.12);
+                inUD.setPosition(0.2);
+                inTwist.setPosition(0.35);
+
+                return false;
+            }
+
+        }
+        public Action intakeTransferPos() { return new IntakeHold.IntakeTransfer(); }
+
 
 
         public class IntakeWheelsIN implements Action {
@@ -320,7 +373,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeWheelsIN() { return new IntakeWheelsIN(); }
+        public Action intakeWheelsIN() { return new IntakeHold.IntakeWheelsIN(); }
 
 
         public class IntakeWheelsOFF implements Action {
@@ -331,7 +384,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeWheelsOFF() { return new IntakeWheelsOFF(); }
+        public Action intakeWheelsOFF() { return new IntakeHold.IntakeWheelsOFF(); }
 
 
         public class IntakeWheelsOUT implements Action {
@@ -342,7 +395,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeWheelsOUT() { return new IntakeWheelsOUT(); }
+        public Action intakeWheelsOUT() { return new IntakeHold.IntakeWheelsOUT(); }
     }
 
 
@@ -513,8 +566,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
 
 
-        //Actions.runBlocking(claw.closeClaw());
-        //Actions.runBlocking(intake.intakeInit());
+        Actions.runBlocking(claw.closeClaw());
+        Actions.runBlocking(intake.intakeInitPos());
         /***
          while (!isStopRequested() && !opModeIsActive()) {
          telemetry.update();
@@ -551,32 +604,13 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        initToScoreTrajectory, //runs
 
-                        scoreToPick1, //runs
-                        pick1ToHuman1, //runs
-                        human1toPick2, //runs
-                        pick2ToHuman2, //runs
-                        human2ToPick3, //runs
-                        pick3ToHuman3, //runs
-
-                        human3ToWall, // move to first wall spec
-                        wallToScore1, // score first wall spec
-
-                        scoreToHumanTrajectory2, // move to second wall spec
-                        humanToScoreTrajectory2, // score second wall spec
-                        scoreToHumanTrajectory3, // move to third wall spec
-                        humanToScoreTrajectory3, // score third wall spec
-                        TrajectoryActionPark
-
-
-                        /*
                         //          SCORE PRELOAD SPECIMEN
                         // PARALLEL Slide & Arm into Scoring Position, Move Intake to Base Pos, initToScoreTrajectory,
                         new ParallelAction(
-                                //scoring.LS_ArmScore(),
-                                //intake.intakeBasePos(),
-                                initToScoreTrajectory
+                                scoring.LS_ArmSPECScorePos(),
+                                intake.intakeBasePos()
+                                //initToScoreTrajectory
 
                         ),
 
@@ -584,63 +618,76 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         //          MOVE AND PREP TO FLOOR/WALL GRABS
                         // Score Preload Specimen, delay, Claw Open
-                        //scoring.LS_ArmScorePull(),
-                        //insert 0.125s delay here
-                        //claw.openClaw(),
+                        scoring.LS_ArmScorePullPos(),
+                        // 0.125s delay
+                        claw.openClaw(),
 
 
                         // PARALLEL Move Preload Score to First Pickup, Move Intake to Halfway, Slide/Arm Down to Intake Position
                         new ParallelAction(
-                                //intake.intakeHalfwayPos(),
-                                //scoring.LS_ArmBase(),
-                                scoreToPick1
+                                intake.intakeHalfwayPos(),
+                                scoring.LS_ArmBasePos()
+                                //scoreToPick1
 
                         ),
 
                         //          FLOOR GRAB #1
                         // PARALLEL Extend Intake #1, Intake Wheels IN, Wait for Intake to Grab
-                        //new ParallelAction(
-
-                        //),
+                        new ParallelAction(
+                                intake.intakeWheelsIN(),
+                                intake.intakeFullOutPos()
+                        ),
 
                         // PARALLEL Stop Intake Wheels, Move Intake to Halfway, Floor to Human Trajectory #1
                         new ParallelAction(
-                                pick1ToHuman1
+                                intake.intakeWheelsOFF(),
+                                intake.intakeHalfwayPos()
+                                //pick1ToHuman1
 
                         ),
 
                         // PARALLEL Intake wheels OUT, Slight delay, Human to pickup 2
                         new ParallelAction(
-                                human1toPick2
+                                intake.intakeWheelsOUT()
+                                //human1toPick2
                         ),
 
 
                         //          FLOOR GRAB #2
                         // PARALLEL Extend Intake #2, Intake Wheels IN, Wait for Intake to Grab
-                        //new ParallelAction(
-
-                        //),
+                        new ParallelAction(
+                                intake.intakeWheelsIN(),
+                                intake.intakeFullOutPos()
+                        ),
 
                         // PARALLEL Stop Intake Wheels, Move Intake to Halfway, Floor to Human Trajectory #2
                         new ParallelAction(
-                                pick2ToHuman2
+                                intake.intakeWheelsOFF(),
+                                intake.intakeHalfwayPos()
+                                //pick2ToHuman2
                         ),
 
                         // PARALLEL Intake wheels OUT, Slight Delay, Human to Pickup 3
                         new ParallelAction(
-                                human2ToPick3
+                                intake.intakeWheelsOUT()
+                                //wait 0.5 s
+                                //human2ToPick3
                         ),
 
 
                         //          FLOOR GRAB #3
                         // PARALLEL Extend Intake #3, Intake Wheels IN, Wait for Intake to Grab
-                        //new ParallelAction(
-
-                        //),
+                        new ParallelAction(
+                                intake.intakeWheelsIN(),
+                                intake.intakeFullOutPos()
+                                //wait(125)
+                        ),
 
                         // PARALLEL Stop Intake Wheels, Move Intake to Halfway, Floor to Human Trajectory #3
                         new ParallelAction(
-                                pick3ToHuman3
+                                intake.intakeWheelsOFF(),
+                                intake.intakeHalfwayPos()
+                                //pick3ToHuman3
                         ),
 
 
@@ -648,59 +695,78 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         //          MOVE TO WALL GRAB
                         // PARALLEL Intake Wheels OUT, Slight Delay, Move Intake to Base Pos, Move to Human
                         new ParallelAction(
-                                human3ToWall
+                                intake.intakeWheelsOUT(),
+                                //wait(125),
+                                intake.intakeBasePos()
+                                //human3ToWall
                         ),
 
 
 
                         //          WALL SPECIMEN #1
                         // Claw close
+                        claw.closeClaw(),
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #1,
                         new ParallelAction(
-                                humanToScoreTrajectory
+                                scoring.LS_ArmSPECScorePos(),
+                                wallToScore1
                         ),
 
 
                         // Score Specimen, delay, Claw Open
+                        scoring.LS_ArmScorePullPos(),
+                        // 0.125s delay
+                        claw.openClaw(),
+
 
                         // PARALLEL Slide/Arm into Intake Position, scoreToHumanTrajectory #1
                         new ParallelAction(
-                                scoreToHumanTrajectory
+                                scoreToHumanTrajectory2,
+                                scoring.LS_ArmBasePos()
+
                         ),
 
 
 
                         //          WALL SPECIMEN #2
                         // Claw Close
+                        claw.closeClaw(),
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #2
                         new ParallelAction(
-                                humanToScoreTrajectory
+                                scoring.LS_ArmSPECScorePos()
+                                //humanToScoreTrajectory2
                         ),
 
 
                         // Score Specimen, delay, Claw Open
+                        scoring.LS_ArmScorePullPos(),
+                        // 0.125s delay
+                        claw.openClaw(),
 
                         // PARALLEL Slide/Arm into Intake Position, scoreToHumanTrajectory #2
                         new ParallelAction(
-                                scoreToHumanTrajectory
+                                scoreToHumanTrajectory3
                         ),
 
 
 
                         //          WALL SPECIMEN #3
                         // Claw Close
+                        claw.closeClaw(),
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #3,
                         new ParallelAction(
-                                humanToScoreTrajectory
+                                scoring.LS_ArmSPECScorePos()
+                                //humanToScoreTrajectory3
                         ),
 
 
                         // Score Specimen, delay, Claw Open
-
-
+                        scoring.LS_ArmScorePullPos(),
+                        // 0.125s delay
+                        claw.openClaw(),
 
                         // PARALLEL Park, Scoring Arm into Bucket Intake Pos, Slide/Arm into Base Position, Intake Full Out
                         new ParallelAction(
@@ -720,6 +786,28 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         //scoring.LS_ArmBasePos(),
                         //claw.closeClaw(),
                         //scoring.scoringArmScore(),
+
+
+
+
+                        //SPECIMEN PATH
+                        /*
+                        initToScoreTrajectory,
+
+                        scoreToPick1, //preload score to first floor grab
+                        pick1ToHuman1, //first floor grab to human
+                        human1toPick2, //human to second floor grab
+                        pick2ToHuman2, //second floor grab to human
+                        human2ToPick3, //human to third floor grab
+                        pick3ToHuman3, //third floor grab to human
+
+                        human3ToWall, // human to first wall spec
+                        wallToScore1, // wall spec grab to score first wall spec
+
+                        scoreToHumanTrajectory2, // move to second wall spec
+                        humanToScoreTrajectory2, // score second wall spec
+                        scoreToHumanTrajectory3, // move to third wall spec
+                        humanToScoreTrajectory3, // score third wall spec
 
                          */
 
