@@ -265,8 +265,8 @@ public class nucifera extends LinearOpMode{
                         break;
 
                     case 4:// transfer collapse
-                        inArmR.setPosition(0.12);
-                        inArmL.setPosition(0.12);
+                        inArmR.setPosition(0.135);
+                        inArmL.setPosition(0.135);
                         inUD.setPosition(0.2);
                         inTwi.setPosition(0.35);
                         inR.setPower(0);
@@ -274,8 +274,8 @@ public class nucifera extends LinearOpMode{
                         break;
 
                     case 5: // transfer
-                        inArmR.setPosition(0.12);
-                        inArmL.setPosition(0.12);
+                        inArmR.setPosition(0.135);
+                        inArmL.setPosition(0.135);
                         inUD.setPosition(0.2);
                         inTwi.setPosition(0.4);
                         inR.setPower(0.4);
