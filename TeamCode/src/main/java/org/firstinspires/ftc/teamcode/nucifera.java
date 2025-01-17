@@ -507,7 +507,7 @@ public class nucifera extends LinearOpMode{
 
                             scR.setPosition(0.12);
                             scL.setPosition(0.12);
-                            scUD.setPosition(0.85);
+                            scUD.setPosition(0.9);
 
                             triangleCounter = 0;
 
