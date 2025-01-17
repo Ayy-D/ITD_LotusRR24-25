@@ -401,6 +401,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        double waitTime = 0.5;
 
         double[] xPose = {
                 0, // initial pose
@@ -489,74 +490,74 @@ public class SPECIMEN_Auto extends LinearOpMode {
         //Preload Specimen Score
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .lineToYConstantHeading(yPose[1])
-                .waitSeconds(0.5);
+                .waitSeconds(waitTime);
 
         //Move to grab floor spec 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
                 .strafeToLinearHeading(new Vector2d(xPose[2], yPose[2]), angles[2])
-                .waitSeconds(0.5);
+                .waitSeconds(waitTime);
 
         //Move to drop floor spec 1
         TrajectoryActionBuilder tab3 = drive.actionBuilder(pick1Pose)
                 .strafeToLinearHeading(new Vector2d(xPose[3], yPose[3]), angles[3])
-                .waitSeconds(0.25);
+                .waitSeconds(waitTime/2);
 
         //Move to grab floor spec 2
         TrajectoryActionBuilder tab4 = drive.actionBuilder(human1Pose)
                 .strafeToLinearHeading(new Vector2d(xPose[4], yPose[4]), angles[4])
-                .waitSeconds(0.5);
+                .waitSeconds(waitTime);
 
         //Move to drop floor spec 2
         TrajectoryActionBuilder tab5 = drive.actionBuilder(pick2Pose)
                 .strafeToLinearHeading(new Vector2d(xPose[5], yPose[5]), angles[5])
-                .waitSeconds(0.25);
+                .waitSeconds(waitTime/2);
 
         //Move to grab floor spec 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(human2Pose)
                 .strafeToLinearHeading(new Vector2d(xPose[6], yPose[6]), angles[6])
-                .waitSeconds(0.5);
+                .waitSeconds(waitTime);
 
         //Move to drop floor spec 3
         TrajectoryActionBuilder tab7 = drive.actionBuilder(pick3Pose)
                 .strafeToLinearHeading(new Vector2d(xPose[7], yPose[7]), angles[7])
-                .waitSeconds(0.25);
+                .waitSeconds(waitTime/2);
 
         //Move to grab spec 1 from wall
         TrajectoryActionBuilder tab8 = drive.actionBuilder(human3Pose)
                 .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
-                    .waitSeconds(0.1)
+                    .waitSeconds(waitTime/5)
                 .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8])
-                    .waitSeconds(0.25);
+                    .waitSeconds(waitTime/2);
 
         //Move to score specimen 1 from wall
         TrajectoryActionBuilder tab9 = drive.actionBuilder(firstWallGrabPose)
                 .strafeToLinearHeading(new Vector2d(xPose[9], yPose[9]), angles[9])
-                    .waitSeconds(0.5);
+                    .waitSeconds(waitTime);
 
 
         //Move to wall grab spec 2
         TrajectoryActionBuilder tab10 = drive.actionBuilder(firstScorePose)
                 .strafeToLinearHeading(new Vector2d(-40, 55), Math.toRadians(89.99999))
-                    .waitSeconds(0.1)
+                    .waitSeconds(waitTime/5)
                 .strafeToLinearHeading(new Vector2d(xPose[10], yPose[10]), angles[10])
-                    .waitSeconds(0.25);
+                    .waitSeconds(waitTime/2);
 
         //Move to score specimen 2 from wall
         TrajectoryActionBuilder tab11 = drive.actionBuilder(secondWallGrabPose)
                 .strafeToLinearHeading(new Vector2d(xPose[11], yPose[11]), angles[11])
-                    .waitSeconds(0.5);
+                    .waitSeconds(waitTime);
 
         //Move to wall grab spec 2
         TrajectoryActionBuilder tab12 = drive.actionBuilder(secondScorePose)
                 .strafeToLinearHeading(new Vector2d(-40, 55), Math.toRadians(89.99999))
-                .waitSeconds(0.1)
+                .waitSeconds(waitTime/5)
                 .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), angles[12])
-                .waitSeconds(0.25);
+                .waitSeconds(waitTime);
 
         //Move to score specimen 2 from wall
         TrajectoryActionBuilder tab13 = drive.actionBuilder(thirdWallGrabPose)
                 .strafeToLinearHeading(new Vector2d(xPose[13], yPose[13]), angles[13])
-                .waitSeconds(0.5);
+                .waitSeconds(waitTime);
 
 
         //Park
@@ -568,11 +569,11 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         Actions.runBlocking(claw.closeClaw());
         Actions.runBlocking(intake.intakeInitPos());
-        /***
+
          while (!isStopRequested() && !opModeIsActive()) {
          telemetry.update();
          }
-         ***/
+
         // Wait for the start signal
         waitForStart();
         if (isStopRequested()) return;
@@ -609,8 +610,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         // PARALLEL Slide & Arm into Scoring Position, Move Intake to Base Pos, initToScoreTrajectory,
                         new ParallelAction(
                                 scoring.LS_ArmSPECScorePos(),
-                                intake.intakeBasePos()
-                                //initToScoreTrajectory
+                                intake.intakeBasePos(),
+                                initToScoreTrajectory
 
                         ),
 
@@ -619,51 +620,51 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         //          MOVE AND PREP TO FLOOR/WALL GRABS
                         // Score Preload Specimen, delay, Claw Open
                         scoring.LS_ArmScorePullPos(),
-                        // 0.125s delay
-                        claw.openClaw(),
 
+                        claw.openClaw()
 
+                        /*
                         // PARALLEL Move Preload Score to First Pickup, Move Intake to Halfway, Slide/Arm Down to Intake Position
                         new ParallelAction(
                                 intake.intakeHalfwayPos(),
-                                scoring.LS_ArmBasePos()
-                                //scoreToPick1
+                                scoring.LS_ArmBasePos(),
+                                scoreToPick1
 
                         ),
 
                         //          FLOOR GRAB #1
                         // PARALLEL Extend Intake #1, Intake Wheels IN, Wait for Intake to Grab
                         new ParallelAction(
-                                intake.intakeWheelsIN(),
-                                intake.intakeFullOutPos()
+                                intake.intakeWheelsIN()
+                                ,intake.intakeFullOutPos()
                         ),
 
                         // PARALLEL Stop Intake Wheels, Move Intake to Halfway, Floor to Human Trajectory #1
                         new ParallelAction(
-                                intake.intakeWheelsOFF(),
-                                intake.intakeHalfwayPos()
-                                //pick1ToHuman1
+                                intake.intakeWheelsOFF()
+                                ,intake.intakeHalfwayPos()
+                                ,pick1ToHuman1
 
                         ),
 
                         // PARALLEL Intake wheels OUT, Slight delay, Human to pickup 2
                         new ParallelAction(
                                 intake.intakeWheelsOUT()
-                                //human1toPick2
+                                ,human1toPick2
                         ),
 
 
                         //          FLOOR GRAB #2
                         // PARALLEL Extend Intake #2, Intake Wheels IN, Wait for Intake to Grab
                         new ParallelAction(
-                                intake.intakeWheelsIN(),
-                                intake.intakeFullOutPos()
+                                intake.intakeWheelsIN()
+                                ,intake.intakeFullOutPos()
                         ),
 
                         // PARALLEL Stop Intake Wheels, Move Intake to Halfway, Floor to Human Trajectory #2
                         new ParallelAction(
-                                intake.intakeWheelsOFF(),
-                                intake.intakeHalfwayPos()
+                                intake.intakeWheelsOFF()
+                                ,intake.intakeHalfwayPos()
                                 //pick2ToHuman2
                         ),
 
@@ -671,22 +672,22 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         new ParallelAction(
                                 intake.intakeWheelsOUT()
                                 //wait 0.5 s
-                                //human2ToPick3
+                                ,human2ToPick3
                         ),
 
 
                         //          FLOOR GRAB #3
                         // PARALLEL Extend Intake #3, Intake Wheels IN, Wait for Intake to Grab
                         new ParallelAction(
-                                intake.intakeWheelsIN(),
-                                intake.intakeFullOutPos()
+                                intake.intakeWheelsIN()
+                                ,intake.intakeFullOutPos()
                                 //wait(125)
                         ),
 
                         // PARALLEL Stop Intake Wheels, Move Intake to Halfway, Floor to Human Trajectory #3
                         new ParallelAction(
-                                intake.intakeWheelsOFF(),
-                                intake.intakeHalfwayPos()
+                                intake.intakeWheelsOFF()
+                                ,intake.intakeHalfwayPos()
                                 //pick3ToHuman3
                         ),
 
@@ -695,9 +696,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         //          MOVE TO WALL GRAB
                         // PARALLEL Intake Wheels OUT, Slight Delay, Move Intake to Base Pos, Move to Human
                         new ParallelAction(
-                                intake.intakeWheelsOUT(),
+                                intake.intakeWheelsOUT()
                                 //wait(125),
-                                intake.intakeBasePos()
+                                ,intake.intakeBasePos()
                                 //human3ToWall
                         ),
 
@@ -709,8 +710,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #1,
                         new ParallelAction(
-                                scoring.LS_ArmSPECScorePos(),
-                                wallToScore1
+                                scoring.LS_ArmSPECScorePos()
+                                ,wallToScore1
                         ),
 
 
@@ -722,8 +723,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // PARALLEL Slide/Arm into Intake Position, scoreToHumanTrajectory #1
                         new ParallelAction(
-                                scoreToHumanTrajectory2,
-                                scoring.LS_ArmBasePos()
+                                scoreToHumanTrajectory2
+                                ,scoring.LS_ArmBasePos()
 
                         ),
 
@@ -736,7 +737,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #2
                         new ParallelAction(
                                 scoring.LS_ArmSPECScorePos()
-                                //humanToScoreTrajectory2
+                                ,humanToScoreTrajectory2
                         ),
 
 
@@ -759,7 +760,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #3,
                         new ParallelAction(
                                 scoring.LS_ArmSPECScorePos()
-                                //humanToScoreTrajectory3
+                                ,humanToScoreTrajectory3
                         ),
 
 
@@ -773,6 +774,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                                 TrajectoryActionPark
                         )
 
+                        */
 
                         //scoring.scoringArmScore(),
 
@@ -810,6 +812,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         humanToScoreTrajectory3, // score third wall spec
 
                          */
+
+
 
 
                 )

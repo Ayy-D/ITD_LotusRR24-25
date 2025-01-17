@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -37,7 +38,7 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class CloseClaw implements Action {
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
-                scC.setPosition(0.35);
+                scC.setPosition(0.3);
                 return false;
             }
         }
@@ -126,15 +127,15 @@ public class SAMPLE_Auto extends LinearOpMode {
 
                 sL.setPower(0.85);
                 sR.setPower(0.85);
-                sL.setTargetPosition(15);
-                sR.setTargetPosition(15);
+                sL.setTargetPosition(5);
+                sR.setTargetPosition(5);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 rotL.setPower(0.4);
                 rotR.setPower(0.4);
-                rotL.setTargetPosition(195);
-                rotR.setTargetPosition(195);
+                rotL.setTargetPosition(100);
+                rotR.setTargetPosition(100);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -154,10 +155,10 @@ public class SAMPLE_Auto extends LinearOpMode {
                 scUD.setPosition(0.4);
 
                 rotL.setPower(0.4);
-                rotL.setTargetPosition(195);
+                rotL.setTargetPosition(100);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rotR.setPower(0.4);
-                rotR.setTargetPosition(195);
+                rotR.setTargetPosition(100);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 sL.setPower(0.9);
@@ -211,15 +212,15 @@ public class SAMPLE_Auto extends LinearOpMode {
                 scL.setPosition(0.48);
                 scUD.setPosition(0.4);
 
-                rotL.setPower(0.4);
-                rotL.setTargetPosition(195);
+                rotL.setPower(0.9);
+                rotL.setTargetPosition(100);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setPower(0.4);
-                rotR.setTargetPosition(195);
+                rotR.setPower(0.9);
+                rotR.setTargetPosition(100);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 sL.setPower(0.9);
-                sL.setTargetPosition(1835);
+                sL.setTargetPosition(1820);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setPower(0.9);
                 sR.setTargetPosition(1820);
@@ -442,7 +443,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         //score to pickup 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(57, 46), Math.toRadians(125))
+                .strafeToLinearHeading(new Vector2d(56, 50), Math.toRadians(135))
                 .waitSeconds(0.5);
 
         //pickup 3 to score
@@ -458,13 +459,13 @@ public class SAMPLE_Auto extends LinearOpMode {
 
 
 
-        //Actions.runBlocking(claw.closeClaw());
-        //Actions.runBlocking(intakeHold.intakeHoldBase());
-        /***
+        Actions.runBlocking(claw.closeClaw());
+        Actions.runBlocking(intake.intakeBasePos());
+
          while (!isStopRequested() && !opModeIsActive()) {
          telemetry.update();
          }
-         ***/
+
         // Wait for the start signal
         waitForStart();
         if (isStopRequested()) return;
@@ -490,6 +491,11 @@ public class SAMPLE_Auto extends LinearOpMode {
                 new SequentialAction(
                         //          SCORE PRELOAD SAMPLE
                         // PARALLEL Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway, initToScoreTrajectory
+                        new ParallelAction(
+                                scoring.LS_ArmSAMPLEScorePos()
+                                ,intake.intakeHalfwayPos()
+                                ,initToScoreTrajectory
+                        )
                         // Bucket Down
 
                         //          SCORE FIRST GROUND SAMPLE
@@ -515,6 +521,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
                         //RESET FOR TELEOP AND PARK
 
+                        /*
                         // PARALLEL
                         initToScoreTrajectory,
                         //slide score with bucket
@@ -531,6 +538,8 @@ public class SAMPLE_Auto extends LinearOpMode {
                         pickup3ToScore,
                         //slide score with bucket
                         TrajectoryActionCloseOut
+
+                        */
 
 
 
