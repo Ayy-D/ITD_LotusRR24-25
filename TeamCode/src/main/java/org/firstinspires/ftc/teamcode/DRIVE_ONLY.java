@@ -70,9 +70,9 @@ public class DRIVE_ONLY extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / 1.8;  // Reduce drive rate to 66%.
-            strafe = gamepad1.left_stick_x  / 1.4;  // Reduce strafe rate to 100%.
-            turn   = -gamepad1.right_stick_x / 2;  // Reduce turn rate to 40%.
+            drive  = gamepad1.left_stick_y  / (1 + gamepad1.right_trigger * 2);  // Reduce drive rate to 66%.
+            strafe = gamepad1.left_stick_x  / (1 + gamepad1.right_trigger * 2);  // Reduce strafe rate to 100%.
+            turn   = -gamepad1.right_stick_x / (1 + gamepad1.right_trigger * 2);  // Reduce turn rate to 40%.
             moveRobot(drive, strafe, turn);
 
         }
