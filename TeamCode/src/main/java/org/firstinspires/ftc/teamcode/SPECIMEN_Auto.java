@@ -45,7 +45,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
             }
         }
         public Action closeClaw() {
-            return new CloseClaw();
+            return new Claw.CloseClaw();
         }
 
         public class OpenClaw implements Action {
@@ -56,11 +56,62 @@ public class SPECIMEN_Auto extends LinearOpMode {
             }
         }
         public Action openClaw() {
-            return new OpenClaw();
+            return new Claw.OpenClaw();
         }
 
     }
 
+    //Rotation Arm Components
+    public class rotation {
+        private DcMotorEx rotR;
+        private DcMotorEx rotL;
+
+        public rotation(HardwareMap hardwareMap) {
+            rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
+            rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
+
+            rotR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+            rotR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+            rotR.setDirection(DcMotorEx.Direction.REVERSE);
+
+            rotL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+            rotL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        }
+
+        public class rotationBase implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                rotL.setPower(0.4);
+                rotR.setPower(0.4);
+                rotL.setTargetPosition(0);
+                rotR.setTargetPosition(0);
+                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                return false;
+            }
+        }
+        public Action rotationBasePos() {
+            return new rotation.rotationBase();
+        }
+
+        public class rotationUP implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                rotL.setPower(0.6);
+                rotR.setPower(0.6);
+                rotL.setTargetPosition(100);
+                rotR.setTargetPosition(100);
+                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                return false;
+            }
+        }
+        public Action rotationUPPos() {
+            return new rotation.rotationUP();
+        }
+    }
 
     //Linear Slide components
     public class LS_Scoring {
@@ -72,8 +123,6 @@ public class SPECIMEN_Auto extends LinearOpMode {
         private DcMotorEx sL;
         private DcMotorEx sR;
 
-        private DcMotorEx rotR;
-        private DcMotorEx rotL;
 
         public LS_Scoring(HardwareMap hardwareMap) {
             scL = hardwareMap.get(Servo.class, "scArmL"); //0.95 goes toward intake, 0 goes outward from robot
@@ -85,28 +134,14 @@ public class SPECIMEN_Auto extends LinearOpMode {
             sL = hardwareMap.get(DcMotorEx.class, "slideL");
             sR = hardwareMap.get(DcMotorEx.class, "slideR");
 
-            rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
-            rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
-
             //RUN Encoders
-            rotR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rotL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             sL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             sR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //ROTATION BRAKE Behavior
-            rotR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rotL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-            //ROTATION Set Direction
-            rotR.setDirection(DcMotorSimple.Direction.REVERSE);
-            rotL.setDirection(DcMotorSimple.Direction.FORWARD);
 
             //RESET Encoders
             sL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             sR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rotL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rotR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             //SLIDE BRAKE Behavior
             sR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -119,49 +154,34 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         }
 
-        public class LS_ArmBase implements Action {
+        public class LS_SPECBase implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
                 scL.setPosition(0.12);
                 scR.setPosition(0.12);
-                scUD.setPosition(0.85);
+                scUD.setPosition(0.9);
 
                 sL.setPower(0.85);
                 sR.setPower(0.85);
-                sL.setTargetPosition(15);
-                sR.setTargetPosition(15);
+                sL.setTargetPosition(5);
+                sR.setTargetPosition(5);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                rotL.setPower(0.4);
-                rotR.setPower(0.4);
-                rotL.setTargetPosition(195);
-                rotR.setTargetPosition(195);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
                 return false;
             }
         }
-        public  Action LS_ArmBasePos() {
-            return new LS_Scoring.LS_ArmBase();
+        public  Action LS_SPECBasePos() {
+            return new LS_Scoring.LS_SPECBase();
         }
 
-        public class LS_ArmSPECScore implements Action {
+        public class LS_SPECScore implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
                 scR.setPosition(0.48);
                 scL.setPosition(0.48);
                 scUD.setPosition(0.4);
-
-                rotL.setPower(0.4);
-                rotL.setTargetPosition(195);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setPower(0.4);
-                rotR.setTargetPosition(195);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 sL.setPower(0.9);
                 sL.setTargetPosition(1835);
@@ -173,11 +193,11 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action LS_ArmSPECScorePos() {
-            return new LS_Scoring.LS_ArmSPECScore();
+        public Action LS_SPECScorePos() {
+            return new LS_Scoring.LS_SPECScore();
         }
 
-        public class LS_ArmScorePull implements Action {
+        public class LS_SPECPull implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
@@ -191,98 +211,93 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 sR.setTargetPosition(550);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                rotL.setPower(0.4);
-                rotR.setPower(0.4);
-                rotL.setTargetPosition(200);
-                rotR.setTargetPosition(200);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
                 return false;
             }
         }
-        public Action LS_ArmScorePullPos() {
-            return new LS_Scoring.LS_ArmScorePull();
+        public Action LS_SPECPullPos() {
+            return new LS_Scoring.LS_SPECPull();
         }
 
-        public class LS_ArmSAMPLEScore implements Action {
+        public class LS_SAMPLEScore implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
                 scR.setPosition(0.48);
                 scL.setPosition(0.48);
-                scUD.setPosition(0.4);
-
-                rotL.setPower(0.4);
-                rotL.setTargetPosition(195);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setPower(0.4);
-                rotR.setTargetPosition(195);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 sL.setPower(0.9);
-                sL.setTargetPosition(1835);
+                sL.setTargetPosition(1820);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setPower(0.9);
                 sR.setTargetPosition(1820);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+                if(time.milliseconds() > 250) {
+                    scUD.setPosition(0.4);
+                }
+
+
+
                 return false;
             }
         }
-        public Action LS_ArmSAMPLEScorePos() {
-            return new LS_Scoring.LS_ArmSAMPLEScore();
+        public Action LS_SAMPLEScorePos() {
+            return new LS_Scoring.LS_SAMPLEScore();
         }
 
-        public class LS_ARM_BucketTip implements Action {
+        public class LS_BucketIntakePos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                scL.setPosition(0.96);
+                scR.setPosition(0.96);
+                scUD.setPosition(0.45);
+                return false;
+            }
+        }
+        public Action LS_BucketIntakePos() { return new LS_Scoring.LS_BucketIntakePos(); }
+
+        public class LS_BucketTip implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 scUD.setPosition(0.7);
                 return false;
             }
         }
-        public Action LS_ARM_BucketTipPos() { return new LS_Scoring.LS_ARM_BucketTip(); }
+        public Action LS_BucketTipPos() { return new LS_Scoring.LS_BucketTip(); }
 
-        public class LS_Arm_TeleOp implements Action {
+        public class LS_TeleOp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                rotL.setPower(0.4);
-                rotL.setTargetPosition(200);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setPower(0.4);
-                rotR.setTargetPosition(200);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 sL.setPower(0.9);
-                sL.setTargetPosition(15);
+                sL.setTargetPosition(5);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setPower(0.9);
-                sR.setTargetPosition(15);
+                sR.setTargetPosition(5);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                scR.setPosition(0.4);
-                scL.setPosition(0.4);
-                scUD.setPosition(0.9);
+                scR.setPosition(0.98);
+                scL.setPosition(0.98);
+                scUD.setPosition(0.75);
                 scC.setPosition(0.35);
 
                 return false;
             }
         }
-        public Action LS_Arm_TeleOpPos() { return new LS_Scoring.LS_Arm_TeleOp(); }
+        public Action LS_TeleOpPos() { return new LS_Scoring.LS_TeleOp(); }
     }
 
-
     //Intake components
-    public class IntakeHold {
+    public class Intake {
         private CRServo inR;
         private CRServo inL;
+
         private Servo inUD;
         private Servo inArmR;
         private Servo inArmL;
         private Servo inTwist;
 
-        public IntakeHold(HardwareMap hardwareMap) {
+        public Intake(HardwareMap hardwareMap) {
             inR = hardwareMap.get(CRServo.class, "inRight");
             inL = hardwareMap.get(CRServo.class, "inLeft");
             inUD = hardwareMap.get(Servo.class, "inUD");
@@ -305,9 +320,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
             }
         }
         public Action intakeInitPos() {
-            return new IntakeHold.IntakeInit();
+            return new Intake.IntakeInit();
         }
-
 
 
         public class IntakeBase implements Action {
@@ -321,7 +335,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeBasePos() { return new IntakeHold.IntakeBase(); }
+        public Action intakeBasePos() { return new Intake.IntakeBase(); }
 
         public class IntakeHalfway implements Action {
             @Override
@@ -334,7 +348,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeHalfwayPos() { return new IntakeHold.IntakeHalfway(); }
+        public Action intakeHalfwayPos() { return new Intake.IntakeHalfway(); }
 
         public class IntakeFullOut implements Action {
             @Override
@@ -347,7 +361,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeFullOutPos() { return new IntakeHold.IntakeFullOut(); }
+        public Action intakeFullOutPos() { return new Intake.IntakeFullOut(); }
 
         public class IntakeTransfer implements Action {
             @Override
@@ -361,7 +375,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
             }
 
         }
-        public Action intakeTransferPos() { return new IntakeHold.IntakeTransfer(); }
+        public Action intakeTransferPos() { return new Intake.IntakeTransfer(); }
 
 
 
@@ -373,8 +387,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeWheelsIN() { return new IntakeHold.IntakeWheelsIN(); }
-
+        public Action intakeWheelsIN() { return new Intake.IntakeWheelsIN(); }
 
         public class IntakeWheelsOFF implements Action {
             @Override
@@ -384,8 +397,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeWheelsOFF() { return new IntakeHold.IntakeWheelsOFF(); }
-
+        public Action intakeWheelsOFF() { return new Intake.IntakeWheelsOFF(); }
 
         public class IntakeWheelsOUT implements Action {
             @Override
@@ -395,7 +407,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 return false;
             }
         }
-        public Action intakeWheelsOUT() { return new IntakeHold.IntakeWheelsOUT(); }
+        public Action intakeWheelsOUT() { return new Intake.IntakeWheelsOUT(); }
     }
 
 
@@ -482,8 +494,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         Claw claw = new Claw(hardwareMap);
-        IntakeHold intake = new IntakeHold(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
         LS_Scoring scoring = new LS_Scoring(hardwareMap);
+        rotation rotation = new rotation(hardwareMap);
 
 
 
@@ -569,6 +582,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         Actions.runBlocking(claw.closeClaw());
         Actions.runBlocking(intake.intakeInitPos());
+        Actions.runBlocking(rotation.rotationBasePos());
 
          while (!isStopRequested() && !opModeIsActive()) {
          telemetry.update();
@@ -609,7 +623,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         //          SCORE PRELOAD SPECIMEN
                         // PARALLEL Slide & Arm into Scoring Position, Move Intake to Base Pos, initToScoreTrajectory,
                         new ParallelAction(
-                                scoring.LS_ArmSPECScorePos(),
+                                scoring.LS_SPECScorePos(),
                                 intake.intakeBasePos(),
                                 initToScoreTrajectory
 
@@ -619,7 +633,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         //          MOVE AND PREP TO FLOOR/WALL GRABS
                         // Score Preload Specimen, delay, Claw Open
-                        scoring.LS_ArmScorePullPos(),
+                        scoring.LS_SPECPullPos(),
 
                         claw.openClaw()
 
@@ -627,7 +641,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         // PARALLEL Move Preload Score to First Pickup, Move Intake to Halfway, Slide/Arm Down to Intake Position
                         new ParallelAction(
                                 intake.intakeHalfwayPos(),
-                                scoring.LS_ArmBasePos(),
+                                scoring.LS_SPECBasePos(),
                                 scoreToPick1
 
                         ),
@@ -710,13 +724,13 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #1,
                         new ParallelAction(
-                                scoring.LS_ArmSPECScorePos()
+                                scoring.LS_SPECScorePos()
                                 ,wallToScore1
                         ),
 
 
                         // Score Specimen, delay, Claw Open
-                        scoring.LS_ArmScorePullPos(),
+                        scoring.LS_ArmSPECPullPos(),
                         // 0.125s delay
                         claw.openClaw(),
 
@@ -724,7 +738,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         // PARALLEL Slide/Arm into Intake Position, scoreToHumanTrajectory #1
                         new ParallelAction(
                                 scoreToHumanTrajectory2
-                                ,scoring.LS_ArmBasePos()
+                                ,scoring.LS_SPECBasePos()
 
                         ),
 
@@ -736,13 +750,13 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #2
                         new ParallelAction(
-                                scoring.LS_ArmSPECScorePos()
+                                scoring.LS_SPECScorePos()
                                 ,humanToScoreTrajectory2
                         ),
 
 
                         // Score Specimen, delay, Claw Open
-                        scoring.LS_ArmScorePullPos(),
+                        scoring.LS_ArmSPECPullPos(),
                         // 0.125s delay
                         claw.openClaw(),
 
@@ -759,13 +773,13 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // PARALLEL Slide/Arm into Scoring Position, Move Intake to Base Pos, humanToScoreTrajectory #3,
                         new ParallelAction(
-                                scoring.LS_ArmSPECScorePos()
+                                scoring.LS_SPECScorePos()
                                 ,humanToScoreTrajectory3
                         ),
 
 
                         // Score Specimen, delay, Claw Open
-                        scoring.LS_ArmScorePullPos(),
+                        scoring.LS_ArmSPECPullPos(),
                         // 0.125s delay
                         claw.openClaw(),
 
@@ -779,13 +793,13 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         //scoring.scoringArmScore(),
 
                         //claw.openClaw(),
-                        //scoring.LS_ArmBasePos(),
+                        //scoring.LS_SPECBasePos(),
                         //claw.closeClaw(),
                         //scoring.scoringArmScore(),
-                        //scoring.LS_ArmBasePos(),
+                        //scoring.LS_SPECBasePos(),
                         //claw.closeClaw(),
                         //scoring.scoringArmScore(),
-                        //scoring.LS_ArmBasePos(),
+                        //scoring.LS_SPECBasePos(),
                         //claw.closeClaw(),
                         //scoring.scoringArmScore(),
 
