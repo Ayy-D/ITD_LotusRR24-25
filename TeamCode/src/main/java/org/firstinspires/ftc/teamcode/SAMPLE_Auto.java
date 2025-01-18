@@ -14,6 +14,8 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 // Non-RR imports
+import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -28,6 +30,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "SAMPLE Auto", group = "Autonomous")
 public class SAMPLE_Auto extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
+
 
     //Claw Components
     public class Claw {
@@ -89,8 +92,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
                 return false;
             }
-        }
-        public Action rotationBasePos() {
+        }public Action rotationBasePos() {
             return new rotation.rotationBase();
         }
 
@@ -354,7 +356,7 @@ public class SAMPLE_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.33);
                 inArmL.setPosition(0.3);
-                inUD.setPosition(0.88);
+                inUD.setPosition(0.85);
                 inTwist.setPosition(0.56);
 
                 return false;
@@ -414,11 +416,13 @@ public class SAMPLE_Auto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         Pose2d initialPose = new Pose2d(38, 60, Math.toRadians(90));
         Pose2d scoringPose = new Pose2d(54,54, Math.toRadians(45));
-        Pose2d pickup1 = new Pose2d(48,48, Math.toRadians(90));
-        Pose2d pickup2 = new Pose2d(57,48, Math.toRadians(90));
-        Pose2d pickup3 = new Pose2d(57,46, Math.toRadians(125));
+        Pose2d pickup1 = new Pose2d(48.25,49, Math.toRadians(90));
+        Pose2d pickup2 = new Pose2d(58,49, Math.toRadians(90));
+        Pose2d pickup3 = new Pose2d(56,46, Math.toRadians(135));
+
         //Pose2d intakePose = new Pose2d(-48, 46, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
@@ -433,56 +437,51 @@ public class SAMPLE_Auto extends LinearOpMode {
         //init to score
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(0.5);
+                .waitSeconds(2);
 
         // Build the trajectory
         //score to pickup 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(47.5, 48), Math.toRadians(90))
-                .waitSeconds(0.5);
+                .strafeToLinearHeading(new Vector2d(48.25, 49), Math.toRadians(90))
+                .waitSeconds(2);
 
         // pickup 1 to score
         TrajectoryActionBuilder tab3 = drive.actionBuilder(pickup1)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(0.5);
+                .waitSeconds(2);
 
         // score to pickup 2
         TrajectoryActionBuilder tab4 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(57.5, 48), Math.toRadians(90))
-                .waitSeconds(0.5);
+                .strafeToLinearHeading(new Vector2d(58, 49), Math.toRadians(90))
+                .waitSeconds(2);
 
         //pickup 2 to score
         TrajectoryActionBuilder tab5 = drive.actionBuilder(pickup2)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(0.5);
+                .waitSeconds(2);
 
         //score to pickup 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(56, 50), Math.toRadians(135))
-                .waitSeconds(0.5);
+                .strafeToLinearHeading(new Vector2d(56, 46), Math.toRadians(135))
+                .waitSeconds(2);
 
         //pickup 3 to score
         TrajectoryActionBuilder tab7 = drive.actionBuilder(pickup3)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(0.5);
+                .waitSeconds(2);
 
 
-        TrajectoryActionBuilder wait05 = drive.actionBuilder(null)
-                .waitSeconds(0.5);
-
-        TrajectoryActionBuilder wait025 = drive.actionBuilder(null)
-                .waitSeconds(0.25);
 
 
-        //park in observation zone
+        //park in submersible zone
         Action TrajectoryActionCloseOut = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(-34.5, 57), (Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(26, 8), (Math.toRadians(0)))
                 .build();
 
 
 
         Actions.runBlocking(claw.closeClaw());
-        Actions.runBlocking(intake.intakeBasePos());
+        Actions.runBlocking(intake.intakeInitPos());
         Actions.runBlocking(rotation.rotationBasePos());
 
 
@@ -502,9 +501,6 @@ public class SAMPLE_Auto extends LinearOpMode {
         Action pickup2ToScore2;
         Action score2ToPickup3;
         Action pickup3ToScore3;
-        Action wait0_5 = wait05.build();
-        Action wait0_25 = wait025.build();
-
 
         initToScoreTrajectory = tab1.build();
         scoreInitToPickup1 = tab2.build();
@@ -516,18 +512,22 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        rotation.rotationUPPos(),
+                        new SequentialAction(
+                                rotation.rotationUPPos()
+                        ),
 
                         //          SCORE PRELOAD SAMPLE
                         // PARALLEL Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway, initToScoreTrajectory
                         new ParallelAction(
                                 scoring.LS_SAMPLEScorePos()
                                 ,intake.intakeHalfwayPos()
-                                //,initToScoreTrajectory
+                                ,initToScoreTrajectory
                         ),
 
                         // Bucket Down
-                        scoring.LS_BucketTipPos(),
+                        new SequentialAction(
+                                scoring.LS_BucketTipPos()
+                        ),
 
                         //          SCORE FIRST GROUND SAMPLE
                         // PARALLEL scoreInitToPickup1, Slide and Arm into Intake/TELEOP Pos, Intake FULLOUT and IN
@@ -535,7 +535,7 @@ public class SAMPLE_Auto extends LinearOpMode {
                                 intake.intakeFullOutPos()
                                 ,intake.intakeWheelsIN()
                                 ,scoring.LS_TeleOpPos()
-                                //,scoreInitToPickup1
+                                ,scoreInitToPickup1
                         ),
 
                         // Wait 0.5 for pickup
@@ -549,20 +549,25 @@ public class SAMPLE_Auto extends LinearOpMode {
                         ),
 
                         //Intake Transfer Pos, wait 0.5 for collapse, Intake Wheels OUT
-                        intake.intakeTransferPos(),
-                        // Wait 0.5 for collapse
-                        intake.intakeWheelsOUT(),
+                        new SequentialAction(
+                                intake.intakeTransferPos()
+                                ,intake.intakeWheelsOUT()
+
+                        ),
+
 
                         // PARALLEL pickup1ToScore1, Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway
 
                         new ParallelAction(
                                 scoring.LS_SAMPLEScorePos()
                                 ,intake.intakeHalfwayPos()
-                                //,pickup1ToScore1
+                                ,pickup1ToScore1
                         ),
 
                         // Bucket Down
-                        scoring.LS_BucketTipPos(),
+                        new SequentialAction(
+                                scoring.LS_BucketTipPos()
+                        ),
 
                         //          SCORE SECOND GROUND SAMPLE
                         // PARALLEL score1ToPickup2, Slide and Arm into Intake/TELEOP Pos, Intake FULLOUT and IN
@@ -570,7 +575,7 @@ public class SAMPLE_Auto extends LinearOpMode {
                                 intake.intakeFullOutPos()
                                 ,intake.intakeWheelsIN()
                                 ,scoring.LS_TeleOpPos()
-                                //,score1ToPickup2
+                                ,score1ToPickup2
                         ),
 
                         // Wait 0.5 for pickup
@@ -584,19 +589,25 @@ public class SAMPLE_Auto extends LinearOpMode {
                         ),
 
                         //Intake Transfer Pos, wait 0.5 for collapse, Intake Wheels OUT
-                        intake.intakeTransferPos(),
-                        // Wait 0.5 for collapse
-                        intake.intakeWheelsOUT(),
+                        new SequentialAction(
+                                intake.intakeTransferPos()
+                                // Wait 0.5 for collapse
+                                ,intake.intakeWheelsOUT()
+                        ),
 
                         // PARALLEL pickup2ToScore2, Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway
                         new ParallelAction(
                                 scoring.LS_SAMPLEScorePos()
                                 ,intake.intakeHalfwayPos()
-                                //,pickup2ToScore2
+                                ,pickup2ToScore2
                         ),
 
                         // Bucket Down
-                        scoring.LS_BucketTipPos(),
+                        new SequentialAction(
+                                scoring.LS_BucketTipPos()
+                        ),
+
+
 
                         //          SCORE THIRD GROUND SAMPLE
                         // PARALLEL score2ToPickup3, Slide and Arm into Intake/TELEOP Pos, Intake FULLOUT and IN
@@ -604,38 +615,43 @@ public class SAMPLE_Auto extends LinearOpMode {
                                 intake.intakeFullOutPos()
                                 ,intake.intakeWheelsIN()
                                 ,scoring.LS_TeleOpPos()
-                                //,scoreInitToPickup1
+                                ,score2ToPickup3
                         ),
 
                         // Wait 0.5 for pickup
 
 
                         // Intake Halfway Pos, Intake Wheels OFF
-                        new ParallelAction(
+                        new SequentialAction(
                                 scoring.LS_BucketIntakePos()
                                 ,intake.intakeWheelsOFF()
                                 ,intake.intakeHalfwayPos()
                         ),
 
                         //Intake Transfer Pos, wait 0.5 for collapse, Intake Wheels OUT
-                        intake.intakeTransferPos(),
-                        // Wait 0.5 for collapse
-                        intake.intakeWheelsOUT(),
+                        new SequentialAction(
+                                intake.intakeTransferPos()
+                                // Wait 0.5 for collapse
+                                ,intake.intakeWheelsOUT()
+                        ),
+
 
                         // PARALLEL pickup3ToScore, Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Base Pos
                         new ParallelAction(
                                 scoring.LS_SAMPLEScorePos()
                                 ,intake.intakeHalfwayPos()
-                                //,pickup3ToScore3
+                                ,pickup3ToScore3
                         ),
 
                         // Bucket Down
-                        scoring.LS_BucketTipPos(),
+                        new SequentialAction(
+                                scoring.LS_BucketTipPos()
+                        ),
 
                         new ParallelAction(
                                 intake.intakeInitPos()
                                 ,scoring.LS_TeleOpPos()
-                                //,TrajectoryActionCloseOut
+                                ,TrajectoryActionCloseOut
                         )
 
                 )
