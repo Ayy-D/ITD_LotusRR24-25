@@ -367,10 +367,10 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class IntakeTransfer implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inArmR.setPosition(0.12);
-                inArmL.setPosition(0.12);
-                inUD.setPosition(0.2);
-                inTwist.setPosition(0.35);
+                inArmR.setPosition(0.135);
+                inArmL.setPosition(0.135);
+		        inUD.setPosition(0.2);
+                inTwi.setPosition(0.35);
 
                 return false;
             }
@@ -418,8 +418,13 @@ public class SAMPLE_Auto extends LinearOpMode {
     public void runOpMode() {
 
         Pose2d initialPose = new Pose2d(38, 60, Math.toRadians(90));
+		Pose2d prepScore = new Pose2d(52.5, 52.5, Math.toRadians(45));
         Pose2d scoringPose = new Pose2d(54,54, Math.toRadians(45));
-        Pose2d pickup1 = new Pose2d(48.25,49, Math.toRadians(90));
+
+		Pose2d prepP1 = new Pose2d(48.25,49, Math.toRadians(90));
+        Pose2d pickup1 = new Pose2d(48.25,46, Math.toRadians(90));
+		
+		Pose2d prepP2 = new Pose2d(
         Pose2d pickup2 = new Pose2d(58,49, Math.toRadians(90));
         Pose2d pickup3 = new Pose2d(56,46, Math.toRadians(135));
 
@@ -437,38 +442,38 @@ public class SAMPLE_Auto extends LinearOpMode {
         //init to score
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
         // Build the trajectory
         //score to pickup 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
                 .strafeToLinearHeading(new Vector2d(48.25, 49), Math.toRadians(90))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
         // pickup 1 to score
         TrajectoryActionBuilder tab3 = drive.actionBuilder(pickup1)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
         // score to pickup 2
         TrajectoryActionBuilder tab4 = drive.actionBuilder(scoringPose)
                 .strafeToLinearHeading(new Vector2d(58, 49), Math.toRadians(90))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
         //pickup 2 to score
         TrajectoryActionBuilder tab5 = drive.actionBuilder(pickup2)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
         //score to pickup 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(scoringPose)
                 .strafeToLinearHeading(new Vector2d(56, 46), Math.toRadians(135))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
         //pickup 3 to score
         TrajectoryActionBuilder tab7 = drive.actionBuilder(pickup3)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(2);
+                .waitSeconds(1);
 
 
 
