@@ -424,11 +424,13 @@ public class SAMPLE_Auto extends LinearOpMode {
 		Pose2d prepP1 = new Pose2d(48.25,49, Math.toRadians(90));
         Pose2d pickup1 = new Pose2d(48.25,46, Math.toRadians(90));
 		
-		Pose2d prepP2 = new Pose2d(
-        Pose2d pickup2 = new Pose2d(58,49, Math.toRadians(90));
-        Pose2d pickup3 = new Pose2d(56,46, Math.toRadians(135));
+		Pose2d prepP2 = new Pose2d(58.5, 49, Math.toRadians(90));
+        Pose2d pickup2 = new Pose2d(58.5, 46, Math.toRadians(90));
 
-        //Pose2d intakePose = new Pose2d(-48, 46, Math.toRadians(90));
+		Pose2d prep3 = new Pose2d(54, 47, Math.toRadians(135));
+        Pose2d pickup3 = new Pose2d(56, 44, Math.toRadians(135));
+
+
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
@@ -447,7 +449,7 @@ public class SAMPLE_Auto extends LinearOpMode {
         // Build the trajectory
         //score to pickup 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(48.25, 49), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(48.25, 46) (Math.toRadians(90))
                 .waitSeconds(1);
 
         // pickup 1 to score
@@ -457,7 +459,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         // score to pickup 2
         TrajectoryActionBuilder tab4 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(58, 49), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(58.5, 46), Math.toRadians(90))
                 .waitSeconds(1);
 
         //pickup 2 to score
@@ -467,7 +469,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         //score to pickup 3
         TrajectoryActionBuilder tab6 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(56, 46), Math.toRadians(135))
+                .strafeToLinearHeading(new Vector2d((56, 44), Math.toRadians(135))
                 .waitSeconds(1);
 
         //pickup 3 to score
@@ -480,7 +482,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         //park in submersible zone
         Action TrajectoryActionCloseOut = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(26, 8), (Math.toRadians(0)))
+                .strafeToLinearHeading(new Vector2d(26, 8), (Math.toRadians(0))
                 .build();
 
 
