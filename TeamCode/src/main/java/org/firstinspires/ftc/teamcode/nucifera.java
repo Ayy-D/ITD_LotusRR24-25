@@ -178,9 +178,9 @@ public class nucifera extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / (1 + gamepad1.right_trigger * 2);  // Reduce drive rate to 66%.
-            strafe = gamepad1.left_stick_x  / (1 + gamepad1.right_trigger * 2);  // Reduce strafe rate to 100%.
-            turn   = -gamepad1.right_stick_x / (1 + gamepad1.right_trigger * 2);  // Reduce turn rate to 40%.
+            drive  = gamepad1.left_stick_y  / (1.75 + gamepad1.right_trigger * 2);  // Reduce drive rate to 44-80%.
+            strafe = gamepad1.left_stick_x  / (1.5  + gamepad1.right_trigger * 2);  // Reduce strafe rate to 33-100%.
+            turn   = -gamepad1.right_stick_x / (2 + gamepad1.right_trigger * 2);  // turn rate 25-50%.
             moveRobot(drive, strafe, turn);
 
 
@@ -356,14 +356,14 @@ public class nucifera extends LinearOpMode{
                             rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
-                            sL.setTargetPosition(5);
+                            sL.setTargetPosition(0);
                             sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             sR.setPower(0.9);
-                            sR.setTargetPosition(5);
+                            sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            scR.setPosition(0.98);
-                            scL.setPosition(0.98);
+                            scR.setPosition(0.96);
+                            scL.setPosition(0.96);
                             scUD.setPosition(0.75);
                             triangleCounter = 0;
                             break;
@@ -565,7 +565,7 @@ public class nucifera extends LinearOpMode{
                             break;
 
                         case 4: //claw open
-                            if(timer.milliseconds() > 250) {
+                            if(timer.milliseconds() > 50) {
                                 scC.setPosition(0.9);
                                 scCurrCase = 0;
                             }
@@ -607,50 +607,70 @@ public class nucifera extends LinearOpMode{
         }
     }
     public void resetSlideEncoders() {
-
         timer.reset();
         telemetry.addData("Status", "Resetting encoders...");
         telemetry.update();
 
+        // Set target position and mode for the slide motors
         sL.setTargetPosition(0);
         sR.setTargetPosition(0);
 
         sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        // Start the motors
         sL.setPower(1);
         sR.setPower(1);
 
-        double startTime = timer.startTime();
+        // Stall detection parameters
+        double velocityThreshold = 5; // Adjust based on motor characteristics
+        long stallTimeThresholdMillis = 75; // Time threshold for stall detection
         boolean stalled = false;
 
-        while (opModeIsActive() && !stalled) {
-            if (!stalled && Math.abs(sL.getCurrentPosition() - sL.getTargetPosition()) < 5) {
-                if (timer.milliseconds() - startTime > 75) {
+        // Monitor for stalls
+        double startTime = timer.milliseconds();
 
+        while (sL.isBusy() || sR.isBusy()) {
+            // Check velocity for stall detection
+            double sLVelocity = Math.abs(sL.getVelocity());
+            double sRVelocity = Math.abs(sR.getVelocity());
+
+            if (!stalled && (sLVelocity < velocityThreshold || sRVelocity < velocityThreshold)) {
+                if (timer.milliseconds() - startTime > stallTimeThresholdMillis) {
+                    stalled = true;
+
+                    // Stop the motors and reset encoders
                     sL.setPower(0);
                     sL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     sR.setPower(0);
                     sR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
                     telemetry.addData("Slide 1 Stalled", sL.getCurrentPosition());
                     telemetry.addData("Slide 2 Stalled", sR.getCurrentPosition());
                     break;
                 }
+            } else {
+                // Reset the stall timer if velocity is above the threshold
+                startTime = timer.milliseconds();
             }
 
-
-
+            telemetry.addData("Slide 1 Velocity", sLVelocity);
+            telemetry.addData("Slide 2 Velocity", sRVelocity);
             telemetry.update();
         }
 
-        // Stop motors after reset
+        // Stop motors after reset or completion
         sL.setPower(0);
         sR.setPower(0);
 
+        // Set motors back to encoder mode for regular operation
         sL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        telemetry.addData("Status", "Reset complete");
+        telemetry.update();
     }
+
 
     public void runIntake(int red, int blue, int green){
         telemetry.addData("Intake ON!", placeholder);
