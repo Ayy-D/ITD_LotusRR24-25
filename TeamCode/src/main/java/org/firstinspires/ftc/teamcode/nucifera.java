@@ -188,29 +188,13 @@ public class nucifera extends LinearOpMode{
             boolean rightBumperState = gamepad1.right_bumper; // intaking++
             boolean leftBumperState = gamepad1.left_bumper; // intaking--
 
-            if(gamepad2.dpad_up){
-                rotL.setPower(1);
-                rotL.setTargetPosition(50);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setPower(1);
-                rotR.setTargetPosition(50);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                sL.setPower(1);
-                sL.setTargetPosition(0);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(1);
-                sR.setTargetPosition(0);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
 
             if(gamepad2.right_trigger > 0.75){ // Switch to SPECIMEN Automation
 
-               cycleCase = 1;
-               inCurrCase = 0;
-               scCurrCase = 0;
-               timer.reset();
+                cycleCase = 1;
+                inCurrCase = 0;
+                scCurrCase = 0;
+                timer.reset();
 
             }
             if(gamepad2.left_trigger > 0.75){ // Switch to SAMPLE Automation
