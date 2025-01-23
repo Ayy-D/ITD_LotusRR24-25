@@ -342,7 +342,7 @@ public class SAMPLE_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.25);
                 inArmL.setPosition(0.25);
-                inUD.setPosition(0.65);
+                inUD.setPosition(0.4);
                 inTwist.setPosition(0.35);
 
                 return false;
