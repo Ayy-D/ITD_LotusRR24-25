@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -249,7 +250,7 @@ public class SAMPLE_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 scL.setPosition(0.96);
                 scR.setPosition(0.96);
-                scUD.setPosition(0.45);
+                scUD.setPosition(0.63);
                 return false;
             }
         }
@@ -353,10 +354,10 @@ public class SAMPLE_Auto extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.33);
-                inArmL.setPosition(0.3);
+                inArmL.setPosition(0.33);
                 inUD.setPosition(0.85);
                 inTwist.setPosition(0.56);
-
+                ;
                 return false;
             }
         }
@@ -365,9 +366,10 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class IntakeTransfer implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
+                inUD.setPosition(-0.35);
+                new SleepAction(0.2);
                 inArmR.setPosition(0.135);
                 inArmL.setPosition(0.135);
-		        inUD.setPosition(0.2);
                 inTwist.setPosition(0.35);
 
                 return false;
@@ -381,8 +383,8 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class IntakeWheelsIN implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inR.setPower(-1);
-                inL.setPower(1);;
+                inR.setPower(-0.6);
+                inL.setPower(0.6);
                 return false;
             }
         }
@@ -401,8 +403,8 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class IntakeWheelsOUT implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inR.setPower(1);
-                inL.setPower(-1);
+                inR.setPower(0.6);
+                inL.setPower(-0.6);
                 return false;
             }
         }
@@ -443,22 +445,21 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         //init to prepScore
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(52.5, 52.5), Math.toRadians(45))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45));
 
         //prepScore to score preload
         TrajectoryActionBuilder tab2 = drive.actionBuilder(prepScore)
-                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(52, 52), Math.toRadians(45))
                 .waitSeconds(1);
 
         //score preload to prep pickup 1
         TrajectoryActionBuilder tab3 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(48.25, 49), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(48, 49), Math.toRadians(90))
                 .waitSeconds(1);
 
         //prep pickup 1 to pickup 1
         TrajectoryActionBuilder tab4 = drive.actionBuilder(prepP1)
-                .strafeToLinearHeading(new Vector2d(48.25, 46), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(48, 46), Math.toRadians(90))
                 .waitSeconds(1);
 
         // pickup 1 to prepScore
@@ -468,7 +469,7 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         //prepScore to score 1
         TrajectoryActionBuilder tab6 = drive.actionBuilder(prepScore)
-                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(54.5, 54.5), Math.toRadians(45))
                 .waitSeconds(1);
 
 
@@ -524,10 +525,10 @@ public class SAMPLE_Auto extends LinearOpMode {
                 .build();
 
 
-
+        Actions.runBlocking(rotation.rotationBasePos());
         Actions.runBlocking(claw.closeClaw());
         Actions.runBlocking(intake.intakeInitPos());
-        Actions.runBlocking(rotation.rotationBasePos());
+
 
 
          while (!isStopRequested() && !opModeIsActive()) {
@@ -557,7 +558,6 @@ public class SAMPLE_Auto extends LinearOpMode {
         Action score3ToMidPark;
         Action midParkToPark;
 
-
         initToPrepScore = tab1.build();
         prepScoreTosScorePreload = tab2.build();
         scorePreloadToPrep1 = tab3.build();
@@ -576,158 +576,46 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-
-                        //          SCORE PRELOAD SAMPLE
-                        // PARALLEL Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway, initToPrepScore
-                        new ParallelAction(
-                                initToPrepScore
-                                ,rotation.rotationUPPos()
-                                ,scoring.LS_SAMPLEScorePos()
-                                ,intake.intakeHalfwayPos()
-                        ),
-
-                        //Bucket Down
-                        new SequentialAction(
-
-                                scoring.LS_BucketTipPos()
-                                ,prepScoreTosScorePreload
-                        ),
-
-
-
-                        //          SCORE FIRST GROUND SAMPLE
-                        // PARALLEL scoreInitToPickup1, Slide and Arm into Intake/TELEOP Pos, Intake FULLOUT and IN
-                        new ParallelAction(
-                                intake.intakeFullOutPos()
-                                ,intake.intakeWheelsIN()
-                                ,scoring.LS_TeleOpPos()
-                                ,scorePreloadToPrep1
-                        ),
-
-                        // Bucket to Intake Pos, Intake Transfer Pos, Intake Wheels OFF,
-                        new SequentialAction(
-                                prep1ToPickup1,
-                                scoring.LS_BucketIntakePos()
-                                ,intake.intakeWheelsOFF()
-                                ,intake.intakeHalfwayPos()
-
-                        ),
-
-
-                        //Intake Transfer Pos, wait 0.5 for collapse, Intake Wheels OUT
-                        new SequentialAction(
-                                intake.intakeHalfwayPos()
-                                ,intake.intakeTransferPos()
-                                ,intake.intakeWheelsOUT()
-
-                        ),
-
-                        // PARALLEL pickup1ToScore1, Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway
-                        new ParallelAction(
-                                scoring.LS_SAMPLEScorePos()
-                                ,intake.intakeHalfwayPos()
-                                ,pickup1ToPrepScore
-                        ),
-
-                        // Bucket Down
-                        new SequentialAction(
-                                scoring.LS_BucketTipPos()
-                                ,prepScoreToScore1
-
-                        ),
-
-
-
-                        //          SCORE SECOND GROUND SAMPLE
-                        // PARALLEL score1ToPickup2, Slide and Arm into Intake/TELEOP Pos, Intake FULLOUT and IN
-                        new ParallelAction(
-                                intake.intakeFullOutPos()
-                                ,intake.intakeWheelsIN()
-                                ,scoring.LS_TeleOpPos()
-                                ,score1ToPrep2
-                        ),
-
-                        // Bucket to Intake Pos, Intake Transfer Pos, Intake Wheels OFF,
-                        new SequentialAction(
-                                prep2ToPickup2,
-                                scoring.LS_BucketIntakePos()
-                                ,intake.intakeWheelsOFF()
-                                ,intake.intakeHalfwayPos()
-
-                        ),
-
-
-                        //Intake Transfer Pos, wait 0.5 for collapse, Intake Wheels OUT
-                        new SequentialAction(
-                                intake.intakeHalfwayPos()
-                                ,intake.intakeTransferPos()
-                                ,intake.intakeWheelsOUT()
-
-                        ),
-
-                        // PARALLEL pickup1ToScore1, Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway
-                        new ParallelAction(
-                                scoring.LS_SAMPLEScorePos()
-                                ,intake.intakeHalfwayPos()
-                                ,pickup2ToPrepScore
-                        ),
-
-                        // Bucket Down
-                        new SequentialAction(
-                                prepScoreToScore2
-                                ,scoring.LS_BucketTipPos()
-                        ),
-
-
-
-                        //          SCORE THIRD GROUND SAMPLE
-                        // PARALLEL score2ToPickup3, Slide and Arm into Intake/TELEOP Pos, Intake FULLOUT and IN
-                        new ParallelAction(
-                                intake.intakeFullOutPos()
-                                ,intake.intakeWheelsIN()
-                                ,scoring.LS_TeleOpPos()
-                                ,score2ToPrep3
-                        ),
-
-                        // Bucket to Intake Pos, Intake Transfer Pos, Intake Wheels OFF,
-                        new SequentialAction(
-                                prep3ToPickup3
-                                ,scoring.LS_BucketIntakePos()
-                                ,intake.intakeWheelsOFF()
-                                ,intake.intakeHalfwayPos()
-
-                        ),
-
-
-                        //Intake Transfer Pos, wait 0.5 for collapse, Intake Wheels OUT
-                        new SequentialAction(
-                                intake.intakeHalfwayPos()
-                                ,intake.intakeTransferPos()
-                                ,intake.intakeWheelsOUT()
-
-                        ),
-
-                        // PARALLEL pickup1ToScore1, Slide and Arm into Scoring Position Bucket Pointing UP, Intake to Halfway
-                        new ParallelAction(
-                                scoring.LS_SAMPLEScorePos()
-                                ,intake.intakeHalfwayPos()
-                                ,pickup3ToPrepScore
-                        ),
-
-                        // Bucket Down
-                        new SequentialAction(
-                                prepScoreToScore3
-                                ,scoring.LS_BucketTipPos()
-                        ),
-
-                        new ParallelAction(
-                                intake.intakeInitPos()
-                                ,scoring.LS_TeleOpPos()
-                                ,score3ToMidPark
-
-                        ),
-
-                        TrajectoryActionCloseOut
+                        rotation.rotationUPPos()
+                        ,new SleepAction(0.01)
+                        ,scoring.LS_SAMPLEScorePos()
+                        ,initToPrepScore
+                        , new SleepAction(0.02)
+                        ,scoring.LS_BucketTipPos()
+                        ,intake.intakeHalfwayPos()
+                        , new SleepAction(0.7)
+                        ,prepScoreTosScorePreload
+                        , new SleepAction(0.01)
+                        ,intake.intakeFullOutPos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeWheelsIN()
+                        , new SleepAction(0.01)
+                        ,scoring.LS_TeleOpPos()
+                        , new SleepAction(0.01)
+                        ,scorePreloadToPrep1
+                        , new SleepAction(0.01)
+                        ,prep1ToPickup1
+                        , new SleepAction(0.01)
+                        ,scoring.LS_BucketIntakePos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeWheelsOFF()
+                        , new SleepAction(0.01)
+                        ,intake.intakeHalfwayPos()
+                        , new SleepAction(1)
+                        ,intake.intakeTransferPos()
+                        , new SleepAction(1)
+                        ,intake.intakeWheelsOUT()
+                        , new SleepAction(1)
+                        , intake.intakeBasePos()
+                        , new SleepAction(0.01)
+                        , scoring.LS_SAMPLEScorePos()
+                        ,intake.intakeHalfwayPos()
+                        , new SleepAction(0.01)
+                        ,pickup1ToPrepScore
+                        , new SleepAction(0.5)
+                        , scoring.LS_BucketTipPos()
+                        , new SleepAction(1)
+                        ,TrajectoryActionCloseOut
 
                 )
         );
