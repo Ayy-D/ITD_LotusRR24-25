@@ -25,6 +25,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @Config
 @Autonomous(name = "SAMPLE Auto", group = "Autonomous")
 public class SAMPLE_Auto extends LinearOpMode {
@@ -79,7 +81,10 @@ public class SAMPLE_Auto extends LinearOpMode {
             rotL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         }
 
+
+
         public class rotationBase implements Action {
+
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotL.setPower(0.4);
@@ -88,6 +93,11 @@ public class SAMPLE_Auto extends LinearOpMode {
                 rotR.setTargetPosition(0);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                telemetry.addData("rotR Position", rotR.getCurrentPosition());
+                telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("rotL Position", rotL.getCurrentPosition());
+                telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
 
                 return false;
             }
@@ -104,6 +114,11 @@ public class SAMPLE_Auto extends LinearOpMode {
                 rotR.setTargetPosition(100);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                telemetry.addData("rotR Position", rotR.getCurrentPosition());
+                telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("rotL Position", rotL.getCurrentPosition());
+                telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
 
                 return false;
             }
@@ -225,10 +240,10 @@ public class SAMPLE_Auto extends LinearOpMode {
                 scR.setPosition(0.48);
                 scL.setPosition(0.48);
 
-                sL.setPower(0.9);
+                sL.setPower(0.85);
                 sL.setTargetPosition(1820);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.9);
+                sR.setPower(0.85);
                 sR.setTargetPosition(1820);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -250,7 +265,7 @@ public class SAMPLE_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 scL.setPosition(0.96);
                 scR.setPosition(0.96);
-                scUD.setPosition(0.63);
+                scUD.setPosition(0.58);
                 return false;
             }
         }
@@ -342,7 +357,7 @@ public class SAMPLE_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.25);
                 inArmL.setPosition(0.25);
-                inUD.setPosition(0.4);
+                inUD.setPosition(0.5);
                 inTwist.setPosition(0.35);
 
                 return false;
@@ -355,7 +370,7 @@ public class SAMPLE_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.33);
                 inArmL.setPosition(0.33);
-                inUD.setPosition(0.85);
+                inUD.setPosition(0.835);
                 inTwist.setPosition(0.56);
                 ;
                 return false;
@@ -366,7 +381,7 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class IntakeTransfer implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inUD.setPosition(-0.35);
+                inUD.setPosition(0.25);
                 new SleepAction(0.2);
                 inArmR.setPosition(0.135);
                 inArmL.setPosition(0.135);
@@ -383,8 +398,8 @@ public class SAMPLE_Auto extends LinearOpMode {
         public class IntakeWheelsIN implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inR.setPower(-0.6);
-                inL.setPower(0.6);
+                inR.setPower(-0.65);
+                inL.setPower(0.65);
                 return false;
             }
         }
@@ -418,19 +433,19 @@ public class SAMPLE_Auto extends LinearOpMode {
     public void runOpMode() {
 
         Pose2d initialPose = new Pose2d(38, 60, Math.toRadians(90));
-		Pose2d prepScore = new Pose2d(52.5, 52.5, Math.toRadians(45));
+        Pose2d prepScore = new Pose2d(52.5, 52.5, Math.toRadians(45));
         Pose2d scoringPose = new Pose2d(54,54, Math.toRadians(45));
 
-		Pose2d prepP1 = new Pose2d(48.25,49, Math.toRadians(90));
-        Pose2d pickup1 = new Pose2d(48.25,46, Math.toRadians(90));
-		
-		Pose2d prepP2 = new Pose2d(58.5, 49, Math.toRadians(90));
-        Pose2d pickup2 = new Pose2d(58.5, 46, Math.toRadians(90));
+        Pose2d prepP1 = new Pose2d(48.75,49.5, Math.toRadians(90));
+        Pose2d pickup1 = new Pose2d(48.75,46, Math.toRadians(90));
 
-		Pose2d prepP3 = new Pose2d(54, 47, Math.toRadians(135));
+        Pose2d prepP2 = new Pose2d(60, 49.5, Math.toRadians(90));
+        Pose2d pickup2 = new Pose2d(60, 46, Math.toRadians(90));
+
+        Pose2d prepP3 = new Pose2d(54, 47, Math.toRadians(135));
         Pose2d pickup3 = new Pose2d(56, 44, Math.toRadians(135));
 
-        Pose2d midPark = new Pose2d(56, 44, Math.toRadians(0));
+        Pose2d midPark = new Pose2d(45, 18, Math.toRadians(0));
 
 
 
@@ -443,85 +458,86 @@ public class SAMPLE_Auto extends LinearOpMode {
 
 
 
+
         //init to prepScore
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(52, 52), Math.toRadians(45))
+                .waitSeconds(0.5);
 
         //prepScore to score preload
         TrajectoryActionBuilder tab2 = drive.actionBuilder(prepScore)
-                .strafeToLinearHeading(new Vector2d(52, 52), Math.toRadians(45))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
+                .waitSeconds(0.5);
 
         //score preload to prep pickup 1
         TrajectoryActionBuilder tab3 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(48, 49), Math.toRadians(90))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(48.75, 49.5), Math.toRadians(90))
+                .waitSeconds(0.5);
 
         //prep pickup 1 to pickup 1
         TrajectoryActionBuilder tab4 = drive.actionBuilder(prepP1)
-                .strafeToLinearHeading(new Vector2d(48, 46), Math.toRadians(90))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(48.75, 46), Math.toRadians(90))
+                .waitSeconds(0.5);
 
         // pickup 1 to prepScore
         TrajectoryActionBuilder tab5 = drive.actionBuilder(pickup1)
-                .strafeToLinearHeading(new Vector2d(52.5, 52.5), Math.toRadians(45))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
+                .waitSeconds(0.5);
 
         //prepScore to score 1
         TrajectoryActionBuilder tab6 = drive.actionBuilder(prepScore)
                 .strafeToLinearHeading(new Vector2d(54.5, 54.5), Math.toRadians(45))
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
 
         // score 1 to prep pickup 2
         TrajectoryActionBuilder tab7 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(58.5, 49), Math.toRadians(90))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(60, 49.5), Math.toRadians(90))
+                .waitSeconds(0.5);
 
         // prep pickup 2 to pickup 2
         TrajectoryActionBuilder tab8 = drive.actionBuilder(prepP2)
-                .strafeToLinearHeading(new Vector2d(58.5, 46), Math.toRadians(45))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(60, 46), Math.toRadians(90))
+                .waitSeconds(0.5);
 
         //pickup 2 to prep score
         TrajectoryActionBuilder tab9 = drive.actionBuilder(pickup2)
                 .strafeToLinearHeading(new Vector2d(52.5, 52.5), Math.toRadians(45))
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         // prep score to score 2
         TrajectoryActionBuilder tab10 = drive.actionBuilder(prepScore)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         // score 2 to prep pickup 3
         TrajectoryActionBuilder tab11 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(54, 47), Math.toRadians(135))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(54, 47), Math.toRadians(122))
+                .waitSeconds(0.5);
 
         // prep pickup 3 to pickup 3
         TrajectoryActionBuilder tab12 = drive.actionBuilder(prepP3)
-                .strafeToLinearHeading(new Vector2d(56, 44), Math.toRadians(135))
-                .waitSeconds(1);
-
+                .strafeToLinearHeading(new Vector2d(56, 44), Math.toRadians(122))
+                .waitSeconds(0.5);
         //pickup 3 to prep score
         TrajectoryActionBuilder tab13 = drive.actionBuilder(pickup3)
                 .strafeToLinearHeading(new Vector2d(52.5, 52.5), Math.toRadians(45))
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         //prep score to score 3
         TrajectoryActionBuilder tab14 = drive.actionBuilder(prepScore)
                 .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45))
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         //score 3 to midPark
         TrajectoryActionBuilder tab15 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(56, 54), Math.toRadians(0))
-                .waitSeconds(1);
+                .strafeToLinearHeading(new Vector2d(45, 18), Math.toRadians(0))
+                .waitSeconds(0.5);
 
 
         // midPark to park in submersible zone
         Action TrajectoryActionCloseOut = drive.actionBuilder(midPark)
-                .strafeToLinearHeading(new Vector2d(26, 8), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(32, 10), Math.toRadians(0))
                 .build();
 
 
@@ -531,13 +547,16 @@ public class SAMPLE_Auto extends LinearOpMode {
 
 
 
-         while (!isStopRequested() && !opModeIsActive()) {
-         telemetry.update();
-         }
+        while (!isStopRequested() && !opModeIsActive()) {
+            telemetry.update();
+        }
 
         // Wait for the start signal
+
         waitForStart();
+
         if (isStopRequested()) return;
+
 
 
         Action initToPrepScore;
@@ -576,22 +595,27 @@ public class SAMPLE_Auto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+
+
+                        //Score preload
                         rotation.rotationUPPos()
-                        ,new SleepAction(0.01)
+                        ,new SleepAction(0.15)
                         ,scoring.LS_SAMPLEScorePos()
-                        ,initToPrepScore
+                        , new SleepAction(0.01)
+                        , initToPrepScore
                         , new SleepAction(0.02)
-                        ,scoring.LS_BucketTipPos()
-                        ,intake.intakeHalfwayPos()
-                        , new SleepAction(0.7)
                         ,prepScoreTosScorePreload
+                        ,scoring.LS_BucketTipPos()
+                        , new SleepAction(0.5)
+                        ,intake.intakeHalfwayPos()
                         , new SleepAction(0.01)
                         ,intake.intakeFullOutPos()
                         , new SleepAction(0.01)
                         ,intake.intakeWheelsIN()
-                        , new SleepAction(0.01)
+                        , new SleepAction(0.2)
                         ,scoring.LS_TeleOpPos()
                         , new SleepAction(0.01)
+                        //Score sample furthest from the wall
                         ,scorePreloadToPrep1
                         , new SleepAction(0.01)
                         ,prep1ToPickup1
@@ -601,20 +625,75 @@ public class SAMPLE_Auto extends LinearOpMode {
                         ,intake.intakeWheelsOFF()
                         , new SleepAction(0.01)
                         ,intake.intakeHalfwayPos()
-                        , new SleepAction(1)
+                        , new SleepAction(0.6)
                         ,intake.intakeTransferPos()
-                        , new SleepAction(1)
+                        , new SleepAction(0.6)
                         ,intake.intakeWheelsOUT()
-                        , new SleepAction(1)
+                        , new SleepAction(0.6)
                         , intake.intakeBasePos()
                         , new SleepAction(0.01)
                         , scoring.LS_SAMPLEScorePos()
                         ,intake.intakeHalfwayPos()
-                        , new SleepAction(0.01)
+                        , new SleepAction(0.05)
                         ,pickup1ToPrepScore
-                        , new SleepAction(0.5)
+                        , new SleepAction(0.2)
+                        , prepScoreToScore1
                         , scoring.LS_BucketTipPos()
-                        , new SleepAction(1)
+                        , new SleepAction(0.5)
+                        , intake.intakeFullOutPos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeWheelsIN()
+                        , new SleepAction(0.2)
+                        ,scoring.LS_TeleOpPos()
+                        , new SleepAction(0.01)
+                        ,score1ToPrep2
+                        , new SleepAction(0.01)
+                        , prep2ToPickup2
+                        , scoring.LS_BucketIntakePos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeWheelsOFF()
+                        , new SleepAction(0.01)
+                        ,intake.intakeHalfwayPos()
+                        , new SleepAction(0.6)
+                        ,intake.intakeTransferPos()
+                        , new SleepAction(0.6)
+                        ,intake.intakeWheelsOUT()
+                        , new SleepAction(0.6)
+                        , intake.intakeBasePos()
+                        , scoring.LS_SAMPLEScorePos()
+                        , pickup2ToPrepScore
+                        , new SleepAction(0.05)
+                        , prepScoreToScore2
+                        ,scoring.LS_BucketTipPos()
+                        , new SleepAction(0.5)
+                        ,intake.intakeHalfwayPos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeWheelsIN()
+                        , new SleepAction(0.2)
+                        ,scoring.LS_TeleOpPos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeFullOutPos()
+                        , score2ToPrep3
+                        , new SleepAction(0.01)
+                        , prep3ToPickup3
+                        , scoring.LS_BucketIntakePos()
+                        , new SleepAction(0.01)
+                        ,intake.intakeWheelsOFF()
+                        , new SleepAction(0.01)
+                        ,intake.intakeHalfwayPos()
+                        , new SleepAction(0.6)
+                        ,intake.intakeTransferPos()
+                        , new SleepAction(0.6)
+                        ,intake.intakeWheelsOUT()
+                        , new SleepAction(0.6)
+                        , intake.intakeBasePos()
+                        , scoring.LS_SAMPLEScorePos()
+                        , pickup3ToPrepScore
+                        , new SleepAction(0.05)
+                        , prepScoreToScore3
+                        ,scoring.LS_BucketTipPos()
+                        , new SleepAction(0.5)
+                        , score3ToMidPark
                         ,TrajectoryActionCloseOut
 
                 )
