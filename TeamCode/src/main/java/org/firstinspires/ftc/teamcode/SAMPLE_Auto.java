@@ -694,8 +694,16 @@ public class SAMPLE_Auto extends LinearOpMode {
                         ,scoring.LS_BucketTipPos()
                         , new SleepAction(0.5)
                         , score3ToMidPark
-                        ,TrajectoryActionCloseOut
+                        ,new SleepAction(0.25)
 
+
+                )
+        );
+
+        Actions.runBlocking(
+                new ParallelAction(
+                        scoring.LS_TeleOpPos(),
+                        TrajectoryActionCloseOut
                 )
         );
 
