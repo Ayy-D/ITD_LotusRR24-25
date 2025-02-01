@@ -99,8 +99,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
         public class rotationUP implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                rotL.setPower(0.8);
-                rotR.setPower(0.8);
+                rotL.setPower(1);
+                rotR.setPower(1);
                 rotL.setTargetPosition(100);
                 rotR.setTargetPosition(100);
                 rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -205,10 +205,10 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 scL.setPosition(0.3);
                 scUD.setPosition(0.97);
 
-                sL.setPower(0.9);
+                sL.setPower(0.55);
                 sL.setTargetPosition(650);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.9);
+                sR.setPower(0.55);
                 sR.setTargetPosition(650);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -227,8 +227,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 scL.setPosition(0.15);
                 scUD.setPosition(1);
 
-                sL.setPower(0.8);
-                sR.setPower(0.8);
+                sL.setPower(1);
+                sR.setPower(1);
                 sL.setTargetPosition(100);
                 sR.setTargetPosition(100);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -446,75 +446,75 @@ public class SPECIMEN_Auto extends LinearOpMode {
     public void runOpMode() {
 
         double[] xPose = {
-                0, // initial pose
-                0, // scoring pose 1
+                0, // initial pose — 0
+                0, // scoring pose 1 — 1
 
-                -31, // prep ground pick 1
-                -34, // ground pick 1
-                -43, // human drop 1
+                -31, // prep ground pick 1 -- 2 
+                -34, // ground pick 1 — 3
+                -43, // human drop 1 — 4
 
-                -43, // prep ground pick 2
-                -48, // ground pick 2
-                -48, // human drop 2
+                -43, // prep ground pick 2 — 5
+                -48, // ground pick 2 — 6
+                -48, // human drop 2 — 7
 
-                -48, // prep ground pick 3
-                -52, // ground pick 3
-                -48, // human drop 3
+                -48, // prep ground pick 3 — 8
+                -52, // ground pick 3 — 9
+                -48, // human drop 3 — 10
 
-                -40, // first wall grab
-                -2, // first score
-                -40, // second wall grab
-                -3, // second score
-                -40, // third wall grab
-                -4 // third score
+                -40, // first wall grab — 11
+                -2, // first score — 12
+                -40, // second wall grab — 13
+                -3, // second score — 14
+                -40, // third wall grab — 15
+                -4 // third score — 16
         };
 
         double[] yPose = {
-                60, // initial pose
-                39.25, // scoring pose 1
+                60, // initial pose — 0
+                39.25, // scoring pose 1 — 1
 
-                45, // prep ground pick 1
-                42, // ground pick 1
-                48, // human drop 1
+                45, // prep ground pick 1 — 2
+                42, // ground pick 1 — 3
+                48, // human drop 1 — 4
 
-                45, // prep ground pick 2
-                41, // ground pick 2
-                48, // human drop 2
+                45, // prep ground pick 2 — 5
+                41, // ground pick 2 — 6
+                48, // human drop 2 — 7
 
-                44, // prep ground pick 3
-                42, // ground pick 3
-                48, // human drop 3
+                44, // prep ground pick 3 — 8
+                42, // ground pick 3 — 9
+                48, // human drop 3 — 10
 
-                55, // first wall grab
-                38.75, // first score
-                55.5, // second wall grab
-                39, // second score
-                55.5, // third wall grab
-                39 // third score
+                55, // first wall grab — 11
+                38.75, // first score — 12
+                55, // second wall grab — 13
+                39, // second score — 14
+                55, // third wall grab — 15
+                39 // third score — 16
         };
 
         double[] angles = {
-                Math.toRadians(270), // initial pose
-                Math.toRadians(270), // scoring pose
+                Math.toRadians(270), // initial pose — 0
+                Math.toRadians(270), // scoring pose — 1
 
-                Math.toRadians(50), // prep ground pick 1
-                Math.toRadians(50), // ground pick 1
-                Math.toRadians(315), // human drop 1
+                Math.toRadians(50), // prep ground pick 1 — 2
+                Math.toRadians(50), // ground pick 1 — 3
+                Math.toRadians(315), // human drop 1 — 4
 
-                Math.toRadians(55), // prep ground pick 2
-                Math.toRadians(55), // ground pick 2
-                Math.toRadians(315), // human drop 2
+                Math.toRadians(55), // prep ground pick 2 — 5
+                Math.toRadians(55), // ground pick 2 — 6
+                Math.toRadians(315), // human drop 2 — 7
 
-                Math.toRadians(45), // prep ground pick 3
-                Math.toRadians(45), // ground pick 3
-                Math.toRadians(315), // human drop 3
+                Math.toRadians(45), // prep ground pick 3 — 8
+                Math.toRadians(45), // ground pick 3 — 9
+                Math.toRadians(315), // human drop 3 — 10
 
-                Math.toRadians(90), // first wall grab
-                Math.toRadians(-90), // first score
-                Math.toRadians(92), // second wall grab
-                Math.toRadians(-90), // second score
-                Math.toRadians(92), // third wall grab
-                Math.toRadians(-90), // third score
+                Math.toRadians(90), // first wall grab — 11
+                Math.toRadians(-90), // first score — 12
+                Math.toRadians(92), // second wall grab — 13
+                Math.toRadians(-90), // second score — 14
+                Math.toRadians(91), // third wall grab — 15
+                Math.toRadians(-90), // third score — 16
         };
 
         Pose2d initialPose = new Pose2d(xPose[0], yPose[0], angles[0]);
@@ -607,8 +607,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Move to wall grab spec 2
         TrajectoryActionBuilder tab13 = drive.actionBuilder(firstScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 55), Math.toRadians(89.99999))
-                .waitSeconds(0.2)
+                .strafeToLinearHeading(new Vector2d(-40, 53.5), Math.toRadians(89.99999))
+                .waitSeconds(0.05)
                 .strafeToLinearHeading(new Vector2d(xPose[13], yPose[13]), angles[13]);
 
         //Move to score specimen 2 from wall
@@ -617,8 +617,8 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Move to wall grab spec 2
         TrajectoryActionBuilder tab15 = drive.actionBuilder(secondScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 55), Math.toRadians(89.99999))
-                .waitSeconds(0.2)
+                .strafeToLinearHeading(new Vector2d(-40, 53.5), Math.toRadians(89.99999))
+                .waitSeconds(0.05)
                 .strafeToLinearHeading(new Vector2d(xPose[15], yPose[15]), angles[15]);
 
         //Move to score specimen 2 from wall
@@ -672,16 +672,15 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         // Preload Spec Score
         Actions.runBlocking(
-                new SequentialAction(
+            new SequentialAction(
                         rotation.rotationUPPos(),
-                        new SleepAction(0.5),
                         scoring.LS_SPECScorePos(),
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos(),
                         new SleepAction(0.01),
                         initToScoreTrajectory,
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.4),
+                        new SleepAction(0.3),
                         claw.openClaw()
                 )
         );
@@ -701,9 +700,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         intake.intakeFullOutPos(),
-                        new SleepAction(0.01),
+                        new SleepAction(0.1),
                         scoreToPick1,
-                        new SleepAction(0.4)
+                        new SleepAction(0.3)
                 )
         );
 
@@ -733,9 +732,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         intake.intakeFullOutPos(),
-                        new SleepAction(0.2),
+                        new SleepAction(0.1),
                         prep2ToPick2,
-                        new SleepAction(0.4)
+                        new SleepAction(0.3)
                 )
         );
 
@@ -767,7 +766,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         intake.intakeFullOutPos(),
                         new SleepAction(0.1),
                         prep3ToPick3,
-                        new SleepAction(0.4)
+                        new SleepAction(0.3)
 
                 )
         );
@@ -792,9 +791,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // Specimen 1
                         human3ToWall,
-                        new SleepAction(0.2),
-                        claw.closeClaw(),
                         new SleepAction(0.1),
+                        claw.closeClaw(),
+                        new SleepAction(0.1 ),
                         scoring.LS_SPECScorePos(),
                         wallToScore1,
                         scoring.LS_SPECPullPos(),
@@ -805,7 +804,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // Specimen 2
                         scoreToHumanTrajectory2,
-                        new SleepAction(0.2),
+                        new SleepAction(0.1),
                         claw.closeClaw(),
                         new SleepAction(0.1),
                         scoring.LS_SPECScorePos(),
@@ -815,24 +814,24 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         claw.openClaw(),
                         scoring.LS_SPECBasePos(),
 
-                        /*
+                        
                         // Specimen 3
                         scoreToHumanTrajectory3,
-                        new SleepAction(0.25),
+                        new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.25),
+                        new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
                         humanToScoreTrajectory3,
-                        new SleepAction(0.1),
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.2),
+                        new SleepAction(0.3),
                         scoring.LS_SPECBasePos(),
                         claw.closeClaw(),
 
-                         */
+                         
 
                         // Park
                         intake.intakeFullOutPos(),
+				scoring. LS_TeleOpPos(),
                         TrajectoryActionPark
 
                 )
