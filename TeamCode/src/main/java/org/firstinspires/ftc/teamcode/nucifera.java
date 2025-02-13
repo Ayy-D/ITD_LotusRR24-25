@@ -205,7 +205,7 @@ public class nucifera extends LinearOpMode{
                 specCount = 0;
             }
 
-            if (gamepad2.dpad_down && scCurrCase == 0) {
+            if ((sL.getCurrent(CurrentUnit.AMPS) > 4 || sR.getCurrent(CurrentUnit.AMPS ) > 4) && scCurrCase == 0) {
                 resetSlideEncoders(); // Call the reset function
             }
 
@@ -248,16 +248,11 @@ public class nucifera extends LinearOpMode{
                     case 2: // full out - intaking
                         inArmR.setPosition(0.33);
                         inArmL.setPosition(0.3);
-                        inUD.setPosition(0.88);
+                        inUD.setPosition(0.86);
                         inTwi.setPosition(0.56);
                         inR.setPower(-0.75);
                         inL.setPower(0.75);
-                        scUD.setPosition(0.45);
-
-                        if(gamepad1.right_trigger > 0.25){
-                            inArmL.setPosition(0.24);
-                            inArmR.setPosition(0.26);
-                        }
+                        scUD.setPosition(0.65);
 
                         if(gamepad1.triangle){
                             inR.setPower(0.75);
@@ -279,7 +274,7 @@ public class nucifera extends LinearOpMode{
 
                         scR.setPosition(0.98);
                         scL.setPosition(0.98);
-                        scUD.setPosition(0.45);
+                        scUD.setPosition(0.65);
 
                         break;
 
@@ -293,7 +288,7 @@ public class nucifera extends LinearOpMode{
 
                         scR.setPosition(0.98);
                         scL.setPosition(0.98);
-                        scUD.setPosition(0.45);
+                        scUD.setPosition(0.65);
 
                         break;
 
@@ -301,13 +296,13 @@ public class nucifera extends LinearOpMode{
                         inArmR.setPosition(0.135);
                         inArmL.setPosition(0.135);
                         inUD.setPosition(0.2);
-                        inTwi.setPosition(0.4);
+                        inTwi.setPosition(0.37);
                         inR.setPower(0.75);
                         inL.setPower(-0.75);
 
                         scR.setPosition(0.98);
                         scL.setPosition(0.98);
-                        scUD.setPosition(0.45);
+                        scUD.setPosition(0.65);
 
                         break;
 
@@ -433,7 +428,7 @@ public class nucifera extends LinearOpMode{
                     case 2: // full out - intaking
                         inArmR.setPosition(0.33);
                         inArmL.setPosition(0.3);
-                        inUD.setPosition(0.88);
+                        inUD.setPosition(0.86);
                         inTwi.setPosition(0.56);
                         inR.setPower(-1);
                         inL.setPower(1);
@@ -466,7 +461,7 @@ public class nucifera extends LinearOpMode{
                     case 5: // out to hp
                         inArmR.setPosition(0.14);
                         inArmL.setPosition(0.14);
-                        inUD.setPosition(0.75);
+                        inUD.setPosition(0.65);
                         inTwi.setPosition(0.35);
                         inR.setPower(0.7);
                         inL.setPower(-0.7);
@@ -505,9 +500,9 @@ public class nucifera extends LinearOpMode{
                             sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            scR.setPosition(0.16);
-                            scL.setPosition(0.16);
-                            scUD.setPosition(0.9);
+                            scR.setPosition(0.13);
+                            scL.setPosition(0.13);
+                            scUD.setPosition(0.92);
 
                             triangleCounter = 0;
 
@@ -525,10 +520,10 @@ public class nucifera extends LinearOpMode{
                                 scL.setPosition(0.3);
                                 scUD.setPosition(0.97);
                                 sL.setPower(0.5);
-                                sL.setTargetPosition(640);
+                                sL.setTargetPosition(570);
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 sR.setPower(0.5);
-                                sR.setTargetPosition(640);
+                                sR.setTargetPosition(570);
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 scCurrCase = 3;
                                 break;
@@ -555,7 +550,7 @@ public class nucifera extends LinearOpMode{
                             break;
 
                         case 4: //claw open
-                            if(timer.milliseconds() > 350) {
+                            if(timer.milliseconds() > 250) {
                                 scC.setPosition(0.9);
                                 scCurrCase = 0;
                             }
