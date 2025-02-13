@@ -831,7 +831,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                         // Park
                         intake.intakeFullOutPos(),
-				scoring. LS_TeleOpPos(),
+                        scoring. LS_TeleOpPos(),
                         TrajectoryActionPark
 
                 )
