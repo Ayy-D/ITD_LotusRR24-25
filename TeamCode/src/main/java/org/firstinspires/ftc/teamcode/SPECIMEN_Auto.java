@@ -179,10 +179,10 @@ public class SPECIMEN_Auto extends LinearOpMode {
         public class LS_SPECBase implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
+                scR.setPosition(0.13);
+                scL.setPosition(0.13);
+                scUD.setPosition(0.92);
 
-                scL.setPosition(0.16);
-                scR.setPosition(0.16);
-                scUD.setPosition(0.9);
 
                 sL.setPower(0.85);
                 sR.setPower(0.85);
@@ -376,7 +376,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.33);
                 inArmL.setPosition(0.3);
-                inUD.setPosition(0.88);
+                inUD.setPosition(0.86);
                 inTwist.setPosition(0.56);
 
                 return false;
@@ -485,11 +485,11 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 42, // ground pick 3 — 9
                 48, // human drop 3 — 10
 
-                55, // first wall grab — 11
+                55.5, // first wall grab — 11
                 38.75, // first score — 12
-                55, // second wall grab — 13
+                55.5, // second wall grab — 13
                 39, // second score — 14
-                55, // third wall grab — 15
+                55.5, // third wall grab — 15
                 39 // third score — 16
         };
 
@@ -511,9 +511,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
                 Math.toRadians(90), // first wall grab — 11
                 Math.toRadians(-90), // first score — 12
-                Math.toRadians(92), // second wall grab — 13
+                Math.toRadians(90), // second wall grab — 13
                 Math.toRadians(-90), // second score — 14
-                Math.toRadians(91), // third wall grab — 15
+                Math.toRadians(90), // third wall grab — 15
                 Math.toRadians(-90), // third score — 16
         };
 
@@ -607,7 +607,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Move to wall grab spec 2
         TrajectoryActionBuilder tab13 = drive.actionBuilder(firstScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 53.5), Math.toRadians(89.99999))
+                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
                 .waitSeconds(0.05)
                 .strafeToLinearHeading(new Vector2d(xPose[13], yPose[13]), angles[13]);
 
@@ -617,7 +617,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Move to wall grab spec 2
         TrajectoryActionBuilder tab15 = drive.actionBuilder(secondScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 53.5), Math.toRadians(89.99999))
+                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
                 .waitSeconds(0.05)
                 .strafeToLinearHeading(new Vector2d(xPose[15], yPose[15]), angles[15]);
 
@@ -627,7 +627,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
 
         //Park
         Action TrajectoryActionPark = drive.actionBuilder(thirdScorePose)
-                .strafeToLinearHeading(new Vector2d(-34, 46), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(xPose[15], yPose[15]), Math.toRadians(315))
                 .build();
 
 
@@ -674,6 +674,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
         Actions.runBlocking(
             new SequentialAction(
                         rotation.rotationUPPos(),
+                        new SleepAction(0.5),
                         scoring.LS_SPECScorePos(),
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos(),
@@ -700,7 +701,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         intake.intakeFullOutPos(),
-                        new SleepAction(0.1),
+                        new SleepAction(0.3),
                         scoreToPick1,
                         new SleepAction(0.3)
                 )
@@ -715,7 +716,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         intake.intakeHalfwayPos(),
                         pick1ToHuman1,
                         intake.intakeWheelsOUT(),
-                        new SleepAction(0.65)
+                        new SleepAction(0.9)
                 )
         );
 
@@ -732,7 +733,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         intake.intakeFullOutPos(),
-                        new SleepAction(0.1),
+                        new SleepAction(0.3),
                         prep2ToPick2,
                         new SleepAction(0.3)
                 )
@@ -746,7 +747,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         intake.intakeHalfwayPos(),
                         pick2ToHuman2,
                         intake.intakeWheelsOUT(),
-                        new SleepAction(0.65)
+                        new SleepAction(1)
                 )
         );
 
@@ -764,7 +765,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         intake.intakeFullOutPos(),
-                        new SleepAction(0.1),
+                        new SleepAction(0.3),
                         prep3ToPick3,
                         new SleepAction(0.3)
 
@@ -779,7 +780,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         intake.intakeMiniBasePos(),
                         pick3ToHuman3,
                         intake.intakeWheelsOUT(),
-                        new SleepAction(0.65),
+                        new SleepAction(1),
                         intake.intakeWheelsOFF()
 
                         )
@@ -793,7 +794,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         human3ToWall,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.1 ),
+                        new SleepAction(0.25),
                         scoring.LS_SPECScorePos(),
                         wallToScore1,
                         scoring.LS_SPECPullPos(),
@@ -806,7 +807,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         scoreToHumanTrajectory2,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.1),
+                        new SleepAction(0.25),
                         scoring.LS_SPECScorePos(),
                         humanToScoreTrajectory2,
                         scoring.LS_SPECPullPos(),
@@ -819,7 +820,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                         scoreToHumanTrajectory3,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.2),
+                        new SleepAction(0.25),
                         scoring.LS_SPECScorePos(),
                         humanToScoreTrajectory3,
                         scoring.LS_SPECPullPos(),
@@ -830,7 +831,7 @@ public class SPECIMEN_Auto extends LinearOpMode {
                          
 
                         // Park
-                        intake.intakeFullOutPos(),
+                        intake.intakeBasePos(),
                         scoring. LS_TeleOpPos(),
                         TrajectoryActionPark
 
