@@ -14,7 +14,7 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width (in)
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15.5)
+                .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15.5)
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 60, Math.toRadians(270)))
@@ -22,11 +22,13 @@ public class MeepMeepTesting {
                 .lineToY(34.5)
 
                 //Prep to grab floor spec 1
-                .strafeToLinearHeading(new Vector2d(-31, 45), Math.toRadians(45))
+                .strafeToSplineHeading(new Vector2d(-31, 36), Math.toRadians(45))
+
 
                 //Move to grab floor spec 1
-                .strafeToLinearHeading(new Vector2d(-34, 42), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-31, 52), Math.toRadians(-15))
 
+                /*
                 //Move to drop floor spec 1
                 .strafeToLinearHeading(new Vector2d(-36, 48), Math.toRadians(315))
 
@@ -34,7 +36,7 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(new Vector2d(-40, 45), Math.toRadians(45))
 
 
-                //Move to grab floor spec 2
+                //Move to sweep floor spec 2
                 .strafeToLinearHeading(new Vector2d(-44, 42), Math.toRadians(45))
 
                 //Move to drop floor spec 2
@@ -70,6 +72,8 @@ public class MeepMeepTesting {
 
                 //Move to score spec 3
                 .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(-90))
+
+                 */
 
                 //Park
                 .strafeToLinearHeading(new Vector2d(-24, 47), Math.toRadians(315))
