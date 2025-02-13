@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-@TeleOp(name="SOLO Tele")
+@TeleOp(name="Sri Tele")
 
 public class soloTeleOp extends LinearOpMode{
     String placeholder = "----";
@@ -178,9 +178,9 @@ public class soloTeleOp extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / (1.75 + gamepad1.right_trigger * 2);  // Reduce drive rate to 44-80%.
-            strafe = gamepad1.left_stick_x  / (1.5  + gamepad1.right_trigger * 2);  // Reduce strafe rate to 33-100%.
-            turn   = -gamepad1.right_stick_x / (2 + gamepad1.right_trigger * 2);  // turn rate 25-50%.
+            drive  = gamepad1.right_stick_y  / (1 + gamepad1.right_trigger * 3);  // Reduce drive rate to 44-80%.
+            strafe = gamepad1.right_stick_x  / (1  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 33-100%.
+            turn   = -gamepad1.left_stick_x / (1.5 + gamepad1.right_trigger * 3);  // turn rate 25-50%.
             moveRobot(drive, strafe, turn);
 
 
@@ -505,8 +505,8 @@ public class soloTeleOp extends LinearOpMode{
                             sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            scR.setPosition(0.12);
-                            scL.setPosition(0.12);
+                            scR.setPosition(0.16);
+                            scL.setPosition(0.16);
                             scUD.setPosition(0.9);
 
                             triangleCounter = 0;
@@ -521,11 +521,14 @@ public class soloTeleOp extends LinearOpMode{
 
                         case 2: // wait for delay
                             if(timer.milliseconds() > 250) {
-                                sL.setPower(0.4);
-                                sL.setTargetPosition(1050);
+                                scR.setPosition(0.3);
+                                scL.setPosition(0.3);
+                                scUD.setPosition(0.97);
+                                sL.setPower(0.5);
+                                sL.setTargetPosition(640);
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                                sR.setPower(0.4);
-                                sR.setTargetPosition(1050);
+                                sR.setPower(0.5);
+                                sR.setTargetPosition(640);
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 scCurrCase = 3;
                                 break;
@@ -533,15 +536,18 @@ public class soloTeleOp extends LinearOpMode{
                             break;
 
                         case 3:
-                            if(gamepad2.triangle){ //push to clip
+                            if(gamepad2.triangle){ //pull to clip
                                 timer.reset();
 
-                                sL.setPower(0.9);
-                                sL.setTargetPosition(550);
+                                sL.setPower(1);
+                                sL.setTargetPosition(20);
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                                sR.setPower(0.9);
-                                sR.setTargetPosition(550);
+                                sR.setPower(1);
+                                sR.setTargetPosition(20);
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                                scR.setPosition(0.16);
+                                scL.setPosition(0.16);
 
                                 triangleCounter = 1;
                                 scCurrCase = 4;
@@ -549,7 +555,7 @@ public class soloTeleOp extends LinearOpMode{
                             break;
 
                         case 4: //claw open
-                            if(timer.milliseconds() > 50) {
+                            if(timer.milliseconds() > 350) {
                                 scC.setPosition(0.9);
                                 scCurrCase = 0;
                             }
