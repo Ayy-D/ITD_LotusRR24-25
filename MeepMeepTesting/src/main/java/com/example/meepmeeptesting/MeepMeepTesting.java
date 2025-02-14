@@ -17,40 +17,31 @@ public class MeepMeepTesting {
                 .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15.5)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 60, Math.toRadians(270)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 61, Math.toRadians(270)))
                 //Preload Specimen Score
                 .lineToY(34.5)
 
                 //Prep to grab floor spec 1
-                .strafeToSplineHeading(new Vector2d(-31, 36), Math.toRadians(45))
+                .strafeToSplineHeading(new Vector2d(-30, 36), Math.toRadians(50))
 
 
                 //Move to grab floor spec 1
-                .strafeToLinearHeading(new Vector2d(-31, 52), Math.toRadians(-15))
+                .strafeToLinearHeading(new Vector2d(-30, 56), Math.toRadians(-15))
 
-                /*
+
                 //Move to drop floor spec 1
-                .strafeToLinearHeading(new Vector2d(-36, 48), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(-38, 36), Math.toRadians(50))
 
                 //Prep to grab floor spec 2
-                .strafeToLinearHeading(new Vector2d(-40, 45), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-38, 56), Math.toRadians(-15))
 
 
                 //Move to sweep floor spec 2
-                .strafeToLinearHeading(new Vector2d(-44, 42), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-40, 22), Math.toRadians(15))
 
                 //Move to drop floor spec 2
-                .strafeToLinearHeading(new Vector2d(-48, 48), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(0))
 
-                //Prep to grab floor spec 3
-                .strafeToLinearHeading(new Vector2d(-51, 44), Math.toRadians(45))
-
-
-                //Move to grab floor spec 3
-                .strafeToLinearHeading(new Vector2d(-54, 42), Math.toRadians(45))
-
-                //Move to drop floor spec 3
-                .splineToSplineHeading(new Pose2d(-54, 48, Math.toRadians(315)), Math.toRadians(315))
 
                 //Move to grab spec 1 from wall
                 .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
@@ -73,10 +64,10 @@ public class MeepMeepTesting {
                 //Move to score spec 3
                 .strafeToSplineHeading(new Vector2d(0, 34), Math.toRadians(-90))
 
-                 */
+
 
                 //Park
-                .strafeToLinearHeading(new Vector2d(-24, 47), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(-40, 58), Math.toRadians(315))
 
                 .build());
 
