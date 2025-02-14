@@ -462,9 +462,9 @@ public class SPECIMEN_Auto extends LinearOpMode {
                 -48, // human drop 3 — 10
 
                 -40, // first wall grab — 11
-                -2, // first score — 12
+                6, // first score — 12
                 -40, // second wall grab — 13
-                -3, // second score — 14
+                3, // second score — 14
                 -40, // third wall grab — 15
                 -4 // third score — 16
         };
