@@ -443,6 +443,7 @@ public class SPECIMEN2 extends LinearOpMode {
     }
 
 
+
     @Override
     public void runOpMode() {
 
@@ -450,19 +451,19 @@ public class SPECIMEN2 extends LinearOpMode {
                 0, // initial pose — 0
                 0, // scoring pose 1 — 1
 
-                -31, // prep ground pick 1 -- 2
-                -31, // ground pick 1 — 3
+                -30, // prep ground sweep 1 -- 2
+                -30, // ground sweep 1 — 3
 
-                -43, // prep ground pick 2 — 4
-                -48, // ground pick 2 — 5
+                -38, // prep ground sweep 2 — 4
+                -38, // ground sweep 2 — 5
 
-                -48, // prep ground pick 3 — 6
-                -52, // ground pick 3 — 7
+                -40, // prep ground sweep 3 — 6
+                -40, // ground sweep 3 — 7
 
                 -40, // first wall grab — 8
-                -2, // first score — 9
+                6, // first score — 9
                 -40, // second wall grab — 10
-                -3, // second score — 11
+                3, // second score — 11
                 -40, // third wall grab — 12
                 -4 // third score — 13
         };
@@ -471,14 +472,14 @@ public class SPECIMEN2 extends LinearOpMode {
                 60, // initial pose — 0
                 39.25, // scoring pose 1 — 1
 
-                36, // prep ground pick 1 — 2
-                52, // ground pick 1 — 3
+                36, // prep ground sweep 1 — 2
+                56, // ground sweep 1 — 3
 
-                45, // prep ground pick 2 — 4
-                41, // ground pick 2 — 5
+                36, // prep ground sweep 2 — 4
+                56, // ground sweep 2 — 5
 
-                44, // prep ground pick 3 — 6
-                42, // ground pick 3 — 7
+                22, // prep ground sweep 3 — 6
+                58, // ground sweep 3 — 7
 
                 55.5, // first wall grab — 8
                 38.75, // first score — 9
@@ -492,14 +493,14 @@ public class SPECIMEN2 extends LinearOpMode {
                 Math.toRadians(270), // initial pose — 0
                 Math.toRadians(270), // scoring pose — 1
 
-                Math.toRadians(50), // prep ground pick 1 — 2
-                Math.toRadians(-15), // ground pick 1 — 3
+                Math.toRadians(50), // prep ground sweep 1 — 2
+                Math.toRadians(-15), // ground sweep 1 — 3
 
-                Math.toRadians(55), // prep ground pick 2 — 4
-                Math.toRadians(55), // ground pick 2 — 5
+                Math.toRadians(50), // prep ground sweep 2 — 4
+                Math.toRadians(-15), // ground sweep 2 — 5
 
-                Math.toRadians(45), // prep ground pick 3 — 6
-                Math.toRadians(45), // ground pick 3 — 7
+                Math.toRadians(15), // prep ground sweep 3 — 6
+                Math.toRadians(0), // ground sweep 3 — 7
 
                 Math.toRadians(90), // first wall grab — 8
                 Math.toRadians(-90), // first score — 9
@@ -569,6 +570,8 @@ public class SPECIMEN2 extends LinearOpMode {
 
         //Prep to grab spec 1 from wall
         TrajectoryActionBuilder tab8 = drive.actionBuilder(sweep3Pose)
+                .strafeToLinearHeading(new Vector2d(-40, 54), Math.toRadians(90))
+                .waitSeconds(0.2)
                 .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8]);
 
         //Move to score spec 1 from wall
@@ -577,9 +580,9 @@ public class SPECIMEN2 extends LinearOpMode {
 
         //Move to grab spec 2 from wall
         TrajectoryActionBuilder tab10 = drive.actionBuilder(firstScorePose)
+                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
+                .waitSeconds(0.05)
                 .strafeToLinearHeading(new Vector2d(xPose[10], yPose[10]), angles[10]);
-
-
 
         //Move to score spec 2 from wall
         TrajectoryActionBuilder tab11 = drive.actionBuilder(secondWallGrabPose)
@@ -587,6 +590,8 @@ public class SPECIMEN2 extends LinearOpMode {
 
         //Move to grab spec 3 from wall
         TrajectoryActionBuilder tab12 = drive.actionBuilder(secondScorePose)
+                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
+                .waitSeconds(0.05)
                 .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), angles[12]);
 
 
@@ -614,6 +619,7 @@ public class SPECIMEN2 extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
         time.reset();
+
 
 
         Action initToScoreTrajectory = tab1.build();
