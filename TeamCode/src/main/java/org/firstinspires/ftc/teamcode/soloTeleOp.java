@@ -145,7 +145,7 @@ public class soloTeleOp extends LinearOpMode{
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
-        int cycleCase = 0; // 0 - Sample, 1 - Specimen
+        int cycleCase = 1; // 0 - Sample, 1 - Specimen
 
         //Intake/Scoring Trigger Cycle Variables
         int inCurrCase = 0;
@@ -178,8 +178,8 @@ public class soloTeleOp extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.right_stick_y  / (1 + gamepad1.right_trigger * 3);  // Reduce drive rate to 44-80%.
-            strafe = gamepad1.right_stick_x  / (1  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 33-100%.
+            drive  = gamepad1.right_stick_y  / (1.3 + gamepad1.right_trigger * 3);  // Reduce drive rate to 44-80%.
+            strafe = gamepad1.right_stick_x  / (1.3  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 33-100%.
             turn   = -gamepad1.left_stick_x / (1.5 + gamepad1.right_trigger * 3);  // turn rate 25-50%.
             moveRobot(drive, strafe, turn);
 
@@ -205,7 +205,7 @@ public class soloTeleOp extends LinearOpMode{
                 specCount = 0;
             }
 
-            if ((sL.getCurrent(CurrentUnit.AMPS) > 4 || sR.getCurrent(CurrentUnit.AMPS ) > 4) && scCurrCase == 0) {
+            if (((sL.getCurrent(CurrentUnit.AMPS) > 4 || sR.getCurrent(CurrentUnit.AMPS ) > 4) || gamepad2.dpad_down) && scCurrCase == 0) {
                 resetSlideEncoders(); // Call the reset function
             }
 
@@ -279,7 +279,7 @@ public class soloTeleOp extends LinearOpMode{
                         break;
 
                     case 4:// transfer collapse
-                        inArmR.setPosition(0.135);
+                        inArmR.setPosition(0.11);
                         inArmL.setPosition(0.135);
                         inUD.setPosition(0.2);
                         inTwi.setPosition(0.35);
@@ -293,7 +293,7 @@ public class soloTeleOp extends LinearOpMode{
                         break;
 
                     case 5: // transfer
-                        inArmR.setPosition(0.135);
+                        inArmR.setPosition(0.11);
                         inArmL.setPosition(0.135);
                         inUD.setPosition(0.2);
                         inTwi.setPosition(0.37);
@@ -392,10 +392,10 @@ public class soloTeleOp extends LinearOpMode{
                             rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
-                            sL.setTargetPosition(1820);
+                            sL.setTargetPosition(1850);
                             sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             sR.setPower(0.9);
-                            sR.setTargetPosition(1820);
+                            sR.setTargetPosition(1850);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             break;
                     }
@@ -565,17 +565,17 @@ public class soloTeleOp extends LinearOpMode{
 
 
             telemetry.addData("rotR Position", rotR.getCurrentPosition());
-            telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
+            //telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("rotL Position", rotL.getCurrentPosition());
-            telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
+            //telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
 
 
             telemetry.addData("-----", placeholder);
 
             telemetry.addData("sR Position", sR.getCurrentPosition());
-            telemetry.addData("sR Current Draw", sR.getCurrent(CurrentUnit.AMPS));
+            //telemetry.addData("sR Current Draw", sR.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("sL Position", sL.getCurrentPosition());
-            telemetry.addData("sL Current Draw", sL.getCurrent(CurrentUnit.AMPS));
+            //telemetry.addData("sL Current Draw", sL.getCurrent(CurrentUnit.AMPS));
 
             telemetry.addData("-----", placeholder);
 
