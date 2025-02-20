@@ -28,9 +28,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
-@Autonomous(name = "BLUE Sample", group = "Autonomous")
+@Autonomous(name = "BLUE--SAMPLE", group = "Autonomous")
 public class blue_sample extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
+
+    int sub1YESNO = 0;
+    int sub2YESNO = 0;
+
 
 
     //Claw Components
@@ -444,10 +448,16 @@ public class blue_sample extends LinearOpMode {
                 57, // prep ground pick 3 — 6
                 57, // ground pick 3 — 7
 
-                // prep sub pick 1 - 8
-                // sub pick 1 - 9
+                40, // prep sub pick 1 - 8
+                25, // sub pick 1 - 9
 
-                // sub to mid score 4 - 10
+                40, // sub to mid score 4 - 10
+
+                40, // prep sub pick 2 - 11
+                25, // sub pick 2 - 12
+
+                40  // sub to mid score 4 - 13
+
 
         };
 
@@ -464,11 +474,15 @@ public class blue_sample extends LinearOpMode {
                 50, // prep ground pick 3 — 6
                 48, // ground pick 3 — 7
 
-                // prep sub pick 1 - 8
-                // sub pick 1 - 9
+                12, // prep sub pick 1 - 8
+                12, // sub pick 1 - 9
 
-                // sub to mid score 4 - 10
+                12, // sub to mid score 4 - 10
 
+                8,  // prep sub pick 1 - 8
+                8,  // sub pick 1 - 9
+
+                8   // sub to mid score 4 - 10
         };
 
         double[] angles = {
@@ -484,25 +498,44 @@ public class blue_sample extends LinearOpMode {
                 Math.toRadians(295), // prep ground pick 3 — 6
                 Math.toRadians(295), // ground pick 3 — 7
 
-                // prep sub pick 1 - 8
-                // sub pick 1 - 9
+                Math.toRadians(180), // prep sub pick 1 - 8
+                Math.toRadians(180), // sub pick 1 - 9
 
-                // sub to mid score 4 - 10
+                Math.toRadians(225), // sub to mid score 4 - 10
+
+                Math.toRadians(180), // prep sub pick 2 - 11
+                Math.toRadians(180), // sub pick 3 - 12
+
+                Math.toRadians(225)  // sub to mid score 5 - 13
         };
 
         Pose2d initialPose = new Pose2d(xPose[0], yPose[0], angles[0]);
 
         Pose2d scoringPose = new Pose2d(xPose[1], yPose[1], angles[1]);
 
+        Pose2d prepgroundpick1 = new Pose2d(xPose[2], yPose[2], angles[2]);
+
         Pose2d pickup1 = new Pose2d(xPose[3], yPose[3], angles[3]);
+
+        Pose2d prepgroundpick2 = new Pose2d(xPose[4], yPose[4], angles[4]);
 
         Pose2d pickup2 = new Pose2d(xPose[5], yPose[5], angles[5]);
 
+        Pose2d prepgroundpick3 = new Pose2d(xPose[6], yPose[6], angles[6]);
+
         Pose2d pickup3 = new Pose2d(xPose[7], yPose[7], angles[7]);
+
+        Pose2d prepsubpick1 = new Pose2d(xPose[8], yPose[8], angles[8]);
 
         Pose2d subPick1 = new Pose2d(xPose[9], yPose[9], angles[9]);
 
-        Pose2d midScore = new Pose2d(xPose[10], yPose[10], angles[10]);
+        Pose2d midScore1 = new Pose2d(xPose[10], yPose[10], angles[10]);
+
+        Pose2d prepsubpick2 = new Pose2d(xPose[11], yPose[11], angles[11]);
+
+        Pose2d subPick2 = new Pose2d(xPose[12], yPose[12], angles[12]);
+
+        Pose2d midScore2 = new Pose2d(xPose[13], yPose[13], angles[13]);
 
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
@@ -514,51 +547,88 @@ public class blue_sample extends LinearOpMode {
 
 
 
-
-
-
         //init to score preload
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
+                .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
                 .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
-        //score preload to pickup 1
+        //score preload to prep ground pick 1
         TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
                 .strafeToLinearHeading(new Vector2d(xPose[2], yPose[2]), angles[2]);
 
-        //pickup 1 to score 1
-        TrajectoryActionBuilder tab3 = drive.actionBuilder(pickup1)
+        //prep ground pick 1 to ground pick 1
+        TrajectoryActionBuilder tab3 = drive.actionBuilder(prepgroundpick1)
                 .strafeToLinearHeading(new Vector2d(xPose[3], yPose[3]), angles[3]);
 
-        //score 1 to pickup 2
-        TrajectoryActionBuilder tab4 = drive.actionBuilder(scoringPose)
+        //ground pick 1 to score 1
+        TrajectoryActionBuilder tab4 = drive.actionBuilder(pickup1)
+                .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
+
+        //score 1 to prep ground pick 2
+        TrajectoryActionBuilder tab5 = drive.actionBuilder(scoringPose)
                 .strafeToLinearHeading(new Vector2d(xPose[4], yPose[4]), angles[4]);
 
-        //pickup 2 to score 2
-        TrajectoryActionBuilder tab5 = drive.actionBuilder(pickup2)
-                .strafeToLinearHeading(new Vector2d(54.5, 54.5), Math.toRadians(45));
+        //prep ground pick 2 to ground pick 2
+        TrajectoryActionBuilder tab6 = drive.actionBuilder(prepgroundpick2)
+                .strafeToLinearHeading(new Vector2d(xPose[5], yPose[5]), angles[5]);
 
+        //ground pick 2 to score 2
+        TrajectoryActionBuilder tab7 = drive.actionBuilder(pickup2)
+                .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
-        // score 2 to pickup 3
-        TrajectoryActionBuilder tab6 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(60, 49.5), Math.toRadians(90));
-
-        // pickup 3 to score 3
-        TrajectoryActionBuilder tab7 = drive.actionBuilder(pickup3)
-                .strafeToLinearHeading(new Vector2d(60, 46), Math.toRadians(90));
-
-        // score 3 to sub pick 1
+        //score 2 to prep ground pick 3
         TrajectoryActionBuilder tab8 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(54, 54), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(xPose[6], yPose[6]), angles[6]);
 
-        // sub pick 1 to score 4
-        TrajectoryActionBuilder tab9 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(54, 47), Math.toRadians(122));
+        //prep ground pick 3 to ground pick 3
+        TrajectoryActionBuilder tab9 = drive.actionBuilder(prepgroundpick3)
+                .strafeToLinearHeading(new Vector2d(xPose[7], yPose[7]), angles[7]);
 
+        //ground pick 3 to score 3
+        TrajectoryActionBuilder tab10 = drive.actionBuilder(pickup3)
+                .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
+
+        //score 3 to prep sub pick 1
+        TrajectoryActionBuilder tab11 = drive.actionBuilder(scoringPose)
+                .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8]);
+
+        //prep sub pick 1 to sub pick 1
+        TrajectoryActionBuilder tab12 = drive.actionBuilder(prepsubpick1)
+                .strafeToLinearHeading(new Vector2d(xPose[9], yPose[9]), angles[9]);
+
+        //sub pick 1 to mid score 4
+        TrajectoryActionBuilder tab13 = drive.actionBuilder(subPick1)
+                .strafeToLinearHeading(new Vector2d(xPose[10], yPose[10]), angles[10]);
+
+        //mid score 4 to score 4
+        TrajectoryActionBuilder tab14 = drive.actionBuilder(midScore1)
+                .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
+
+        //score 4 to prep sub pick 2
+        TrajectoryActionBuilder tab15 = drive.actionBuilder(scoringPose)
+                .strafeToLinearHeading(new Vector2d(xPose[11], yPose[11]), angles[11]);
+
+        //prep sub pick 2 to sub pick 2
+        TrajectoryActionBuilder tab16 = drive.actionBuilder(prepsubpick2)
+                .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), angles[12]);
+
+        //sub pick 2 to mid score 4
+        TrajectoryActionBuilder tab17 = drive.actionBuilder(subPick2)
+                .strafeToLinearHeading(new Vector2d(xPose[13], yPose[13]), angles[13]);
+
+        //mid score 4 to score 4
+        TrajectoryActionBuilder tab18 = drive.actionBuilder(midScore2)
+                .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
         // score 4 to park
         Action TrajectoryActionCloseOut = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(300))
+                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(0))
                 .build();
 
 
@@ -568,7 +638,24 @@ public class blue_sample extends LinearOpMode {
         Actions.runBlocking(intake.intakeInitPos());
 
         while (!isStopRequested() && !opModeIsActive()) {
+            telemetry.addData("Status", "Waiting for start");
+            telemetry.addData("Attempt Sub Pick 1? Press X/A to CONFIRM, B/O to cancel", sub1YESNO);
+            telemetry.addData("Attempt Sub Pick 2? Press DP_UP to CONFIRM, DP_DOWN to cancel", sub2YESNO);
             telemetry.update();
+
+            if (gamepad1.a || gamepad2.a || gamepad1.cross || gamepad2.cross) {
+                sub1YESNO = 1;
+            }
+            if (gamepad1.dpad_up || gamepad2.dpad_up) {
+                sub1YESNO = 1;
+            }
+
+            if (gamepad1.dpad_down || gamepad2.dpad_down) {
+                sub1YESNO = 0;
+            }
+            if (gamepad1.b || gamepad2.b || gamepad1.circle || gamepad2.circle) {
+                sub1YESNO = 0;
+            }
         }
         // Wait for the start signal
         waitForStart();
@@ -577,26 +664,246 @@ public class blue_sample extends LinearOpMode {
 
 
 
-        Action initToScorePreload;
-        Action scorePreloadToPrep1;
-        Action prep1ToPickup1;
-        Action pickup1ToScore1;
-        Action score1ToPrep2;
-        Action prep2ToPickup2;
-        Action pickup2ToScore2;
-        Action score2ToPrep3;
-        Action prep3ToPickup3;
-        Action pickup3ToScore3;
+        Action initToScorePreload = tab1.build();
+        Action scorePreloadToPrep1 = tab2.build();
+        Action prep1ToPickup1 = tab3.build();
+        Action pickup1ToScore1 = tab4.build();
+        Action score1ToPrep2 = tab5.build();
+        Action prep2ToPickup2 = tab6.build();
+        Action pickup2ToScore2 = tab7.build();
+        Action score2ToPrep3 = tab8.build();
+        Action prep3ToPickup3 = tab9.build();
+        Action pickup3ToScore3 = tab10.build();
+        Action score3ToPrepSub1 = tab11.build();
+        Action prepSub1ToSubPick1 = tab12.build();
+        Action subPick1ToMidScore4 = tab13.build();
+        Action midScore4ToScore4 = tab14.build();
+        Action score4ToPrepSub2 = tab15.build();
+        Action prepSub2ToSubPick2 = tab16.build();
+        Action subPick2ToMidScore5 = tab17.build();
+        Action midScore5ToScore5 = tab18.build();
 
 
 
+        // Score Preload
         Actions.runBlocking(
                 new SequentialAction(
-
+                        rotation.rotationUPPos(),
+                        intake.intakeHalfwayPos(),
+                        new SleepAction(1),
+                        scoring.LS_SAMPLEScorePos(),
+                        initToScorePreload,
+                        new SleepAction(0.2),
+                        scoring.LS_BucketTipPos()
 
                 )
         );
 
+        // Prep Ground Pick 1 - Ground Pick 1
+        Actions.runBlocking(
+                new SequentialAction(
+                        //Prep
+                        scoring.LS_TeleOpPos(),
+                        intake.intakeWheelsIN(),
+                        intake.intakeHalfwayPos(),
+                        new SleepAction(0.01),
+                        scorePreloadToPrep1,
+                        new SleepAction(0.6),
+
+                        //Pickup
+                        intake.intakeFullOutPos(),
+                        prep1ToPickup1,
+                        new SleepAction(0.2),
+                        intake.intakeWheelsOFF(),
+                        intake.intakeHalfwayPos()
+
+                )
+        );
+
+        // Transfer to Score 1
+        Actions.runBlocking(
+                new SequentialAction(
+                        //Transfer
+                        scoring.LS_BucketIntakePos(),
+                        intake.intakeTransferPos(),
+                        new SleepAction(0.6),
+                        intake.intakeWheelsOUT(),
+                        new SleepAction(1),
+
+                        //Score
+                        scoring.LS_TeleOpPos(),
+                        scoring.LS_SAMPLEScorePos(),
+                        new SleepAction(0.2),
+                        pickup1ToScore1,
+                        new SleepAction(0.2),
+                        scoring.LS_BucketTipPos()
+                )
+        );
+        // Prep Ground Pick 2 - Ground Pick 2
+        Actions.runBlocking(
+                new SequentialAction(
+                        //Prep
+                        scoring.LS_TeleOpPos(),
+                        intake.intakeWheelsIN(),
+                        intake.intakeHalfwayPos(),
+                        new SleepAction(0.01),
+                        score1ToPrep2,
+                        new SleepAction(0.6),
+
+                        //Pickup
+                        intake.intakeFullOutPos(),
+                        prep2ToPickup2,
+                        new SleepAction(0.2),
+                        intake.intakeWheelsOFF(),
+                        intake.intakeHalfwayPos()
+                )
+        );
+
+        // Transfer to Score 2
+        Actions.runBlocking(
+                new SequentialAction(
+                        //Transfer
+                        scoring.LS_BucketIntakePos(),
+                        intake.intakeTransferPos(),
+                        new SleepAction(0.6),
+                        intake.intakeWheelsOUT(),
+                        new SleepAction(1),
+
+                        //Score
+                        scoring.LS_TeleOpPos(),
+                        scoring.LS_SAMPLEScorePos(),
+                        new SleepAction(0.2),
+                        pickup2ToScore2,
+                        new SleepAction(0.2),
+                        scoring.LS_BucketTipPos()
+                )
+        );
+        // Prep Ground Pick 3 - Ground Pick 3
+        Actions.runBlocking(
+                new SequentialAction(
+                        //Prep
+                        scoring.LS_TeleOpPos(),
+                        intake.intakeWheelsIN(),
+                        intake.intakeHalfwayPos(),
+                        new SleepAction(0.01),
+                        score2ToPrep3,
+                        new SleepAction(0.6),
+
+                        //Pickup
+                        intake.intakeFullOutPos(),
+                        prep3ToPickup3,
+                        new SleepAction(0.2),
+                        intake.intakeWheelsOFF(),
+                        intake.intakeHalfwayPos()
+                )
+        );
+
+        // Transfer to Score 3
+        Actions.runBlocking(
+                new SequentialAction(
+                        //Transfer
+                        scoring.LS_BucketIntakePos(),
+                        intake.intakeTransferPos(),
+                        new SleepAction(0.6),
+                        intake.intakeWheelsOUT(),
+                        new SleepAction(1),
+
+                        //Score
+                        scoring.LS_TeleOpPos(),
+                        scoring.LS_SAMPLEScorePos(),
+                        new SleepAction(0.2),
+                        pickup3ToScore3,
+                        new SleepAction(0.2),
+                        scoring.LS_BucketTipPos()
+                )
+        );
+
+
+
+
+
+        // IF YES, run sub pick 1 automation
+        if(sub1YESNO == 1){
+            Actions.runBlocking(
+                    new SequentialAction(
+                            // Prep Sub Pick 1 - Sub Pick 1
+                            scoring.LS_TeleOpPos(),
+                            intake.intakeWheelsIN(),
+                            new SleepAction(0.01),
+                            score3ToPrepSub1,
+                            intake.intakeHalfwayPos(),
+                            new SleepAction(0.01),
+                            prepSub1ToSubPick1,
+                            intake.intakeFullOutPos(),
+                            new SleepAction(0.5),
+
+                            // Transfer to Mid Score 4
+                            intake.intakeWheelsOFF(),
+                            new SleepAction(0.01),
+                            intake.intakeHalfwayPos(),
+                            new SleepAction(0.01),
+                            scoring.LS_BucketIntakePos(),
+                            subPick1ToMidScore4,
+                            intake.intakeTransferPos(),
+                            new SleepAction(0.6),
+                            intake.intakeWheelsOUT(),
+                            new SleepAction(1),
+
+                            // Mid Score 4 to Score 4
+                            scoring.LS_TeleOpPos(),
+                            intake.intakeHalfwayPos(),
+                            intake.intakeWheelsIN(),
+                            new SleepAction(0.01),
+                            midScore4ToScore4,
+                            scoring.LS_SAMPLEScorePos(),
+                            new SleepAction(0.2),
+                            scoring.LS_BucketTipPos()
+
+                    )
+            );
+        }
+
+        // IF YES, run sub pick 2 automation
+        if(sub2YESNO == 1){
+            Actions.runBlocking(
+                    new SequentialAction(
+                            // Prep Sub Pick 2 - Sub Pick 2
+                            scoring.LS_TeleOpPos(),
+                            intake.intakeWheelsIN(),
+                            new SleepAction(0.01),
+                            score4ToPrepSub2,
+                            intake.intakeHalfwayPos(),
+                            new SleepAction(0.01),
+                            prepSub2ToSubPick2,
+                            intake.intakeFullOutPos(),
+                            new SleepAction(0.5),
+
+                            // Transfer to Mid Score 5
+                            intake.intakeWheelsOFF(),
+                            new SleepAction(0.01),
+                            intake.intakeHalfwayPos(),
+                            new SleepAction(0.01),
+                            scoring.LS_BucketIntakePos(),
+                            subPick2ToMidScore5,
+                            intake.intakeTransferPos(),
+                            new SleepAction(0.6),
+                            intake.intakeWheelsOUT(),
+                            new SleepAction(1),
+
+                            // Mid Score 5 to Score 5
+                            scoring.LS_TeleOpPos(),
+                            intake.intakeHalfwayPos(),
+                            intake.intakeWheelsIN(),
+                            new SleepAction(0.01),
+                            midScore5ToScore5,
+                            scoring.LS_SAMPLEScorePos(),
+                            new SleepAction(0.2),
+                            scoring.LS_BucketTipPos()
+                    )
+            );
+        }
+
+        // Park
         Actions.runBlocking(
                 new ParallelAction(
                         scoring.LS_TeleOpPos(),
