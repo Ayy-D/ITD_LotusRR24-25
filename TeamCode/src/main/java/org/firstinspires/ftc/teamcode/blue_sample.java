@@ -486,27 +486,27 @@ public class blue_sample extends LinearOpMode {
         };
 
         double[] angles = {
-                Math.toRadians(270), // initial pose — 0
-                Math.toRadians(225), // scoring pose — 1
+                Math.toRadians(90), // initial pose — 0
+                Math.toRadians(45), // scoring pose — 1
 
-                Math.toRadians(262.5), // prep ground pick 1 — 2
-                Math.toRadians(262.5), // ground pick 1 — 3
+                Math.toRadians(82.5), // prep ground pick 1 — 2
+                Math.toRadians(82.5), // ground pick 1 — 3
 
-                Math.toRadians(272), // prep ground pick 2 — 4
-                Math.toRadians(272), // ground pick 2 — 5
+                Math.toRadians(92), // prep ground pick 2 — 4
+                Math.toRadians(92), // ground pick 2 — 5
 
-                Math.toRadians(295), // prep ground pick 3 — 6
-                Math.toRadians(295), // ground pick 3 — 7
+                Math.toRadians(115), // prep ground pick 3 — 6
+                Math.toRadians(115), // ground pick 3 — 7
 
-                Math.toRadians(180), // prep sub pick 1 - 8
-                Math.toRadians(180), // sub pick 1 - 9
+                Math.toRadians(0), // prep sub pick 1 - 8
+                Math.toRadians(0), // sub pick 1 - 9
 
-                Math.toRadians(225), // sub to mid score 4 - 10
+                Math.toRadians(25), // sub to mid score 4 - 10
 
-                Math.toRadians(180), // prep sub pick 2 - 11
-                Math.toRadians(180), // sub pick 3 - 12
+                Math.toRadians(0), // prep sub pick 2 - 11
+                Math.toRadians(0), // sub pick 3 - 12
 
-                Math.toRadians(225)  // sub to mid score 5 - 13
+                Math.toRadians(45)  // sub to mid score 5 - 13
         };
 
         Pose2d initialPose = new Pose2d(xPose[0], yPose[0], angles[0]);
@@ -627,8 +627,8 @@ public class blue_sample extends LinearOpMode {
 
         // score 4 to park
         Action TrajectoryActionCloseOut = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(300))
-                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(150))
+                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(180))
                 .build();
 
 
@@ -639,23 +639,14 @@ public class blue_sample extends LinearOpMode {
 
         while (!isStopRequested() && !opModeIsActive()) {
             telemetry.addData("Status", "Waiting for start");
-            telemetry.addData("Attempt Sub Pick 1? Press X/A to CONFIRM, B/O to cancel", sub1YESNO);
-            telemetry.addData("Attempt Sub Pick 2? Press DP_UP to CONFIRM, DP_DOWN to cancel", sub2YESNO);
+            telemetry.addData("Attempt Sub1? X/A-CONFIRM, Y/∆-cancel", sub1YESNO);
+            telemetry.addData("Attempt Sub2? DP_DOWN-CONFIRM, DP_UP-cancel", sub2YESNO);
             telemetry.update();
 
-            if (gamepad1.a || gamepad2.a || gamepad1.cross || gamepad2.cross) {
-                sub1YESNO = 1;
-            }
-            if (gamepad1.dpad_up || gamepad2.dpad_up) {
-                sub1YESNO = 1;
-            }
-
-            if (gamepad1.dpad_down || gamepad2.dpad_down) {
-                sub1YESNO = 0;
-            }
-            if (gamepad1.b || gamepad2.b || gamepad1.circle || gamepad2.circle) {
-                sub1YESNO = 0;
-            }
+            if (gamepad1.a || gamepad2.a || gamepad1.cross || gamepad2.cross) { sub1YESNO = 1; }
+            if (gamepad1.y || gamepad2.y || gamepad1.triangle || gamepad2.triangle) { sub1YESNO = 0; }
+            if (gamepad1.dpad_down || gamepad2.dpad_down) { sub2YESNO = 1; }
+            if (gamepad1.dpad_up || gamepad2.dpad_up) { sub2YESNO = 0; }
         }
         // Wait for the start signal
         waitForStart();
