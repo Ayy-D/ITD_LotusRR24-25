@@ -1,36 +1,19 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.dfrobot.HuskyLens;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
+@TeleOp(name="SC_SAMPLE Tele")
 
-@TeleOp(name="Meowscles Tele")
-
-public class nucifera extends LinearOpMode{
+public class sc_sample extends LinearOpMode{
     String placeholder = "----";
 
 
@@ -146,7 +129,7 @@ public class nucifera extends LinearOpMode{
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
-        int cycleCase = 1; // 0 - Sample, 1 - Specimen
+        int cycleCase = 0; // 0 - Sample, 1 - Specimen
 
         //Intake/Scoring Trigger Cycle Variables
         int inCurrCase = 0;
@@ -179,9 +162,9 @@ public class nucifera extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / (1.3 + gamepad1.right_trigger * 2);  // Reduce drive rate to 44-80%.
-            strafe = gamepad1.left_stick_x  / (1.3  + gamepad1.right_trigger * 2);  // Reduce strafe rate to 33-100%.
-            turn   = -gamepad1.right_stick_x / (1.5 + gamepad1.right_trigger * 2);  // turn rate 25-50%.
+            drive  = gamepad1.right_stick_y  / (1.3 + gamepad1.right_trigger * 3);  // Reduce drive rate to 44-80%.
+            strafe = gamepad1.right_stick_x  / (1.3  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 33-100%.
+            turn   = -gamepad1.left_stick_x / (1.5 + gamepad1.right_trigger * 3);  // turn rate 25-50%.
             moveRobot(drive, strafe, turn);
 
 
@@ -239,8 +222,8 @@ public class nucifera extends LinearOpMode{
                         inR.setPower(0);
                         inL.setPower(0);
 
-                        scR.setPosition(0.98);
-                        scL.setPosition(0.98);
+                        scR.setPosition(0.96);
+                        scL.setPosition(0.96);
                         scUD.setPosition(0.75);
 
                         break;
@@ -260,8 +243,8 @@ public class nucifera extends LinearOpMode{
                             inL.setPower(-0.75);
                         }
 
-                        scR.setPosition(0.98);
-                        scL.setPosition(0.98);
+                        scR.setPosition(0.96);
+                        scL.setPosition(0.96);
 
                         break;
 
@@ -311,7 +294,7 @@ public class nucifera extends LinearOpMode{
 
                 if(inCurrCase == 0){
                     if(gamepad2.triangle && scCurrCase > 1){
-                        scUD.setPosition(0.76);
+                        scUD.setPosition(0.7);
                         triangleCounter = 1;
                     }
                     if(xButtonState && !scLastButtonState && triangleCounter != 1){
@@ -342,8 +325,8 @@ public class nucifera extends LinearOpMode{
                             sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            scR.setPosition(0.98);
-                            scL.setPosition(0.98);
+                            scR.setPosition(0.96);
+                            scL.setPosition(0.96);
                             scUD.setPosition(0.75);
                             triangleCounter = 0;
                             break;
@@ -433,6 +416,7 @@ public class nucifera extends LinearOpMode{
                         inTwi.setPosition(0.56);
                         inR.setPower(-1);
                         inL.setPower(1);
+
                         if(gamepad1.triangle){
                             inR.setPower(1);
                             inL.setPower(-1);
