@@ -28,8 +28,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
-@Autonomous(name = "BLUE--SAMPLE", group = "Autonomous")
-public class blue_sample extends LinearOpMode {
+@Autonomous(name = "RED--SAMPLE", group = "Autonomous")
+public class red_sample extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
     int sub1YESNO = 0;
