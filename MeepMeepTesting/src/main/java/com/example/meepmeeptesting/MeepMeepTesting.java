@@ -17,41 +17,41 @@ public class MeepMeepTesting {
                 .setConstraints(80, 80, Math.toRadians(180), Math.toRadians(180), 15.5)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(37.25, 61, Math.toRadians(270)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(37.25, 61, Math.toRadians(90)))
 
                 //Preload Specimen Score
-                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45+180))
+                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45))
 
                 //pick 1
-                .strafeToLinearHeading(new Vector2d(52, 52), Math.toRadians(82.5+180))
-                .strafeToLinearHeading(new Vector2d(51, 48), Math.toRadians(82.5+180))
-                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45+180))
+                .strafeToLinearHeading(new Vector2d(52, 52), Math.toRadians(82.5))
+                .strafeToLinearHeading(new Vector2d(51, 48), Math.toRadians(82.5))
+                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45))
 
                 //pick 2
-                .strafeToLinearHeading(new Vector2d(56, 52), Math.toRadians(92+180))
+                .strafeToLinearHeading(new Vector2d(56, 52), Math.toRadians(92))
                 .lineToY(48)
-                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45+180))
+                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45))
 
                 //pick 3
-                .strafeToLinearHeading(new Vector2d(57, 50), Math.toRadians(115+180))
+                .strafeToLinearHeading(new Vector2d(57, 50), Math.toRadians(115))
                 .lineToY(48)
-                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45+180))
+                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45))
 
                 //sub pick 1
-                .strafeToLinearHeading(new Vector2d(40, 12), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(25, 12), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(40, 12), Math.toRadians(45+180))
-                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45+180))
+                .strafeToLinearHeading(new Vector2d(40, 12), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(25, 12), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(40, 12), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45))
 
                 //sub pick 2
-                .strafeToLinearHeading(new Vector2d(40, 8), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(25, 8), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(40, 8), Math.toRadians(45+180))
-                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45+180))
+                .strafeToLinearHeading(new Vector2d(40, 8), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(25, 8), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(40, 8), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(55, 55), Math.toRadians(45))
 
                 //Park
-                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(330))
-                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(150))
+                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(180))
 
                 .build());
 
