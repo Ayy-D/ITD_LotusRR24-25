@@ -687,7 +687,6 @@ public class red_specimen extends LinearOpMode {
         // Prep Ground Sweep 1
         Actions.runBlocking(
                 new SequentialAction(
-
                         scoring.LS_SPECBasePos(),
                         initScoreToPrepSweep1,
                         new SleepAction(0.01),
@@ -703,7 +702,6 @@ public class red_specimen extends LinearOpMode {
                         prepSweep1toSweep1,
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos()
-
                 )
         );
 
