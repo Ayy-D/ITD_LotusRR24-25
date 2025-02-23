@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
-@Autonomous(name = "RED--SAMPLE", group = "Autonomous")
+@Autonomous(name = "SAMPLE -- RED", group = "Autonomous")
 public class red_sample extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
@@ -304,6 +304,23 @@ public class red_sample extends LinearOpMode {
             }
         }
         public Action LS_TeleOpPos() { return new LS_Scoring.LS_TeleOp(); }
+
+        public class LS_Ascent implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                scR.setPosition(0.3);
+                scL.setPosition(0.3);
+                scUD.setPosition(0.97);
+                sL.setPower(0.5);
+                sL.setTargetPosition(570);
+                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sR.setPower(0.5);
+                sR.setTargetPosition(570);
+                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                return false;
+            }
+        }
+        public Action LS_AscentPos() { return new LS_Scoring.LS_Ascent(); }
     }
 
     //Intake components
@@ -465,13 +482,13 @@ public class red_sample extends LinearOpMode {
                 61, // initial pose — 0
                 55, // scoring pose 1 — 1
 
-                52, // prep ground pick 1 — 2
+                53, // prep ground pick 1 — 2
                 48, // ground pick 1 — 3
 
-                52, // prep ground pick 2 — 4
+                53, // prep ground pick 2 — 4
                 48, // ground pick 2 — 5
 
-                50, // prep ground pick 3 — 6
+                52, // prep ground pick 3 — 6
                 48, // ground pick 3 — 7
 
                 12, // prep sub pick 1 - 8
@@ -550,6 +567,7 @@ public class red_sample extends LinearOpMode {
         //init to score preload
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .afterTime(0.5, scoring.LS_SAMPLEScorePos())
                 .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
         //score preload to prep ground pick 1
@@ -576,6 +594,7 @@ public class red_sample extends LinearOpMode {
         //ground pick 2 to score 2
         TrajectoryActionBuilder tab7 = drive.actionBuilder(pickup2)
                 .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .afterTime(0.5, scoring.LS_SAMPLEScorePos())
                 .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
         //score 2 to prep ground pick 3
@@ -589,6 +608,7 @@ public class red_sample extends LinearOpMode {
         //ground pick 3 to score 3
         TrajectoryActionBuilder tab10 = drive.actionBuilder(pickup3)
                 .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .afterTime(0.5, scoring.LS_SAMPLEScorePos())
                 .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
         //score 3 to prep sub pick 1
@@ -606,6 +626,8 @@ public class red_sample extends LinearOpMode {
         //mid score 4 to score 4
         TrajectoryActionBuilder tab14 = drive.actionBuilder(midScore1)
                 .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .afterTime(0.5, scoring.LS_SAMPLEScorePos())
+
                 .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
         //score 4 to prep sub pick 2
@@ -623,12 +645,13 @@ public class red_sample extends LinearOpMode {
         //mid score 4 to score 4
         TrajectoryActionBuilder tab18 = drive.actionBuilder(midScore2)
                 .strafeToLinearHeading(new Vector2d(52, 52), angles[1])
+                .afterTime(0.5, scoring.LS_SAMPLEScorePos())
                 .strafeToLinearHeading(new Vector2d(xPose[1], yPose[1]), angles[1]);
 
         // score 4 to park
         Action TrajectoryActionCloseOut = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(55, 16), Math.toRadians(150))
-                .strafeToLinearHeading(new Vector2d(32, 12), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(55, 14), Math.toRadians(150))
+                .strafeToLinearHeading(new Vector2d(26, 9), Math.toRadians(180))
                 .build();
 
 
@@ -678,18 +701,18 @@ public class red_sample extends LinearOpMode {
 
         // Score Preload
         Actions.runBlocking(
-                new SequentialAction(
+                new ParallelAction(
                         rotation.rotationUPPos(),
                         intake.intakeHalfwayPos(),
-                        new SleepAction(1),
-                        scoring.LS_SAMPLEScorePos(),
-                        initToScorePreload,
-                        new SleepAction(0.2),
-                        scoring.LS_BucketTipPos()
+                        initToScorePreload
+                )
+        );
+        Actions.runBlocking(
+                new SequentialAction(
 
                 )
         );
-
+        /*
         // Prep Ground Pick 1 - Ground Pick 1
         Actions.runBlocking(
                 new SequentialAction(
@@ -723,11 +746,10 @@ public class red_sample extends LinearOpMode {
 
                         //Score
                         scoring.LS_TeleOpPos(),
-                        scoring.LS_SAMPLEScorePos(),
                         new SleepAction(0.2),
                         pickup1ToScore1,
-                        new SleepAction(0.2),
-                        scoring.LS_BucketTipPos()
+                        scoring.LS_BucketTipPos(),
+                        new SleepAction(0.5)
                 )
         );
         // Prep Ground Pick 2 - Ground Pick 2
@@ -762,13 +784,13 @@ public class red_sample extends LinearOpMode {
 
                         //Score
                         scoring.LS_TeleOpPos(),
-                        scoring.LS_SAMPLEScorePos(),
                         new SleepAction(0.2),
                         pickup2ToScore2,
-                        new SleepAction(0.2),
-                        scoring.LS_BucketTipPos()
+                        scoring.LS_BucketTipPos(),
+                        new SleepAction(0.5)
                 )
         );
+
         // Prep Ground Pick 3 - Ground Pick 3
         Actions.runBlocking(
                 new SequentialAction(
@@ -801,11 +823,10 @@ public class red_sample extends LinearOpMode {
 
                         //Score
                         scoring.LS_TeleOpPos(),
-                        scoring.LS_SAMPLEScorePos(),
                         new SleepAction(0.2),
                         pickup3ToScore3,
-                        new SleepAction(0.2),
-                        scoring.LS_BucketTipPos()
+                        scoring.LS_BucketTipPos(),
+                        new SleepAction(0.5)
                 )
         );
 
@@ -846,10 +867,8 @@ public class red_sample extends LinearOpMode {
                             intake.intakeWheelsIN(),
                             new SleepAction(0.01),
                             midScore4ToScore4,
-                            scoring.LS_SAMPLEScorePos(),
-                            new SleepAction(0.2),
-                            scoring.LS_BucketTipPos()
-
+                            scoring.LS_BucketTipPos(),
+                            new SleepAction(0.5)
                     )
             );
         }
@@ -887,17 +906,17 @@ public class red_sample extends LinearOpMode {
                             intake.intakeWheelsIN(),
                             new SleepAction(0.01),
                             midScore5ToScore5,
-                            scoring.LS_SAMPLEScorePos(),
-                            new SleepAction(0.2),
-                            scoring.LS_BucketTipPos()
-                    )
+                            scoring.LS_BucketTipPos(),
+                            new SleepAction(0.5)                    )
             );
         }
+
+         */
 
         // Park
         Actions.runBlocking(
                 new ParallelAction(
-                        scoring.LS_TeleOpPos(),
+                        scoring.LS_AscentPos(),
                         TrajectoryActionCloseOut
                 )
         );
