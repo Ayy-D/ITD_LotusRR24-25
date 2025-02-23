@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "RED--SPEC", group = "Autonomous")
+@Autonomous(name = "SPEC -- RED", group = "Autonomous")
 public class red_specimen extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
@@ -206,10 +206,10 @@ public class red_specimen extends LinearOpMode {
                 scUD.setPosition(0.97);
 
                 sL.setPower(0.55);
-                sL.setTargetPosition(635);
+                sL.setTargetPosition(610);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setPower(0.55);
-                sR.setTargetPosition(635);
+                sR.setTargetPosition(610);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 return false;
@@ -457,8 +457,8 @@ public class red_specimen extends LinearOpMode {
                 -42, // prep ground sweep 2 — 4
                 -42, // ground sweep 2 — 5
 
-                -46, // prep ground sweep 3 — 6
-                -46, // ground sweep 3 — 7
+                -47, // prep ground sweep 3 — 6
+                -44.5, // ground sweep 3 — 7
 
                 -40, // first wall grab — 8
                 -10, // first score — 9
@@ -472,25 +472,25 @@ public class red_specimen extends LinearOpMode {
 
         double[] yPose = {
                 61, // initial pose — 0
-                39.25, // scoring pose 1 — 1
+                37.5, // scoring pose 1 — 1
 
                 36, // prep ground sweep 1 — 2
                 56, // ground sweep 1 — 3
 
                 36, // prep ground sweep 2 — 4
-                56, // ground sweep 2 — 5
+                53, // ground sweep 2 — 5
 
                 22, // prep ground sweep 3 — 6
-                58, // ground sweep 3 — 7
+                50, // ground sweep 3 — 7
 
                 60, // first wall grab — 8
-                38.5, // first score — 9
+                37.25, // first score — 9
                 58, // second wall grab — 10
-                38.5, // second score — 11
+                37.5, // second score — 11
                 58, // third wall grab — 12
-                38.5, // third score — 13
+                37.5, // third score — 13
                 56.5, // fourth wall grab — 14
-                38.5  // fourth score — 15
+                37.5  // fourth score — 15
         };
 
         double[] angles = {
@@ -504,7 +504,7 @@ public class red_specimen extends LinearOpMode {
                 Math.toRadians(-15), // ground sweep 2 — 5
 
                 Math.toRadians(0), // prep ground sweep 3 — 6
-                Math.toRadians(0), // ground sweep 3 — 7
+                Math.toRadians(322.5), // ground sweep 3 — 7
 
                 Math.toRadians(90), // first wall grab — 8
                 Math.toRadians(-90), // first score — 9
@@ -579,7 +579,7 @@ public class red_specimen extends LinearOpMode {
 
         //Prep to grab spec 1 from wall
         TrajectoryActionBuilder tab8 = drive.actionBuilder(sweep3Pose)
-                .strafeToLinearHeading(new Vector2d(-40, yPose[8]-2), Math.toRadians(90))
+                .turnTo(angles[8])
                 .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8]);
 
@@ -671,18 +671,18 @@ public class red_specimen extends LinearOpMode {
         // Preload Spec Score
         Actions.runBlocking(
                 new SequentialAction(
-                        intake.intakeBasePos(),
                         rotation.rotationUPPos(),
                         new SleepAction(0.5),
                         scoring.LS_SPECScorePos(),
                         new SleepAction(0.01),
-                        intake.intakeHalfwayPos(),
-                        new SleepAction(0.01),
                         initToScoreTrajectory,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
-                        claw.openClaw()
-                )
+                        claw.openClaw(),
+                        new SleepAction(0.01),
+                        intake.intakeHalfwayPos()
+
+                        )
         );
 
         // Prep Ground Sweep 1

@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "BLUE--SPEC", group = "Autonomous")
+@Autonomous(name = "SPEC -- BLUE", group = "Autonomous")
 public class blue_specimen extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
@@ -206,10 +206,10 @@ public class blue_specimen extends LinearOpMode {
                 scUD.setPosition(0.97);
 
                 sL.setPower(0.55);
-                sL.setTargetPosition(635);
+                sL.setTargetPosition(610);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setPower(0.55);
-                sR.setTargetPosition(635);
+                sR.setTargetPosition(610);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 return false;
@@ -457,40 +457,40 @@ public class blue_specimen extends LinearOpMode {
                 -42, // prep ground sweep 2 — 4
                 -42, // ground sweep 2 — 5
 
-                -45.5, // prep ground sweep 3 — 6
-                -45.5, // ground sweep 3 — 7
+                -47, // prep ground sweep 3 — 6
+                -44.5, // ground sweep 3 — 7
 
                 -40, // first wall grab — 8
-                6, // first score — 9
+                -10, // first score — 9
                 -40, // second wall grab — 10
-                3, // second score — 11
+                -6, // second score — 11
                 -40, // third wall grab — 12
                 -3, // third score — 13
                 -40, // fourth wall grab — 14
-                -6 // third score — 15
+                3 // third score — 15
         };
 
         double[] yPose = {
                 61, // initial pose — 0
-                39.25, // scoring pose 1 — 1
+                37.5, // scoring pose 1 — 1
 
                 36, // prep ground sweep 1 — 2
                 56, // ground sweep 1 — 3
 
                 36, // prep ground sweep 2 — 4
-                56, // ground sweep 2 — 5
+                53, // ground sweep 2 — 5
 
                 22, // prep ground sweep 3 — 6
-                58, // ground sweep 3 — 7
+                50, // ground sweep 3 — 7
 
-                54.5, // first wall grab — 8
-                38.5, // first score — 9
-                53.8, // second wall grab — 10
-                38.5, // second score — 11
-                53.5, // third wall grab — 12
-                38.5, // third score — 13
-                53.5, // fourth wall grab — 14
-                38.5  // fourth score — 15
+                60, // first wall grab — 8
+                37.25, // first score — 9
+                58, // second wall grab — 10
+                37.5, // second score — 11
+                58, // third wall grab — 12
+                37.5, // third score — 13
+                56.5, // fourth wall grab — 14
+                37.5  // fourth score — 15
         };
 
         double[] angles = {
@@ -504,7 +504,7 @@ public class blue_specimen extends LinearOpMode {
                 Math.toRadians(-15), // ground sweep 2 — 5
 
                 Math.toRadians(0), // prep ground sweep 3 — 6
-                Math.toRadians(0), // ground sweep 3 — 7
+                Math.toRadians(322.5), // ground sweep 3 — 7
 
                 Math.toRadians(90), // first wall grab — 8
                 Math.toRadians(-90), // first score — 9
@@ -579,8 +579,8 @@ public class blue_specimen extends LinearOpMode {
 
         //Prep to grab spec 1 from wall
         TrajectoryActionBuilder tab8 = drive.actionBuilder(sweep3Pose)
-                .strafeToLinearHeading(new Vector2d(-40, 50), Math.toRadians(90))
-                .waitSeconds(0.2)
+                .turnTo(angles[8])
+                .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8]);
 
         //Move to score spec 1 from wall
@@ -589,8 +589,8 @@ public class blue_specimen extends LinearOpMode {
 
         //Move to grab spec 2 from wall
         TrajectoryActionBuilder tab10 = drive.actionBuilder(firstScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
-                .waitSeconds(0.05)
+                .strafeToLinearHeading(new Vector2d(-40, yPose[10]-3), Math.toRadians(89.99999))
+                .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[10], yPose[10]), angles[10]);
 
         //Move to score spec 2 from wall
@@ -599,8 +599,8 @@ public class blue_specimen extends LinearOpMode {
 
         //Move to grab spec 3 from wall
         TrajectoryActionBuilder tab12 = drive.actionBuilder(secondScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
-                .waitSeconds(0.05)
+                .strafeToLinearHeading(new Vector2d(-40, yPose[12]-3), Math.toRadians(89.99999))
+                .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), angles[12]);
 
 
@@ -610,8 +610,8 @@ public class blue_specimen extends LinearOpMode {
 
         //Move to grab spec 3 from wall
         TrajectoryActionBuilder tab14 = drive.actionBuilder(thirdScorePose)
-                .strafeToLinearHeading(new Vector2d(-40, 52), Math.toRadians(89.99999))
-                .waitSeconds(0.05)
+                .strafeToLinearHeading(new Vector2d(-40, yPose[14]-3), Math.toRadians(89.99999))
+                .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[14], yPose[14]), angles[14]);
 
 
@@ -623,6 +623,7 @@ public class blue_specimen extends LinearOpMode {
         //Park
         Action TrajectoryActionPark = drive.actionBuilder(fourthScorePose)
                 .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), Math.toRadians(330))
+                .afterTime(0.5, intake.intakeFullOutPos())
                 .build();
 
 
@@ -670,24 +671,23 @@ public class blue_specimen extends LinearOpMode {
         // Preload Spec Score
         Actions.runBlocking(
                 new SequentialAction(
-                        intake.intakeBasePos(),
                         rotation.rotationUPPos(),
                         new SleepAction(0.5),
                         scoring.LS_SPECScorePos(),
                         new SleepAction(0.01),
-                        intake.intakeHalfwayPos(),
-                        new SleepAction(0.01),
                         initToScoreTrajectory,
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.25),
-                        claw.openClaw()
+                        new SleepAction(0.2),
+                        claw.openClaw(),
+                        new SleepAction(0.01),
+                        intake.intakeHalfwayPos()
+
                 )
         );
 
         // Prep Ground Sweep 1
         Actions.runBlocking(
                 new SequentialAction(
-
                         scoring.LS_SPECBasePos(),
                         initScoreToPrepSweep1,
                         new SleepAction(0.01),
@@ -703,7 +703,6 @@ public class blue_specimen extends LinearOpMode {
                         prepSweep1toSweep1,
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos()
-
                 )
         );
 
@@ -749,6 +748,7 @@ public class blue_specimen extends LinearOpMode {
         // Ground Sweep 3
         Actions.runBlocking(
                 new SequentialAction(
+                        intake.intakeWheelsIN(),
                         prepSweep1toSweep1,
                         new SleepAction(0.01),
                         intake.intakeBasePos()
@@ -759,17 +759,16 @@ public class blue_specimen extends LinearOpMode {
         // Specimen Scoring
         Actions.runBlocking(
                 new SequentialAction(
-                        intake.intakeWheelsOFF(),
 
                         // Specimen 1
                         sweep3ToWall1,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.25),
+                        new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
                         wall1ToScore1,
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.3),
+                        new SleepAction(0.2),
                         claw.openClaw(),
                         scoring.LS_SPECBasePos(),
 
@@ -778,11 +777,11 @@ public class blue_specimen extends LinearOpMode {
                         score1ToWall2,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.25),
+                        new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
                         wall2toScore2,
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.3),
+                        new SleepAction(0.2),
                         claw.openClaw(),
                         scoring.LS_SPECBasePos(),
 
@@ -791,11 +790,11 @@ public class blue_specimen extends LinearOpMode {
                         score2ToWall3,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.25),
+                        new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
                         wall3ToScore3,
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.3),
+                        new SleepAction(0.2),
                         scoring.LS_SPECBasePos(),
                         claw.openClaw(),
 
@@ -803,11 +802,11 @@ public class blue_specimen extends LinearOpMode {
                         score3ToWall4,
                         new SleepAction(0.1),
                         claw.closeClaw(),
-                        new SleepAction(0.25),
+                        new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
                         wall4ToScore4,
                         scoring.LS_SPECPullPos(),
-                        new SleepAction(0.3),
+                        new SleepAction(0.2),
                         scoring.LS_SPECBasePos(),
                         claw.openClaw()
 
@@ -816,10 +815,7 @@ public class blue_specimen extends LinearOpMode {
 
         // Park
         Actions.runBlocking(
-                new ParallelAction(
-                        intake.intakeFullOutPos(),
-                        TrajectoryActionPark
-                )
+                TrajectoryActionPark
         );
 
 
