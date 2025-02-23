@@ -495,7 +495,7 @@ public class SC_SPECIMEN extends LinearOpMode{
 
                         case 1: // out to score
                             timer.reset();
-                            scC.setPosition(0.3);
+                            scC.setPosition(0.2);
                             scCurrCase = 2;
                             break;
 
