@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 
-@TeleOp(name="PV_SPECIMEN Tele")
+@TeleOp(name="AD Base Tele")
 
-public class PV_Tele extends LinearOpMode{
+public class AD_TeleOp extends LinearOpMode{
     String placeholder = "----";
 
 
@@ -35,8 +35,7 @@ public class PV_Tele extends LinearOpMode{
 
 
     //Expansion Hub Motors
-    private DcMotorEx rotR = null;
-    private DcMotorEx rotL = null;
+
     private DcMotorEx sL = null;
     private DcMotorEx sR = null;
 
@@ -47,10 +46,6 @@ public class PV_Tele extends LinearOpMode{
     private Servo scC = null;
 
     //Sensors & Cameras
-    private ColorSensor color = null;
-    int red;
-    int blue;
-    int green;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -65,46 +60,31 @@ public class PV_Tele extends LinearOpMode{
 
         //drivetrain motors
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         leftFront.setDirection(DcMotorEx.Direction.REVERSE);
 
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        //rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-
-
-        //Linear Slide Rotation Motors
-        rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
-        //rotR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rotR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rotR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rotR.setDirection(DcMotorEx.Direction.REVERSE);
-
-
-        rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
-
-        //rotL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rotL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rotL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        //rotL.setDirection(DcMotorEx.Direction.REVERSE);
-
-
 
         //LS Motors
         sL = hardwareMap.get(DcMotorEx.class, "slideL");
         sL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        sL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         sL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         sR = hardwareMap.get(DcMotorEx.class, "slideR");
         sR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        sR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         sR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         sR.setDirection(DcMotorEx.Direction.REVERSE);
+
 
 
         //Control Hub Servos (Intake)
@@ -116,10 +96,6 @@ public class PV_Tele extends LinearOpMode{
         inArmL = hardwareMap.get(Servo.class, "inArmL");
 
         //Sensors + Cameras
-        color = hardwareMap.get(ColorSensor.class, "color");
-        red = color.red();
-        blue = color.blue();
-        green = color.green();
 
         //Expansion Hub Servos
         scR = hardwareMap.get(Servo.class, "scArmR"); //0.95 goes toward intake, 0 goes outward from robot
@@ -129,7 +105,7 @@ public class PV_Tele extends LinearOpMode{
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
-        int cycleCase = 1; // 0 - Sample, 1 - Specimen
+        int cycleCase = 2; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
 
         //Intake/Scoring Trigger Cycle Variables
         int inCurrCase = 0;
@@ -143,7 +119,6 @@ public class PV_Tele extends LinearOpMode{
         //Linear Slide Reset Counter
         boolean hasResetEncoders = false;
 
-
         //Scoring Arm Counter - SAMPLE AUTOMATION ONLY
         int triangleCounter = 0;
 
@@ -155,16 +130,16 @@ public class PV_Tele extends LinearOpMode{
         telemetry.update();
         if (isStopRequested()) return;
 
-        scC.setPosition(0.3);
+        scC.setPosition(1);
         resetSlideEncoders();
 
 
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.right_stick_y  / (1.3 + gamepad1.right_trigger * 3);  // Reduce drive rate to 44-80%.
-            strafe = gamepad1.right_stick_x  / (1.3  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 33-100%.
-            turn   = -gamepad1.left_stick_x / (1.5 + gamepad1.right_trigger * 3);  // turn rate 25-50%.
+            drive  = gamepad1.left_stick_y  / (1.25 + gamepad1.right_trigger * 3);  // Reduce drive rate to 27-80%.
+            strafe = gamepad1.left_stick_x  / (1.25  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 27-80%.
+            turn   = -gamepad1.right_stick_x / (1.5 + gamepad1.right_trigger * 3);  // turn rate 22-67%.
             moveRobot(drive, strafe, turn);
 
 
@@ -174,7 +149,6 @@ public class PV_Tele extends LinearOpMode{
 
 
             if(gamepad2.right_trigger > 0.75){ // Switch to SPECIMEN Automation
-
                 cycleCase = 1;
                 inCurrCase = 0;
                 scCurrCase = 0;
@@ -185,7 +159,7 @@ public class PV_Tele extends LinearOpMode{
                 cycleCase = 0;
                 inCurrCase = 0;
                 scCurrCase = 0;
-                scC.setPosition(0.3);
+                scC.setPosition(1);
                 specCount = 0;
             }
 
@@ -258,7 +232,7 @@ public class PV_Tele extends LinearOpMode{
 
                         scR.setPosition(0.98);
                         scL.setPosition(0.98);
-                        scUD.setPosition(0.65);
+                        scUD.setPosition(0.67);
 
                         break;
 
@@ -272,7 +246,7 @@ public class PV_Tele extends LinearOpMode{
 
                         scR.setPosition(0.98);
                         scL.setPosition(0.98);
-                        scUD.setPosition(0.65);
+                        scUD.setPosition(0.68);
 
                         break;
 
@@ -286,7 +260,7 @@ public class PV_Tele extends LinearOpMode{
 
                         scR.setPosition(0.98);
                         scL.setPosition(0.98);
-                        scUD.setPosition(0.65);
+                        scUD.setPosition(0.68);
 
                         break;
 
@@ -311,12 +285,6 @@ public class PV_Tele extends LinearOpMode{
                     switch(scCurrCase){
                         case 0:
                             timer.reset();
-                            rotL.setPower(0.8);
-                            rotL.setTargetPosition(100);
-                            rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rotR.setPower(0.8);
-                            rotR.setTargetPosition(100);
-                            rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
                             sL.setTargetPosition(0);
@@ -327,12 +295,11 @@ public class PV_Tele extends LinearOpMode{
 
                             scR.setPosition(0.96);
                             scL.setPosition(0.96);
-                            scUD.setPosition(0.75);
+                            scUD.setPosition(0.7);
                             triangleCounter = 0;
                             break;
 
                         case 1:
-                            inUD.setPosition(0.5);
                             timer.reset();
                             scR.setPosition(0.48);
                             scL.setPosition(0.48);
@@ -348,14 +315,6 @@ public class PV_Tele extends LinearOpMode{
                             break;
 
                         case 3:
-
-                            rotL.setPower(0.8);
-                            rotL.setTargetPosition(100);
-                            rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rotR.setPower(0.8);
-                            rotR.setTargetPosition(100);
-                            rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
                             sL.setPower(0.9);
                             sL.setTargetPosition(700);
                             sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -367,13 +326,6 @@ public class PV_Tele extends LinearOpMode{
                         case 4:
                             scR.setPosition(0.48);
                             scL.setPosition(0.48);
-
-                            rotL.setPower(0.8);
-                            rotL.setTargetPosition(100);
-                            rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rotR.setPower(0.8);
-                            rotR.setTargetPosition(100);
-                            rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.9);
                             sL.setTargetPosition(1850);
@@ -471,12 +423,6 @@ public class PV_Tele extends LinearOpMode{
 
                     switch(scCurrCase){
                         case 0: // grab from wall
-                            rotL.setPower(0.8);
-                            rotL.setTargetPosition(100);
-                            rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            rotR.setPower(0.8);
-                            rotR.setTargetPosition(100);
-                            rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             sL.setPower(0.8);
                             sL.setTargetPosition(0);
@@ -547,19 +493,87 @@ public class PV_Tele extends LinearOpMode{
                 }
             }
 
+            //Testing
+            if(cycleCase == 2){
+                if(inCurrCase == 0) {
+                    if (gamepad2.triangle && scCurrCase > 1) {
+                        scUD.setPosition(0.7);
+                        triangleCounter = 1;
+                    }
+                    if (xButtonState && !scLastButtonState && triangleCounter != 1) {
+                        scCurrCase = (scCurrCase + 1) % 5;
 
-            telemetry.addData("rotR Position", rotR.getCurrentPosition());
-            //telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("rotL Position", rotL.getCurrentPosition());
-            //telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
+                    }
+                    if (xButtonState && !scLastButtonState && triangleCounter == 1) {
+                        scCurrCase = 0;
+                    }
 
+                    scLastButtonState = xButtonState;
+
+
+                    switch (scCurrCase) {
+                        case 0:
+                            timer.reset();
+
+                            sL.setPower(0.9);
+                            sL.setTargetPosition(0);
+                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            sR.setPower(0.9);
+                            sR.setTargetPosition(0);
+                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            scR.setPosition(1);
+                            scL.setPosition(1);
+                            scUD.setPosition(0.7);
+                            triangleCounter = 0;
+                            break;
+
+                        case 1:
+
+                            timer.reset();
+                            scR.setPosition(0.48);
+                            scL.setPosition(0.48);
+                            scCurrCase = 2;
+                            break;
+
+                        case 2:
+                            if (timer.milliseconds() > 250) {
+                                scUD.setPosition(0.4);
+                                scCurrCase = 3;
+                            }
+
+                            break;
+
+                        case 3:
+                            sL.setPower(0.9);
+                            sL.setTargetPosition(700);
+                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            sR.setPower(0.9);
+                            sR.setTargetPosition(700);
+                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            break;
+
+                        case 4:
+                            scR.setPosition(0.48);
+                            scL.setPosition(0.48);
+
+                            sL.setPower(1);
+                            sL.setTargetPosition(1850);
+                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            sR.setPower(1);
+                            sR.setTargetPosition(1850);
+                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            break;
+                    }
+                }
+            }
 
             telemetry.addData("-----", placeholder);
 
             telemetry.addData("sR Position", sR.getCurrentPosition());
-            //telemetry.addData("sR Current Draw", sR.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("sR Current Draw", sR.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("sL Position", sL.getCurrentPosition());
-            //telemetry.addData("sL Current Draw", sL.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("sL Current Draw", sL.getCurrent(CurrentUnit.AMPS));
 
             telemetry.addData("-----", placeholder);
 
