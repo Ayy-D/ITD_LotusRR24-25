@@ -753,7 +753,7 @@ public class red_specimen extends LinearOpMode {
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
-                        
+
                         wall5ToScore5,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
