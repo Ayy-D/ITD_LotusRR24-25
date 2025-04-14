@@ -678,6 +678,7 @@ public class red_specimen extends LinearOpMode {
                         intake.intakeSweepPos(),
                         new SleepAction(0.3),
                         intake.intakeWheelsOUT(),
+
                         prepSweep3toSweep3,
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos()
@@ -692,6 +693,7 @@ public class red_specimen extends LinearOpMode {
                         intake.intakeSweepPos(),
                         new SleepAction(0.3),
                         intake.intakeWheelsOUT(),
+
                         prepSweep4toSweep4,
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos()
@@ -706,6 +708,7 @@ public class red_specimen extends LinearOpMode {
                         intake.intakeSweepPos(),
                         new SleepAction(0.3),
                         intake.intakeWheelsOUT(),
+
                         prepSweep5toSweep5,
                         new SleepAction(0.01),
                         intake.intakeHalfwayPos()
@@ -722,6 +725,7 @@ public class red_specimen extends LinearOpMode {
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
+
                         wall3toScore3,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
@@ -735,6 +739,7 @@ public class red_specimen extends LinearOpMode {
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
+
                         wall4ToScore4,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
@@ -748,6 +753,7 @@ public class red_specimen extends LinearOpMode {
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
+                        
                         wall5ToScore5,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
