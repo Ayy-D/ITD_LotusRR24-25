@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 
-@TeleOp(name="AD Base Tele")
+@TeleOp(name="AD TeleOp")
 
 public class AD_TeleOp extends LinearOpMode{
     String placeholder = "----";
@@ -76,12 +76,12 @@ public class AD_TeleOp extends LinearOpMode{
         //LS Motors
         sL = hardwareMap.get(DcMotorEx.class, "slideL");
         sL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        sL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        //sL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         sL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         sR = hardwareMap.get(DcMotorEx.class, "slideR");
         sR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        sR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        //sR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         sR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         sR.setDirection(DcMotorEx.Direction.REVERSE);
 
@@ -91,6 +91,7 @@ public class AD_TeleOp extends LinearOpMode{
         inR = hardwareMap.get(CRServo.class, "inRight");
         inL = hardwareMap.get(CRServo.class, "inLeft");
         inTwi = hardwareMap.get(Servo.class, "inTwist");
+        inTwi.setDirection(Servo.Direction.REVERSE);
         inUD = hardwareMap.get(Servo.class, "inUD");
         inArmR = hardwareMap.get(Servo.class, "inArmR");
         inArmL = hardwareMap.get(Servo.class, "inArmL");
@@ -105,7 +106,7 @@ public class AD_TeleOp extends LinearOpMode{
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
-        int cycleCase = 2; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
+        int cycleCase = 0; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
 
         //Intake/Scoring Trigger Cycle Variables
         int inCurrCase = 0;
@@ -167,58 +168,64 @@ public class AD_TeleOp extends LinearOpMode{
                 resetSlideEncoders(); // Call the reset function
             }
 
-
-            if(rightBumperState && !inLastButtonStateR){  inCurrCase = (inCurrCase + 1) % 6;  }
-            inLastButtonStateR = rightBumperState;
-
-            if(leftBumperState && !inLastButtonStateL){   inCurrCase = (inCurrCase - 1 + 6) % 6;   }
-            inLastButtonStateL = leftBumperState;
-
             //Sample Automation
             if(cycleCase == 0){
+                if(rightBumperState && !inLastButtonStateR){  inCurrCase = (inCurrCase + 1) % 10;  }
+                inLastButtonStateR = rightBumperState;
+
+                if(leftBumperState && !inLastButtonStateL){   inCurrCase = (inCurrCase - 1 + 10) % 10;   }
+                inLastButtonStateL = leftBumperState;
+
                 switch(inCurrCase){
 
                     case 0: // full collapsed
                         inArmR.setPosition(0.14);
                         inArmL.setPosition(0.14);
-                        inUD.setPosition(0.4);
-                        inTwi.setPosition(0.3);
+                        inUD.setPosition(0.425);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0);
                         inL.setPower(0);
 
                         break;
 
                     case 1: // intaking halfway
+                        sL.setPower(0.8);
+                        sL.setTargetPosition(0);
+                        sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        sR.setPower(0.8);
+                        sR.setTargetPosition(0);
+                        sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         inArmR.setPosition(0.25);
                         inArmL.setPosition(0.25);
-                        inUD.setPosition(0.65);
+                        inUD.setPosition(0.55);
                         inTwi.setPosition(0.35);
                         inR.setPower(0);
                         inL.setPower(0);
 
-                        scR.setPosition(0.96);
-                        scL.setPosition(0.96);
-                        scUD.setPosition(0.75);
+                        scR.setPosition(1);
+                        scL.setPosition(1);
+                        scUD.setPosition(0.67);
 
                         break;
 
 
                     case 2: // full out - intaking
-                        inArmR.setPosition(0.33);
-                        inArmL.setPosition(0.3);
-                        inUD.setPosition(0.86);
-                        inTwi.setPosition(0.56);
+
+                        inArmR.setPosition(0.34);
+                        inArmL.setPosition(0.34);
+                        inUD.setPosition(0.845);
+                        inTwi.setPosition(0.58);
                         inR.setPower(-0.75);
                         inL.setPower(0.75);
-                        scUD.setPosition(0.65);
+                        scUD.setPosition(0.67);
 
                         if(gamepad1.triangle){
                             inR.setPower(0.75);
                             inL.setPower(-0.75);
                         }
 
-                        scR.setPosition(0.96);
-                        scL.setPosition(0.96);
+                        scR.setPosition(1);
+                        scL.setPosition(1);
 
                         break;
 
@@ -226,48 +233,77 @@ public class AD_TeleOp extends LinearOpMode{
                         inArmR.setPosition(0.25);
                         inArmL.setPosition(0.25);
                         inUD.setPosition(0.35);
-                        inTwi.setPosition(0.35);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0);
                         inL.setPower(0);
 
-                        scR.setPosition(0.98);
-                        scL.setPosition(0.98);
+                        scR.setPosition(1);
+                        scL.setPosition(1);
                         scUD.setPosition(0.67);
 
                         break;
 
                     case 4:// transfer collapse
-                        inArmR.setPosition(0.11);
-                        inArmL.setPosition(0.135);
+                        timer.reset();
+                        inArmR.setPosition(0.145);
+                        inArmL.setPosition(0.145);
                         inUD.setPosition(0.2);
-                        inTwi.setPosition(0.35);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0);
                         inL.setPower(0);
 
-                        scR.setPosition(0.98);
-                        scL.setPosition(0.98);
-                        scUD.setPosition(0.68);
+                        scR.setPosition(1);
+                        scL.setPosition(1);
+                        scUD.setPosition(0.67);
+
+                        inCurrCase = 5;
+                        break;
+
+                    case 5:
+                        if(timer.milliseconds() > 500){
+                            inTwi.setPosition(0.58);
+                            inUD.setPosition(0.16);
+                            inCurrCase = 6;
+                        }
 
                         break;
 
-                    case 5: // transfer
-                        inArmR.setPosition(0.11);
-                        inArmL.setPosition(0.135);
-                        inUD.setPosition(0.2);
-                        inTwi.setPosition(0.37);
-                        inR.setPower(0.75);
-                        inL.setPower(-0.75);
+                    case 6: // transfer
+                        timer.reset();
 
-                        scR.setPosition(0.98);
-                        scL.setPosition(0.98);
-                        scUD.setPosition(0.68);
+                        inArmR.setPosition(0.145);
+                        inArmL.setPosition(0.145);
 
+                        scR.setPosition(1);
+                        scL.setPosition(1);
+                        scUD.setPosition(0.67);
+
+                        inCurrCase = 7;
                         break;
 
+                    case 7:
+                        if(timer.milliseconds() > 250){
+                            inR.setPower(0.75);
+                            inL.setPower(-0.75);
+                        }
+                        break;
+
+                    case 8:
+                        timer.reset();
+                        inTwi.setPosition(0.25);
+                        inCurrCase = 9;
+                        break;
+
+                    case 9:
+                        if(timer.milliseconds() > 500){
+                            inCurrCase = 0;
+                            scCurrCase = 1;
+                        }
+                        break;
                 }
 
                 if(inCurrCase == 0){
-                    if(gamepad2.triangle && scCurrCase > 1){
+                    if((gamepad2.triangle || gamepad1.triangle) && scCurrCase > 1){
                         scUD.setPosition(0.7);
                         triangleCounter = 1;
                     }
@@ -293,9 +329,9 @@ public class AD_TeleOp extends LinearOpMode{
                             sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            scR.setPosition(0.96);
-                            scL.setPosition(0.96);
-                            scUD.setPosition(0.7);
+                            scR.setPosition(1);
+                            scL.setPosition(1);
+                            scUD.setPosition(0.67);
                             triangleCounter = 0;
                             break;
 
@@ -341,12 +377,18 @@ public class AD_TeleOp extends LinearOpMode{
 
             //Specimen Automation
             if(cycleCase == 1){
+                if(rightBumperState && !inLastButtonStateR){  inCurrCase = (inCurrCase + 1) % 6;  }
+                inLastButtonStateR = rightBumperState;
+
+                if(leftBumperState && !inLastButtonStateL){   inCurrCase = (inCurrCase - 1 + 6) % 6;   }
+                inLastButtonStateL = leftBumperState;
+
                 switch(inCurrCase){
                     case 0: // full collapsed - grab from wall
                         inArmR.setPosition(0.14);
-                        inArmL.setPosition(0.12);
-                        inUD.setPosition(0.3);
-                        inTwi.setPosition(0.3);
+                        inArmL.setPosition(0.14);
+                        inUD.setPosition(0.425);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0);
                         inL.setPower(0);
                         break;
@@ -355,17 +397,17 @@ public class AD_TeleOp extends LinearOpMode{
                         inArmR.setPosition(0.25);
                         inArmL.setPosition(0.23);
                         inUD.setPosition(0.65);
-                        inTwi.setPosition(0.35);
+                        inTwi.setPosition(0.42);
                         inR.setPower(0);
                         inL.setPower(0);
                         break;
 
 
                     case 2: // full out - intaking
-                        inArmR.setPosition(0.33);
-                        inArmL.setPosition(0.3);
-                        inUD.setPosition(0.86);
-                        inTwi.setPosition(0.56);
+                        inArmR.setPosition(0.34);
+                        inArmL.setPosition(0.34);
+                        inUD.setPosition(0.84);
+                        inTwi.setPosition(0.58);
                         inR.setPower(-1);
                         inL.setPower(1);
 
@@ -380,7 +422,7 @@ public class AD_TeleOp extends LinearOpMode{
                         inArmR.setPosition(0.25);
                         inArmL.setPosition(0.23);
                         inUD.setPosition(0.65);
-                        inTwi.setPosition(0.35);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0);
                         inL.setPower(0);
 
@@ -390,7 +432,7 @@ public class AD_TeleOp extends LinearOpMode{
                         inArmR.setPosition(0.14);
                         inArmL.setPosition(0.14);
                         inUD.setPosition(0.65);
-                        inTwi.setPosition(0.35);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0);
                         inL.setPower(0);
                         break;
@@ -399,7 +441,7 @@ public class AD_TeleOp extends LinearOpMode{
                         inArmR.setPosition(0.14);
                         inArmL.setPosition(0.14);
                         inUD.setPosition(0.65);
-                        inTwi.setPosition(0.35);
+                        inTwi.setPosition(0.25);
                         inR.setPower(0.7);
                         inL.setPower(-0.7);
                         break;
@@ -441,7 +483,7 @@ public class AD_TeleOp extends LinearOpMode{
 
                         case 1: // out to score
                             timer.reset();
-                            scC.setPosition(0.3);
+                            scC.setPosition(0.25);
                             scCurrCase = 2;
                             break;
 
@@ -450,10 +492,10 @@ public class AD_TeleOp extends LinearOpMode{
                                 scR.setPosition(0.3);
                                 scL.setPosition(0.3);
                                 scUD.setPosition(0.97);
-                                sL.setPower(0.5);
+                                sL.setPower(0.75);
                                 sL.setTargetPosition(570);
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                                sR.setPower(0.5);
+                                sR.setPower(0.75);
                                 sR.setTargetPosition(570);
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 scCurrCase = 3;
@@ -481,8 +523,8 @@ public class AD_TeleOp extends LinearOpMode{
                             break;
 
                         case 4: //claw open
-                            if(timer.milliseconds() > 250) {
-                                scC.setPosition(0.9);
+                            if(timer.milliseconds() > 200) {
+                                scC.setPosition(1);
                                 scCurrCase = 0;
                             }
 
@@ -495,77 +537,8 @@ public class AD_TeleOp extends LinearOpMode{
 
             //Testing
             if(cycleCase == 2){
-                if(inCurrCase == 0) {
-                    if (gamepad2.triangle && scCurrCase > 1) {
-                        scUD.setPosition(0.7);
-                        triangleCounter = 1;
-                    }
-                    if (xButtonState && !scLastButtonState && triangleCounter != 1) {
-                        scCurrCase = (scCurrCase + 1) % 5;
-
-                    }
-                    if (xButtonState && !scLastButtonState && triangleCounter == 1) {
-                        scCurrCase = 0;
-                    }
-
-                    scLastButtonState = xButtonState;
-
-
-                    switch (scCurrCase) {
-                        case 0:
-                            timer.reset();
-
-                            sL.setPower(0.9);
-                            sL.setTargetPosition(0);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
-                            sR.setTargetPosition(0);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                            scR.setPosition(1);
-                            scL.setPosition(1);
-                            scUD.setPosition(0.7);
-                            triangleCounter = 0;
-                            break;
-
-                        case 1:
-
-                            timer.reset();
-                            scR.setPosition(0.48);
-                            scL.setPosition(0.48);
-                            scCurrCase = 2;
-                            break;
-
-                        case 2:
-                            if (timer.milliseconds() > 250) {
-                                scUD.setPosition(0.4);
-                                scCurrCase = 3;
-                            }
-
-                            break;
-
-                        case 3:
-                            sL.setPower(0.9);
-                            sL.setTargetPosition(700);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
-                            sR.setTargetPosition(700);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            break;
-
-                        case 4:
-                            scR.setPosition(0.48);
-                            scL.setPosition(0.48);
-
-                            sL.setPower(1);
-                            sL.setTargetPosition(1850);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(1);
-                            sR.setTargetPosition(1850);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            break;
-                    }
-                }
+                if(gamepad1.cross) {inTwi.setPosition(1); }
+                if(gamepad1.triangle) {inTwi.setPosition(0); }
             }
 
             telemetry.addData("-----", placeholder);
