@@ -47,7 +47,7 @@ public class blue_sample extends LinearOpMode {
         public class CloseClaw implements Action {
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
-                scC.setPosition(0.35);
+                scC.setPosition(0.26);
                 return false;
             }
         }
@@ -67,71 +67,6 @@ public class blue_sample extends LinearOpMode {
         }
 
     }
-
-    //Rotation Arm Components
-    public class rotation {
-        private DcMotorEx rotR;
-        private DcMotorEx rotL;
-
-        public rotation(HardwareMap hardwareMap) {
-            rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
-            rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
-
-            rotR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-            rotR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-            rotR.setDirection(DcMotorEx.Direction.REVERSE);
-
-            rotL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-            rotL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        }
-
-
-
-        public class rotationBase implements Action {
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                rotL.setPower(0.4);
-                rotR.setPower(0.4);
-                rotL.setTargetPosition(0);
-                rotR.setTargetPosition(0);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                telemetry.addData("rotR Position", rotR.getCurrentPosition());
-                telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
-                telemetry.addData("rotL Position", rotL.getCurrentPosition());
-                telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
-
-                return false;
-            }
-        }public Action rotationBasePos() {
-            return new rotation.rotationBase();
-        }
-
-        public class rotationUP implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                rotL.setPower(0.6);
-                rotR.setPower(0.6);
-                rotL.setTargetPosition(100);
-                rotR.setTargetPosition(100);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                telemetry.addData("rotR Position", rotR.getCurrentPosition());
-                telemetry.addData("rotR Current Draw", rotR.getCurrent(CurrentUnit.AMPS));
-                telemetry.addData("rotL Position", rotL.getCurrentPosition());
-                telemetry.addData("rotL Current Draw", rotL.getCurrent(CurrentUnit.AMPS));
-
-                return false;
-            }
-        }
-        public Action rotationUPPos() {
-            return new rotation.rotationUP();
-        }
-    }
-
     //Linear Slide components
     public class LS_Scoring {
         private Servo scL;
@@ -173,13 +108,34 @@ public class blue_sample extends LinearOpMode {
 
         }
 
-        public class LS_SPECBase implements Action {
+        public class LS_SPECInit implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
                 scL.setPosition(0.12);
                 scR.setPosition(0.12);
-                scUD.setPosition(0.9);
+                scUD.setPosition(0.6);
+
+                sL.setPower(0.85);
+                sR.setPower(0.85);
+                sL.setTargetPosition(5);
+                sR.setTargetPosition(5);
+                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                return false;
+            }
+        }
+        public  Action LS_SPECInitPos() {
+            return new LS_Scoring.LS_SPECInit();
+        }
+
+        public class LS_SPECBase implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                scR.setPosition(0.13);
+                scL.setPosition(0.13);
+                scUD.setPosition(0.92);
+
 
                 sL.setPower(0.85);
                 sR.setPower(0.85);
@@ -197,16 +153,16 @@ public class blue_sample extends LinearOpMode {
         public class LS_SPECScore implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
+                time.reset();
+                scR.setPosition(0.3);
+                scL.setPosition(0.3);
+                scUD.setPosition(0.97);
 
-                scR.setPosition(0.48);
-                scL.setPosition(0.48);
-                scUD.setPosition(0.4);
-
-                sL.setPower(0.9);
-                sL.setTargetPosition(1835);
+                sL.setPower(0.55);
+                sL.setTargetPosition(610);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.9);
-                sR.setTargetPosition(1820);
+                sR.setPower(0.55);
+                sR.setTargetPosition(610);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 return false;
@@ -219,17 +175,18 @@ public class blue_sample extends LinearOpMode {
         public class LS_SPECPull implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
+                time.reset();
+                scR.setPosition(0.15);
+                scL.setPosition(0.15);
+                scUD.setPosition(1);
 
-                scR.setPosition(0.12);
-                scL.setPosition(0.12);
-                scUD.setPosition(0.85);
-
-                sL.setPower(0.8);
-                sR.setPower(0.8);
-                sL.setTargetPosition(550);
-                sR.setTargetPosition(550);
+                sL.setPower(1);
+                sR.setPower(1);
+                sL.setTargetPosition(100);
+                sR.setTargetPosition(100);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
                 return false;
             }
         }
@@ -244,18 +201,16 @@ public class blue_sample extends LinearOpMode {
                 scR.setPosition(0.48);
                 scL.setPosition(0.48);
 
-                sL.setPower(0.85);
+                sL.setPower(0.9);
                 sL.setTargetPosition(1820);
                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.85);
+                sR.setPower(0.9);
                 sR.setTargetPosition(1820);
                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 if(time.milliseconds() > 250) {
                     scUD.setPosition(0.4);
                 }
-
-
 
                 return false;
             }
@@ -269,7 +224,7 @@ public class blue_sample extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 scL.setPosition(0.96);
                 scR.setPosition(0.96);
-                scUD.setPosition(0.58);
+                scUD.setPosition(0.45);
                 return false;
             }
         }
@@ -282,7 +237,7 @@ public class blue_sample extends LinearOpMode {
                 return false;
             }
         }
-        public Action LS_BucketTipPos() { return new LS_BucketTip(); }
+        public Action LS_BucketTipPos() { return new LS_Scoring.LS_BucketTip(); }
 
         public class LS_TeleOp implements Action {
             @Override
@@ -304,25 +259,7 @@ public class blue_sample extends LinearOpMode {
             }
         }
         public Action LS_TeleOpPos() { return new LS_Scoring.LS_TeleOp(); }
-
-        public class LS_Ascent implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                scR.setPosition(0.3);
-                scL.setPosition(0.3);
-                scUD.setPosition(0.97);
-                sL.setPower(0.5);
-                sL.setTargetPosition(570);
-                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sR.setPower(0.5);
-                sR.setTargetPosition(570);
-                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                return false;
-            }
-        }
-        public Action LS_AscentPos() { return new LS_Scoring.LS_Ascent(); }
     }
-
     //Intake components
     public class Intake {
         private CRServo inR;
@@ -340,6 +277,7 @@ public class blue_sample extends LinearOpMode {
             inArmL = hardwareMap.get(Servo.class, "inArmL");
             inArmR = hardwareMap.get(Servo.class, "inArmR");
             inTwist = hardwareMap.get(Servo.class, "inTwist");
+            inTwist.setDirection(Servo.Direction.REVERSE);
 
         }
 
@@ -348,10 +286,10 @@ public class blue_sample extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inR.setPower(0);
                 inL.setPower(0);
-                inUD.setPosition(0.3);
+                inUD.setPosition(0.4);
                 inArmL.setPosition(0.14);
                 inArmR.setPosition(0.14);
-                inTwist.setPosition(0.3);
+                inTwist.setPosition(0.25);
                 return false;
             }
         }
@@ -365,8 +303,8 @@ public class blue_sample extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmL.setPosition(0.14);
                 inArmR.setPosition(0.14);
-                inUD.setPosition(0.65);
-                inTwist.setPosition(0.35);
+                inUD.setPosition(0.425);
+                inTwist.setPosition(0.25);
 
                 return false;
             }
@@ -378,8 +316,8 @@ public class blue_sample extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmR.setPosition(0.25);
                 inArmL.setPosition(0.25);
-                inUD.setPosition(0.5);
-                inTwist.setPosition(0.35);
+                inUD.setPosition(0.65);
+                inTwist.setPosition(0.42);
 
                 return false;
             }
@@ -389,23 +327,34 @@ public class blue_sample extends LinearOpMode {
         public class IntakeFullOut implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inArmR.setPosition(0.33);
-                inArmL.setPosition(0.33);
-                inUD.setPosition(0.835);
-                inTwist.setPosition(0.56);
-                ;
+                inArmR.setPosition(0.34);
+                inArmL.setPosition(0.34);
+                inUD.setPosition(0.84);
+                inTwist.setPosition(0.58);
                 return false;
             }
         }
         public Action intakeFullOutPos() { return new Intake.IntakeFullOut(); }
 
+        public class intakeHPCollapse implements Action{
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                inArmR.setPosition(0.14);
+                inArmL.setPosition(0.14);
+                inUD.setPosition(0.65);
+                inTwist.setPosition(0.25);
+
+                return false;
+            }
+        }
+        public Action intakeHPCollapsePos() { return new Intake.intakeHPCollapse(); }
+
         public class IntakeTransfer implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inUD.setPosition(0.25);
-                new SleepAction(0.2);
-                inArmR.setPosition(0.135);
-                inArmL.setPosition(0.135);
+                inArmR.setPosition(0.14);
+                inArmL.setPosition(0.14);
+                inUD.setPosition(0.2);
                 inTwist.setPosition(0.35);
 
                 return false;
@@ -414,16 +363,27 @@ public class blue_sample extends LinearOpMode {
         }
         public Action intakeTransferPos() { return new Intake.IntakeTransfer(); }
 
-
+        public class IntakeSweep implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                inArmR.setPosition(0.41);
+                inArmL.setPosition(0.41);
+                inUD.setPosition(0.85);
+                inTwist.setPosition(0.58);
+                return false;
+            }
+        }
+        public Action intakeSweepPos() { return new Intake.IntakeSweep(); }
 
         public class IntakeWheelsIN implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inR.setPower(-0.65);
-                inL.setPower(0.65);
+                inR.setPower(-1);
+                inL.setPower(1);;
                 return false;
             }
         }
+
         public Action intakeWheelsIN() { return new Intake.IntakeWheelsIN(); }
 
         public class IntakeWheelsOFF implements Action {
@@ -439,12 +399,12 @@ public class blue_sample extends LinearOpMode {
         public class IntakeWheelsOUT implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inR.setPower(0.6);
-                inL.setPower(-0.6);
+                inR.setPower(1);
+                inL.setPower(-1);
                 return false;
             }
         }
-        public Action intakeWheelsOUT() { return new Intake.IntakeWheelsOUT(); }
+        public Action intakeWheelsOUT() { return new Intake.IntakeWheelsOUT();}
     }
 
 
@@ -560,7 +520,6 @@ public class blue_sample extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         LS_Scoring scoring = new LS_Scoring(hardwareMap);
-        rotation rotation = new rotation(hardwareMap);
 
 
 
@@ -656,7 +615,6 @@ public class blue_sample extends LinearOpMode {
 
 
 
-        Actions.runBlocking(rotation.rotationBasePos());
         Actions.runBlocking(claw.closeClaw());
         Actions.runBlocking(intake.intakeInitPos());
 
@@ -702,7 +660,6 @@ public class blue_sample extends LinearOpMode {
         // Score Preload
         Actions.runBlocking(
                 new ParallelAction(
-                        rotation.rotationUPPos(),
                         intake.intakeHalfwayPos(),
                         initToScorePreload
                 )
@@ -916,7 +873,6 @@ public class blue_sample extends LinearOpMode {
         // Park
         Actions.runBlocking(
                 new ParallelAction(
-                        scoring.LS_AscentPos(),
                         TrajectoryActionCloseOut
                 )
         );

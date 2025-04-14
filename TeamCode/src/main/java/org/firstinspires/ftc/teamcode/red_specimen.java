@@ -52,7 +52,7 @@ public class red_specimen extends LinearOpMode {
         public class OpenClaw implements Action {
             @Override
             public boolean run (@NonNull TelemetryPacket packet) {
-                scC.setPosition(0.9);
+                scC.setPosition(1);
                 return false;
             }
         }
@@ -61,59 +61,6 @@ public class red_specimen extends LinearOpMode {
         }
 
     }
-
-    //Rotation Arm Components
-    public class rotation {
-        private DcMotorEx rotR;
-        private DcMotorEx rotL;
-
-        public rotation(HardwareMap hardwareMap) {
-            rotR = hardwareMap.get(DcMotorEx.class, "rotateR");
-            rotL = hardwareMap.get(DcMotorEx.class, "rotateL");
-
-            rotR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-            rotR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-            rotR.setDirection(DcMotorEx.Direction.REVERSE);
-
-            rotL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-            rotL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        }
-
-        public class rotationBase implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                rotL.setPower(0.8);
-                rotR.setPower(0.8);
-                rotL.setTargetPosition(0);
-                rotR.setTargetPosition(0);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                return false;
-            }
-        }
-        public Action rotationBasePos() {
-            return new rotation.rotationBase();
-        }
-
-        public class rotationUP implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                rotL.setPower(1);
-                rotR.setPower(1);
-                rotL.setTargetPosition(100);
-                rotR.setTargetPosition(100);
-                rotL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rotR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                return false;
-            }
-        }
-        public Action rotationUPPos() {
-            return new rotation.rotationUP();
-        }
-    }
-
     //Linear Slide components
     public class LS_Scoring {
         private Servo scL;
@@ -173,7 +120,7 @@ public class red_specimen extends LinearOpMode {
             }
         }
         public  Action LS_SPECInitPos() {
-            return new LS_SPECInit();
+            return new LS_Scoring.LS_SPECInit();
         }
 
         public class LS_SPECBase implements Action {
@@ -194,7 +141,7 @@ public class red_specimen extends LinearOpMode {
             }
         }
         public  Action LS_SPECBasePos() {
-            return new LS_SPECBase();
+            return new LS_Scoring.LS_SPECBase();
         }
 
         public class LS_SPECScore implements Action {
@@ -307,7 +254,6 @@ public class red_specimen extends LinearOpMode {
         }
         public Action LS_TeleOpPos() { return new LS_Scoring.LS_TeleOp(); }
     }
-
     //Intake components
     public class Intake {
         private CRServo inR;
@@ -325,6 +271,7 @@ public class red_specimen extends LinearOpMode {
             inArmL = hardwareMap.get(Servo.class, "inArmL");
             inArmR = hardwareMap.get(Servo.class, "inArmR");
             inTwist = hardwareMap.get(Servo.class, "inTwist");
+            inTwist.setDirection(Servo.Direction.REVERSE);
 
         }
 
@@ -333,10 +280,10 @@ public class red_specimen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inR.setPower(0);
                 inL.setPower(0);
-                inUD.setPosition(0.3);
+                inUD.setPosition(0.4);
                 inArmL.setPosition(0.14);
                 inArmR.setPosition(0.14);
-                inTwist.setPosition(0.3);
+                inTwist.setPosition(0.25);
                 return false;
             }
         }
@@ -350,8 +297,8 @@ public class red_specimen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 inArmL.setPosition(0.14);
                 inArmR.setPosition(0.14);
-                inUD.setPosition(0.65);
-                inTwist.setPosition(0.35);
+                inUD.setPosition(0.425);
+                inTwist.setPosition(0.25);
 
                 return false;
             }
@@ -364,7 +311,7 @@ public class red_specimen extends LinearOpMode {
                 inArmR.setPosition(0.25);
                 inArmL.setPosition(0.25);
                 inUD.setPosition(0.65);
-                inTwist.setPosition(0.35);
+                inTwist.setPosition(0.42);
 
                 return false;
             }
@@ -374,21 +321,33 @@ public class red_specimen extends LinearOpMode {
         public class IntakeFullOut implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inArmR.setPosition(0.33);
-                inArmL.setPosition(0.3);
-                inUD.setPosition(0.86);
-                inTwist.setPosition(0.56);
-
+                inArmR.setPosition(0.34);
+                inArmL.setPosition(0.34);
+                inUD.setPosition(0.84);
+                inTwist.setPosition(0.58);
                 return false;
             }
         }
         public Action intakeFullOutPos() { return new Intake.IntakeFullOut(); }
 
+        public class intakeHPCollapse implements Action{
+            @Override
+            public boolean run (@NonNull TelemetryPacket packet) {
+                inArmR.setPosition(0.14);
+                inArmL.setPosition(0.14);
+                inUD.setPosition(0.65);
+                inTwist.setPosition(0.25);
+
+                return false;
+            }
+        }
+        public Action intakeHPCollapsePos() { return new Intake.intakeHPCollapse(); }
+
         public class IntakeTransfer implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                inArmR.setPosition(0.12);
-                inArmL.setPosition(0.12);
+                inArmR.setPosition(0.14);
+                inArmL.setPosition(0.14);
                 inUD.setPosition(0.2);
                 inTwist.setPosition(0.35);
 
@@ -404,7 +363,7 @@ public class red_specimen extends LinearOpMode {
                 inArmR.setPosition(0.41);
                 inArmL.setPosition(0.41);
                 inUD.setPosition(0.85);
-                inTwist.setPosition(0.56);
+                inTwist.setPosition(0.58);
                 return false;
             }
         }
@@ -543,7 +502,6 @@ public class red_specimen extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         LS_Scoring scoring = new LS_Scoring(hardwareMap);
-        rotation rotation = new rotation(hardwareMap);
 
 
 
@@ -629,9 +587,7 @@ public class red_specimen extends LinearOpMode {
 
 
         Actions.runBlocking(claw.closeClaw());
-        Actions.runBlocking(rotation.rotationBasePos());
         Actions.runBlocking(intake.intakeInitPos());
-        Actions.runBlocking(scoring.LS_SPECInitPos());
 
         while (!isStopRequested() && !opModeIsActive()) {
             telemetry.update();
@@ -671,8 +627,6 @@ public class red_specimen extends LinearOpMode {
         // Preload Spec Score
         Actions.runBlocking(
                 new SequentialAction(
-                        rotation.rotationUPPos(),
-                        new SleepAction(0.5),
                         scoring.LS_SPECScorePos(),
                         new SleepAction(0.01),
                         initToScoreTrajectory,
