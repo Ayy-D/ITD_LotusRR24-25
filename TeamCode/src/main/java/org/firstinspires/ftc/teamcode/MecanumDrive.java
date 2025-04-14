@@ -20,7 +20,6 @@ import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TurnConstraints;
-import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.Encoder;
@@ -33,8 +32,8 @@ import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -50,7 +49,6 @@ import java.lang.Math;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 @Config
 public final class MecanumDrive {
     public static class Params {
@@ -63,15 +61,15 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 0.0029363081877;
-        public double lateralInPerTick = 0.0021096339461716034;
-        public double trackWidthTicks = 5005.264594438545;
+        public double inPerTick = 0.0029329096908;
+        public double lateralInPerTick = 0.002027356129819183;
+        public double trackWidthTicks = 4931.657302912673;
 
         // feedforward parameters (in tick units)
 
-        public double kV = 0.0004473622577989783;
-        public double kS = 1.7331621483310937;
-        public double kA = 0.0001;
+        public double kV = 0.0004311664710471181;
+        public double kS = 1.358817463769809;
+        public double kA = 0.00025;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 87;
@@ -301,15 +299,15 @@ public final class MecanumDrive {
             PoseVelocity2d robotVelRobot = updatePoseEstimate();
             Pose2d error = txWorldTarget.value().minusExp(pose);
 
-            if ((t >= timeTrajectory.duration && error.position.norm() < 1
-                    && robotVelRobot.linearVel.norm() < 4)
-                    || t >= timeTrajectory.duration + 0.2) {
-                leftFront.setPower(0);
-                leftBack.setPower(0);
-                rightBack.setPower(0);
-                rightFront.setPower(0);
-                return false;
-            }
+//            if ((t >= timeTrajectory.duration && error.position.norm() < 1
+//                    && robotVelRobot.linearVel.norm() < 4)
+//                    || t >= timeTrajectory.duration + 0.2) {
+//                leftFront.setPower(0);
+//                leftBack.setPower(0);
+//                rightBack.setPower(0);
+//                rightFront.setPower(0);
+//                return false;
+//            }
 
 
             PoseVelocity2dDual<Time> command = new HolonomicController(
