@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 @Config
 @Autonomous(name = "SPEC -- RED", group = "Autonomous")
 public class red_specimen extends LinearOpMode {
@@ -509,44 +510,42 @@ public class red_specimen extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .lineToYConstantHeading(yPose[1]);
 
-        //Prep to sweep floor spec 1
-        TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
-                .strafeToLinearHeading(new Vector2d(xPose[2], yPose[2]), angles[2]);
-
-        //Move to sweep floor spec 1
-        TrajectoryActionBuilder tab3 = drive.actionBuilder(prepToSweep1Pose)
-                .strafeToLinearHeading(new Vector2d(xPose[3], yPose[3]), angles[3]);
-
-        //Prep to sweep floor spec 2
-        TrajectoryActionBuilder tab4 = drive.actionBuilder(sweep1Pose)
-                .strafeToLinearHeading(new Vector2d(xPose[4], yPose[4]), angles[4]);
-
-
-        //Move to sweep floor spec 2
-        TrajectoryActionBuilder tab5 = drive.actionBuilder(prepToSweep2Pose)
-                .strafeToLinearHeading(new Vector2d(xPose[5], yPose[5]), angles[5]);
-
-        //Prep to sweep floor spec 3
-        TrajectoryActionBuilder tab6 = drive.actionBuilder(sweep2Pose)
-                .strafeToLinearHeading(new Vector2d(xPose[6], yPose[6]), angles[6]);
-
-        //Move to sweep floor spec 3
-        TrajectoryActionBuilder tab7 = drive.actionBuilder(prepToSweep3Pose)
-                .strafeToLinearHeading(new Vector2d(xPose[7], yPose[7]), angles[7]);
-
-
         //Prep to grab spec 1 from wall
-        TrajectoryActionBuilder tab8 = drive.actionBuilder(sweep3Pose)
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(scoringPose)
                 .turnTo(angles[8])
                 .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[8], yPose[8]), angles[8]);
 
         //Move to score spec 1 from wall
-        TrajectoryActionBuilder tab9 = drive.actionBuilder(firstWallGrabPose)
+        TrajectoryActionBuilder tab3 = drive.actionBuilder(firstWallGrabPose)
                 .strafeToLinearHeading(new Vector2d(xPose[9], yPose[9]), angles[9]);
 
+        //Prep to sweep floor spec 2
+        TrajectoryActionBuilder tab4 = drive.actionBuilder(scoringPose)
+                .strafeToLinearHeading(new Vector2d(xPose[2], yPose[2]), angles[2]);
+
+        //Move to sweep floor spec 2
+        TrajectoryActionBuilder tab5 = drive.actionBuilder(prepToSweep1Pose)
+                .strafeToLinearHeading(new Vector2d(xPose[3], yPose[3]), angles[3]);
+
+        //Prep to sweep floor spec 3
+        TrajectoryActionBuilder tab6 = drive.actionBuilder(sweep1Pose)
+                .strafeToLinearHeading(new Vector2d(xPose[4], yPose[4]), angles[4]);
+
+        //Move to sweep floor spec 3
+        TrajectoryActionBuilder tab7 = drive.actionBuilder(prepToSweep2Pose)
+                .strafeToLinearHeading(new Vector2d(xPose[5], yPose[5]), angles[5]);
+
+        //Prep to sweep floor spec 4
+        TrajectoryActionBuilder tab8 = drive.actionBuilder(sweep2Pose)
+                .strafeToLinearHeading(new Vector2d(xPose[6], yPose[6]), angles[6]);
+
+        //Move to sweep floor spec 4
+        TrajectoryActionBuilder tab9 = drive.actionBuilder(prepToSweep3Pose)
+                .strafeToLinearHeading(new Vector2d(xPose[7], yPose[7]), angles[7]);
+
         //Move to grab spec 2 from wall
-        TrajectoryActionBuilder tab10 = drive.actionBuilder(firstScorePose)
+        TrajectoryActionBuilder tab10 = drive.actionBuilder(sweep3Pose)
                 .strafeToLinearHeading(new Vector2d(-40, yPose[10]-3), Math.toRadians(89.99999))
                 .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[10], yPose[10]), angles[10]);
@@ -562,18 +561,17 @@ public class red_specimen extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(xPose[12], yPose[12]), angles[12]);
 
 
-        //Move to score spec 2 from wall
+        //Move to score spec 3 from wall
         TrajectoryActionBuilder tab13 = drive.actionBuilder(thirdWallGrabPose)
                 .strafeToLinearHeading(new Vector2d(xPose[13], yPose[13]), angles[13]);
 
-        //Move to grab spec 3 from wall
+        //Move to grab spec 4 from wall
         TrajectoryActionBuilder tab14 = drive.actionBuilder(thirdScorePose)
                 .strafeToLinearHeading(new Vector2d(-40, yPose[14]-3), Math.toRadians(89.99999))
                 .waitSeconds(0.01)
                 .strafeToLinearHeading(new Vector2d(xPose[14], yPose[14]), angles[14]);
 
-
-        //Move to score spec 2 from wall
+        //Move to score spec 4 from wall
         TrajectoryActionBuilder tab15 = drive.actionBuilder(fourthWallGrabPose)
                 .strafeToLinearHeading(new Vector2d(xPose[15], yPose[15]), angles[15]);
 
@@ -588,8 +586,18 @@ public class red_specimen extends LinearOpMode {
 
         Actions.runBlocking(claw.closeClaw());
         Actions.runBlocking(intake.intakeInitPos());
+        boolean sampleScore = false;
 
         while (!isStopRequested() && !opModeIsActive()) {
+            if(gamepad1.triangle){
+                sampleScore = true;
+            }
+            if(gamepad1.cross){
+                sampleScore = false;
+            }
+
+            telemetry.addData("Status", "Waiting for start");
+            telemetry.addData("Attempt Sample Score:", sampleScore);
             telemetry.update();
         }
 
@@ -600,157 +608,130 @@ public class red_specimen extends LinearOpMode {
 
 
 
-        Action initToScoreTrajectory = tab1.build();
+        Action initToScore1 = tab1.build();
 
-        Action initScoreToPrepSweep1 = tab2.build();
-        Action prepSweep1toSweep1 = tab3.build();
+        Action score1ToWall2 = tab2.build();
+        Action wall2ToScore2 = tab3.build();
 
-        Action sweep1toPrepSweep2 = tab4.build();
-        Action prepSweep2toSweep2 = tab5.build();
+        Action score2toPrepSweep3 = tab4.build();
+        Action prepSweep3toSweep3 = tab5.build();
 
-        Action sweep2toPrepSweep3 = tab6.build();
-        Action prepSweep3toSweep3 = tab7.build();
+        Action sweep3toPrepSweep4 = tab6.build();
+        Action prepSweep4toSweep4 = tab7.build();
 
-        Action sweep3ToWall1 = tab8.build();
-        Action wall1ToScore1 = tab9.build();
+        Action sweep4toPrepSweep5 = tab8.build();
+        Action prepSweep5toSweep5 = tab9.build();
 
-        Action score1ToWall2 = tab10.build();
-        Action wall2toScore2 = tab11.build();
+        Action sweep5toWall3 = tab10.build();
+        Action wall3toScore3 = tab11.build();
 
-        Action score2ToWall3 = tab12.build();
-        Action wall3ToScore3 = tab13.build();
+        Action score3ToWall4 = tab12.build();
+        Action wall4ToScore4 = tab13.build();
 
-        Action score3ToWall4 = tab14.build();
-        Action wall4ToScore4 = tab15.build();
+        Action score4ToWall5 = tab14.build();
+        Action wall5ToScore5 = tab15.build();
 
 
-        // Preload Spec Score
+        // Spec Score 1
         Actions.runBlocking(
                 new SequentialAction(
                         scoring.LS_SPECScorePos(),
                         new SleepAction(0.01),
-                        initToScoreTrajectory,
+                        initToScore1,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
                         claw.openClaw(),
                         new SleepAction(0.01),
-                        intake.intakeHalfwayPos()
-
-                        )
-        );
-
-        // Prep Ground Sweep 1
-        Actions.runBlocking(
-                new SequentialAction(
                         scoring.LS_SPECBasePos(),
-                        initScoreToPrepSweep1,
-                        new SleepAction(0.01),
-                        intake.intakeSweepPos(),
-                        new SleepAction(0.3)
-                )
-        );
-
-        // Ground Sweep 1
-        Actions.runBlocking(
-                new SequentialAction(
-                        intake.intakeWheelsOUT(),
-                        prepSweep1toSweep1,
-                        new SleepAction(0.01),
                         intake.intakeHalfwayPos()
+
+
                 )
         );
 
-        // Prep Ground Sweep 2
+        // Spec Score 2
         Actions.runBlocking(
                 new SequentialAction(
-                        sweep1toPrepSweep2,
-                        new SleepAction(0.01),
-                        intake.intakeSweepPos(),
-                        new SleepAction(0.3)
-                )
-        );
-
-        // Ground Sweep 2
-        Actions.runBlocking(
-                new SequentialAction(
-                        prepSweep2toSweep2,
-                        new SleepAction(0.01),
-                        intake.intakeHalfwayPos()
-                )
-        );
-
-        // Prep Ground Sweep 3
-        Actions.runBlocking(
-                new SequentialAction(
-                        sweep2toPrepSweep3,
-                        new SleepAction(0.01),
-                        intake.intakeSweepPos(),
-                        new SleepAction(0.3)
-                )
-        );
-
-        // Ground Sweep 2
-        Actions.runBlocking(
-                new SequentialAction(
-                        prepSweep3toSweep3,
-                        new SleepAction(0.01),
-                        intake.intakeBasePos()
-                )
-        );
-
-
-        // Ground Sweep 3
-        Actions.runBlocking(
-                new SequentialAction(
-                        intake.intakeWheelsIN(),
-                        prepSweep1toSweep1,
-                        new SleepAction(0.01),
-                        intake.intakeBasePos()
-                )
-        );
-
-
-        // Specimen Scoring
-        Actions.runBlocking(
-                new SequentialAction(
-
-                        // Specimen 1
-                        sweep3ToWall1,
-                        new SleepAction(0.1),
-                        claw.closeClaw(),
-                        new SleepAction(0.2),
-                        scoring.LS_SPECScorePos(),
-                        wall1ToScore1,
-                        scoring.LS_SPECPullPos(),
-                        new SleepAction(0.2),
-                        claw.openClaw(),
-                        scoring.LS_SPECBasePos(),
-
-
-                        // Specimen 2
+                        //wall grab
                         score1ToWall2,
                         new SleepAction(0.1),
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
-                        wall2toScore2,
+
+                        //score spec
+                        wall2ToScore2,
+                        new SleepAction(0.1),
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
                         claw.openClaw(),
-                        scoring.LS_SPECBasePos(),
+                        new SleepAction(0.01),
+                        scoring.LS_SPECBasePos()
+                )
+        );
 
+        // Ground Sweep 3
+        Actions.runBlocking(
+                new SequentialAction(
+                        score2toPrepSweep3,
+                        new SleepAction(0.01),
+                        intake.intakeSweepPos(),
+                        new SleepAction(0.3),
+                        intake.intakeWheelsOUT(),
+
+                        prepSweep3toSweep3,
+                        new SleepAction(0.01),
+                        intake.intakeHalfwayPos()
+                )
+        );
+
+        // Ground Sweep 4
+        Actions.runBlocking(
+                new SequentialAction(
+                        sweep3toPrepSweep4,
+                        new SleepAction(0.01),
+                        intake.intakeSweepPos(),
+                        new SleepAction(0.3),
+                        intake.intakeWheelsOUT(),
+
+                        prepSweep4toSweep4,
+                        new SleepAction(0.01),
+                        intake.intakeHalfwayPos()
+                )
+        );
+
+        // Ground Sweep 5
+        Actions.runBlocking(
+                new SequentialAction(
+                        sweep4toPrepSweep5,
+                        new SleepAction(0.01),
+                        intake.intakeSweepPos(),
+                        new SleepAction(0.3),
+                        intake.intakeWheelsOUT(),
+
+                        prepSweep5toSweep5,
+                        new SleepAction(0.01),
+                        intake.intakeHalfwayPos()
+                )
+        );
+
+        // Specimen Score 3, 4, & 5
+        Actions.runBlocking(
+                new SequentialAction(
 
                         // Specimen 3
-                        score2ToWall3,
+                        sweep5toWall3,
                         new SleepAction(0.1),
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
-                        wall3ToScore3,
+
+                        wall3toScore3,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
-                        scoring.LS_SPECBasePos(),
                         claw.openClaw(),
+                        scoring.LS_SPECBasePos(),
+
 
                         // Specimen 4
                         score3ToWall4,
@@ -758,22 +739,40 @@ public class red_specimen extends LinearOpMode {
                         claw.closeClaw(),
                         new SleepAction(0.2),
                         scoring.LS_SPECScorePos(),
+
                         wall4ToScore4,
+                        scoring.LS_SPECPullPos(),
+                        new SleepAction(0.2),
+                        claw.openClaw(),
+                        scoring.LS_SPECBasePos(),
+
+
+                        // Specimen 5
+                        score4ToWall5,
+                        new SleepAction(0.1),
+                        claw.closeClaw(),
+                        new SleepAction(0.2),
+                        scoring.LS_SPECScorePos(),
+
+                        wall5ToScore5,
                         scoring.LS_SPECPullPos(),
                         new SleepAction(0.2),
                         scoring.LS_SPECBasePos(),
                         claw.openClaw()
-
                 )
         );
 
-        // Park
-        Actions.runBlocking(
-                TrajectoryActionPark
-        );
-
-
-
+        // IF SELECTED: Score Sample
+        // ELSE: Park
+        if(sampleScore){
+            Actions.runBlocking(
+                    new SleepAction(0.1)
+                    // Sample Score Actions
+            );
+        }
+        else {
+            Actions.runBlocking(TrajectoryActionPark);
+        }
 
     }
 }
