@@ -12,9 +12,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
-@TeleOp(name="BLUE")
+@TeleOp(name="SAMPLE -- BLUE")
 
-public class BLUE_tele extends LinearOpMode{
+public class blue_sample_tele extends LinearOpMode{
 
     String placeholder = "----";
 
