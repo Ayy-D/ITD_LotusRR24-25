@@ -414,7 +414,6 @@ public class sc_specimen extends LinearOpMode{
                             inR.setPower(1);
                             inL.setPower(-1);
                         }
-                        //         //runIntake(red, blue, green);
                         break;
 
                     case 3: // scoring halfway
@@ -628,22 +627,6 @@ public class sc_specimen extends LinearOpMode{
     }
 
 
-    public void runIntake(int red, int blue, int green){
-        telemetry.addData("Intake ON!", placeholder);
-        telemetry.update();
-        //Intake wheels
-        // if(gamepad1.triangle || gamepad1.y){ //intaking
-        //     inR.setPower(-1);
-        //     inL.setPower(1);
-        // }
-        // if(gamepad1.circle || gamepad1.b){ //depositing
-        //     inR.setPower(0.1);
-        //     inL.setPower(-0.1);
-        // }
-        // if(gamepad1.cross ||gamepad1.a){ //rest
-
-        // }
-    }
 
     public void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
