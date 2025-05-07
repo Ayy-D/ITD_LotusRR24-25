@@ -1,21 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
-@TeleOp(name="AD Tele")
+@TeleOp(name="RED")
 
-public class AD_TeleOp extends LinearOpMode{
+public class RED_tele extends LinearOpMode{
     String placeholder = "----";
 
 
@@ -47,6 +47,8 @@ public class AD_TeleOp extends LinearOpMode{
     private Servo scC = null;
 
     //Sensors & Cameras
+    private ColorSensor col = null;
+
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -97,12 +99,14 @@ public class AD_TeleOp extends LinearOpMode{
         inWL = hardwareMap.get(CRServo.class, "inWLeft");
 
         //Sensors + Cameras
+        col = hardwareMap.get(ColorSensor.class, "color");
 
         //Expansion Hub Servos
         scArm = hardwareMap.get(Servo.class, "scArmL"); //same as above
         scUD = hardwareMap.get(Servo.class, "scUD"); //1 is the position for depositing an element, 0.8 for intake, <0.8 to keep it up
         scUD.setDirection(Servo.Direction.REVERSE);
         inPiv = hardwareMap.get(Servo.class, "inPivot"); //1 full up, 0.55 full down
+        inPiv.setDirection(Servo.Direction.REVERSE);
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
@@ -112,10 +116,11 @@ public class AD_TeleOp extends LinearOpMode{
         int inCurrCase = 0;
         boolean inLastButtonStateR = false;
         boolean inLastButtonStateL = false;
+        boolean red = true; //red alliance - true, blue alliance - false
 
         // Linear Slide Cycle Variables
         int scCurrCase = 0;
-        boolean scArmastButtonState = false;
+        boolean scLastButtonState = false;
 
         //Linear Slide Reset Counter
         boolean hasResetEncoders = false;
@@ -127,7 +132,7 @@ public class AD_TeleOp extends LinearOpMode{
         int specCount = 0;
 
         waitForStart();
-        telemetry.addData(">>", "Press start to continue");
+        telemetry.addData(">>", "Wait for Start");
         telemetry.update();
         if (isStopRequested()) return;
 
@@ -143,14 +148,12 @@ public class AD_TeleOp extends LinearOpMode{
         inWL.setPower(-0);
 
 
-
-
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / (1.25 + gamepad1.right_trigger * 3);  // Reduce drive rate to 27-80%.
-            strafe = gamepad1.left_stick_x  / (1.25  + gamepad1.right_trigger * 3);  // Reduce strafe rate to 27-80%.
-            turn   = -gamepad1.right_stick_x / (1.5 + gamepad1.right_trigger * 3);  // turn rate 22-67%.
+            drive  = gamepad1.left_stick_y  / (1.8 + gamepad1.right_trigger * 0.5);  // Reduce drive rate to 27-80%.
+            strafe = gamepad1.left_stick_x  / (1.8  + gamepad1.right_trigger * 0.5);  // Reduce strafe rate to 27-80%.
+            turn   = -gamepad1.right_stick_x / (2 + gamepad1.right_trigger * 0.5);  // turn rate 22-67%.
             moveRobot(drive, strafe, turn);
 
 
@@ -172,19 +175,28 @@ public class AD_TeleOp extends LinearOpMode{
                 scCurrCase = 0;
                 specCount = 0;
             }
-            if (((sL.getCurrent(CurrentUnit.AMPS) > 4 || sR.getCurrent(CurrentUnit.AMPS ) > 4) || gamepad2.dpad_down) && scCurrCase == 0) {
+            if (((sL.getCurrent(CurrentUnit.AMPS) > 3.5 || sR.getCurrent(CurrentUnit.AMPS ) > 3.5) || gamepad2.dpad_down) && (sL.getCurrentPosition() < 50 && sR.getCurrentPosition() < 50) && scCurrCase == 0) {
                 resetSlideEncoders(); // Call the reset function
             }
 
-
             //Sample Automation
             if(cycleCase == 0){
-                int numCycles = 7;
-                if(rightBumperState && !inLastButtonStateR){  inCurrCase = (inCurrCase + 1) % (numCycles + 1);  }
+                int transferFrom = 0;
+                int numCycles = 7; // # of last case
+                if(rightBumperState && !inLastButtonStateR){
+                    inCurrCase = (inCurrCase + 1) % (numCycles + 1);
+                    scCurrCase = 0;
+
+                }
                 inLastButtonStateR = rightBumperState;
 
-                if(leftBumperState && !inLastButtonStateL){   inCurrCase = (inCurrCase - 1 + (numCycles + 1)) % (numCycles + 1);   }
+                if(leftBumperState && !inLastButtonStateL){
+                    inCurrCase = (inCurrCase - 1 + (numCycles + 1)) % (numCycles + 1);
+                    scCurrCase = 0;
+
+                }
                 inLastButtonStateL = leftBumperState;
+
 
                 switch(inCurrCase){
                     case 0: // full collapsed
@@ -199,126 +211,122 @@ public class AD_TeleOp extends LinearOpMode{
                         break;
 
                     case 1: //prep intake pos
-                        scCurrCase = 0;
+                        transferFrom = 1;
                         inR.setPosition(0.39);
                         inB.setPosition(0.39);
-                        inPiv.setPosition(0.2);
-
 
                         if(gamepad1.left_trigger > 0.5){
-                            inUD.setPosition(0.37);
+                            inUD.setPosition(0.45);
+                            inPiv.setPosition(0.225);
 
                         }
                         else{
+                            inPiv.setPosition(0.16);
                             inUD.setPosition(0.5);
                         }
-                        if(gamepad1.triangle){
+                        if(gamepad1.triangle || col.blue() > 500){
                             inPiv.setPosition(0.5);
                             inWR.setPower(1);
                             inWL.setPower(-1);
                         }
                         else{
-                            inPiv.setPosition(0.2);
-                            inWR.setPower(-0.25);
-                            inWL.setPower(0.25);
+                            inWR.setPower(-0.6);
+                            inWL.setPower(0.6);
+
+                            if(col.red() > 500){
+                                timer.reset();
+                                inCurrCase = 3;
+                            }
                         }
+
                         break;
 
-                    case 2: //intaking until distance find element - push outminor/major switch
-                        scCurrCase = 0;
+                    case 2: // intaking until distance find element - push outminor/major switch
                         timer.reset();
-                        if(gamepad1.right_trigger > 0.5){
-                            inB.setPosition(0.6);
-                            inR.setPosition(0.6);
+                        transferFrom = 2;
 
-                        }
-                        else{
-                            inB.setPosition(0.5);
-                            inR.setPosition(0.5);
-                        }
-                        if(gamepad1.left_trigger > 0.5){
-                            inUD.setPosition(0.37);
-                        }
-                        else{
+                        inB.setPosition(0.52);
+                        inR.setPosition(0.52);
+
+                        if (gamepad1.left_trigger > 0.5) {
+                            inUD.setPosition(0.42);
+                            inPiv.setPosition(0.18);
+                        } else {
+                            inPiv.setPosition(0.125);
                             inUD.setPosition(0.5);
-
                         }
-                        if(gamepad1.triangle){
+
+                        if (gamepad1.triangle || col.blue() > 500) {
                             inPiv.setPosition(0.5);
                             inWR.setPower(1);
                             inWL.setPower(-1);
-                        }
-                        else{
-                            inPiv.setPosition(0.2);
-                            inWR.setPower(-0.25);
-                            inWL.setPower(0.25);
+                        } else {
+                            inWR.setPower(-0.6);
+                            inWL.setPower(0.6);
                         }
 
-                        //if(distance < 5){
-                        //  inCurrCase = 3;
-                        //}
+                        if(col.red() > 500){
+                            timer.reset();
+                            inCurrCase = 3;
+                        }
 
                         break;
 
 
                     case 3: //prep transfer
-                        scCurrCase = 0;
+                        if(transferFrom == 2){
+                            inR.setPosition(0.52);
+                            inB.setPosition(0.52);
+                        }
+                        if(transferFrom == 1){
+                            inR.setPosition(0.4);
+                            inB.setPosition(0.4);
+                        }
 
-                        timer.reset();
-                        inR.setPosition(0.5);
-                        inB.setPosition(0.5);
                         inUD.setPosition(0.65);
-                        inPiv.setPosition(0.65);
+                        inPiv.setPosition(0.4);
                         inWR.setPower(0);
                         inWL.setPower(0);
 
-                        if(timer.milliseconds() > 800){
+                        if(timer.milliseconds() > 400){
+                            timer.reset();
                             inCurrCase = 4;
                         }
                         break;
 
-                    case 4: // transfer collapse - partial
-                        scCurrCase = 0;
+                    case 4: // transfer collapse
+                        inR.setPosition(0.32);
+                        inB.setPosition(0.32);
 
-                        timer.reset();
-                        inR.setPosition(0.4);
-                        inB.setPosition(0.4);
-                        inUD.setPosition(0.9);
-                        inPiv.setPosition(1);
-                        inCurrCase = 5;
+                        inUD.setPosition(0.65);
+                        inPiv.setPosition(0.85);
+                        if(timer.milliseconds() > 400){
+                            inCurrCase = 5;
+                        }
                         break;
 
                     case 5: // outtake to bucket until distance senses nothing in intake
-                        scCurrCase = 0;
+                        inWR.setPower(1);
+                        inWL.setPower(-1);
 
-                        if(timer.milliseconds() > 500){
-                            inWR.setPower(1);
-                            inWL.setPower(-1);
-
-                            //if(distance > 5){
-                            // inCurrCase = 6;
-                            //}
-                        }
-
-                        if(timer.milliseconds() > 1500){
+                        if(col.red() < 550){
                             inCurrCase = 6;
                         }
                         break;
 
                     case 6:
-                        scCurrCase = 0;
-
                         timer.reset();
-                        inR.setPosition(0.41);
-                        inB.setPosition(0.41);
-                        inUD.setPosition(0.67);
-                        inPiv.setPosition(0.67);
+                        inR.setPosition(0.37);
+                        inB.setPosition(0.37);
+
+                        inUD.setPosition(0.8);
+                        inPiv.setPosition(0.6);
                         inCurrCase = 7;
                         break;
 
                     case 7:
 
-                        if(timer.milliseconds() > 250){
+                        if(timer.milliseconds() > 50){
                             scCurrCase = 1;
                             inCurrCase = 0;
                         }
@@ -327,45 +335,40 @@ public class AD_TeleOp extends LinearOpMode{
                 }
 
                 if(inCurrCase == 0){
+                    int lower = 0;
                     if((gamepad2.triangle || gamepad1.triangle) && scCurrCase > 1){
-                        scUD.setPosition(0.7);
+                        scUD.setPosition(0.775);
                         triangleCounter = 1;
                     }
-                    if(xButtonState && !scArmastButtonState && triangleCounter != 1){
+                    if(xButtonState && !scLastButtonState && triangleCounter != 1){
                         scCurrCase = (scCurrCase + 1) % 5;
 
                     }
-                    if(xButtonState && !scArmastButtonState && triangleCounter == 1){
+                    if(xButtonState && !scLastButtonState && triangleCounter == 1){
                         scCurrCase = 0;
                     }
 
-                    scArmastButtonState = xButtonState;
+                    scLastButtonState = xButtonState;
 
 
                     switch(scCurrCase){
                         case 0:
+                            lower = 0;
                             timer.reset();
 
-                            sL.setPower(0.9);
+                            sL.setPower(0.7);
                             sL.setTargetPosition(0);
                             sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
+                            sR.setPower(0.7);
                             sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                             scArm.setPosition(1);
-                            if(inCurrCase == 6){
-                                scUD.setPosition(0.75);
-                            }
-                            else{
-                                scUD.setPosition(0.67);
-
-                            }
+                            scUD.setPosition(0.76);
                             triangleCounter = 0;
                             break;
 
                         case 1:
-                            timer.reset();
                             scArm.setPosition(0.48);
                             inUD.setPosition(0.5);
                             scCurrCase = 2;
@@ -380,22 +383,28 @@ public class AD_TeleOp extends LinearOpMode{
                             break;
 
                         case 3:
-                            sL.setPower(0.9);
-                            sL.setTargetPosition(700);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
-                            sR.setTargetPosition(705);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            break;
+                            if(gamepad1.dpad_down){
+                                lower += 1;
+                            }
 
-                        case 4:
-                            scArm.setPosition(0.48);
-                            sL.setPower(0.9);
-                            sL.setTargetPosition(1600);
-                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.9);
-                            sR.setTargetPosition(1610);
-                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            if(lower == 0){
+                                sL.setPower(1);
+                                sL.setTargetPosition(1900);
+                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                                sR.setPower(1);
+                                sR.setTargetPosition(1900);
+                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            }
+                            else{
+                                sL.setPower(1);
+                                sL.setTargetPosition(750);
+                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                                sR.setPower(1);
+                                sR.setTargetPosition(750);
+
+                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            }
+
                             break;
                     }
 
@@ -404,19 +413,220 @@ public class AD_TeleOp extends LinearOpMode{
 
             //Specimen Automation
             if(cycleCase == 1){
-                if(rightBumperState && !inLastButtonStateR){  inCurrCase = (inCurrCase + 1) % 6;  }
+
+                int numCycles = 5; // # of last case
+                if(rightBumperState && !inLastButtonStateR){
+                    inCurrCase = (inCurrCase + 1) % (numCycles + 1);
+                    scCurrCase = 0;
+
+                }
                 inLastButtonStateR = rightBumperState;
 
-                if(leftBumperState && !inLastButtonStateL){   inCurrCase = (inCurrCase - 1 + 6) % 6;   }
+                if(leftBumperState && !inLastButtonStateL){
+                    inCurrCase = (inCurrCase - 1 + (numCycles + 1)) % (numCycles + 1);
+                    scCurrCase = 0;
+
+                }
                 inLastButtonStateL = leftBumperState;
 
+
                 switch(inCurrCase){
-                    case 0: // full collapsed - grab from wall
+
+                    case 0: // full collapsed
+                        inR.setPosition(0.32);
+                        inB.setPosition(0.32);
+
+                        inUD.setPosition(0.5);
+                        inPiv.setPosition(0.5);
+
+                        inWR.setPower(0);
+                        inWL.setPower(0);
                         break;
+
+                    case 1: //prep intake pos
+                        inR.setPosition(0.39);
+                        inB.setPosition(0.39);
+
+                        if(gamepad1.left_trigger > 0.5){
+                            inUD.setPosition(0.42);
+                            inPiv.setPosition(0.18);
+
+                        }
+                        else{
+                            inPiv.setPosition(0.125);
+                            inUD.setPosition(0.5);
+                        }
+                        if( gamepad1.triangle || ( col.blue() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ){
+                            inPiv.setPosition(0.5);
+                            inWR.setPower(1);
+                            inWL.setPower(-1);
+                        }
+                        else{
+                            inWR.setPower(-0.6);
+                            inWL.setPower(0.6);
+
+                            if(col.red() > 500){
+                                timer.reset();
+                                inCurrCase = 3;
+                            }
+                        }
+
+                        break;
+
+                    case 2: // intaking until distance find element - push outminor/major switch
+                        timer.reset();
+
+                        inB.setPosition(0.52);
+                        inR.setPosition(0.52);
+
+                        if (gamepad1.left_trigger > 0.5) {
+                            inUD.setPosition(0.42);
+                            inPiv.setPosition(0.18);
+                        } else {
+                            inPiv.setPosition(0.125);
+                            inUD.setPosition(0.5);
+                        }
+
+                        if (gamepad1.triangle || ( col.blue() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ) {
+                            inPiv.setPosition(0.5);
+                            inWR.setPower(1);
+                            inWL.setPower(-1);
+                        } else {
+                            inWR.setPower(-0.6);
+                            inWL.setPower(0.6);
+                        }
+
+                        if(col.red() > 500){
+                            timer.reset();
+                            inCurrCase = 3;
+                        }
+
+                        break;
+
+
+                    case 3: // intake collapse
+                        inR.setPosition(0.34);
+                        inB.setPosition(0.34);
+
+                        inUD.setPosition(0.5);
+                        inPiv.setPosition(0.5);
+
+                        inWR.setPower(0);
+                        inWL.setPower(0);
+                        break;
+
+                    case 4: // HP push
+                        timer.reset();
+                        inR.setPosition(0.55);
+                        inB.setPosition(0.55);
+
+                        inUD.setPosition(0.5);
+                        inPiv.setPosition(0.5);
+                        if(timer.milliseconds() > 200){
+                            inCurrCase = 5;
+                        }
+                        break;
+
+                    case 5: // outake to HP
+                        inWR.setPower(1);
+                        inWL.setPower(-1);
+
+                        if(col.red() < 550){
+                            inCurrCase = 0;
+                        }
+                        break;
+
+                }
+
+                if(inCurrCase == 0){
+                    if(timer.milliseconds() > 1000 && specCount == 0){
+                        scC.setPosition(0.9);
+                        specCount = 1;
+                    }
+
+                    if(xButtonState && !scLastButtonState && triangleCounter != 1){
+                        scCurrCase = (scCurrCase + 1) % 5;
+                    }
+                    if(xButtonState && !scLastButtonState && triangleCounter == 1){
+                        scCurrCase = 0;
+                    }
+
+                    scLastButtonState = xButtonState;
+
+                    switch(scCurrCase){
+                        case 0: // grab from wall
+
+                            sL.setPower(0.8);
+                            sL.setTargetPosition(0);
+                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            sR.setPower(0.8);
+                            sR.setTargetPosition(0);
+                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            scArm.setPosition(0.13);
+                            scUD.setPosition(0.92);
+
+                            triangleCounter = 0;
+
+                            break;
+
+                        case 1: // out to score
+                            timer.reset();
+                            scC.setPosition(0.25);
+                            scCurrCase = 2;
+                            break;
+
+                        case 2: // wait for delay
+                            if(timer.milliseconds() > 250) {
+                                scArm.setPosition(0.3);
+                                scUD.setPosition(0.97);
+
+                                sL.setPower(1);
+                                sL.setTargetPosition(600);
+                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                                sR.setPower(1);
+                                sR.setTargetPosition(600);
+                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                                scCurrCase = 3;
+                                break;
+                            }
+                            break;
+
+                        case 3:
+                            if(gamepad2.triangle){ //pull to clip
+                                timer.reset();
+
+                                sL.setPower(1);
+                                sL.setTargetPosition(20);
+                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                                sR.setPower(1);
+                                sR.setTargetPosition(20);
+                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                                scArm.setPosition(0.3);
+
+                                triangleCounter = 1;
+                                scCurrCase = 4;
+                            }
+                            break;
+
+                        case 4: //claw open
+                            if(timer.milliseconds() > 200) {
+                                scC.setPosition(1);
+                                scCurrCase = 0;
+                            }
+                            break;
+
+                    }
 
                 }
             }
 
+            telemetry.addData("fL Current Draw", leftFront.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("fR Current Draw", rightFront.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("bL Current Draw", leftFront.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("bR Current Draw", rightBack.getCurrent(CurrentUnit.AMPS));
 
             telemetry.addData("-----", placeholder);
 
@@ -437,10 +647,20 @@ public class AD_TeleOp extends LinearOpMode{
             if(triangleCounter == 1){
                 telemetry.addData("Current Score Case", scCurrCase + 0.5);
             }
-            else if(triangleCounter == 0){
+            else if(triangleCounter == 0) {
                 telemetry.addData("Current Score Case", scCurrCase);
 
             }
+
+            telemetry.addData("-----", placeholder);
+
+            telemetry.addData("Color", ((OpticalDistanceSensor) col).getLightDetected());
+            telemetry.addData("Red", col.red());
+            telemetry.addData("Green", col.green());
+            telemetry.addData("Blue", col.blue());
+
+
+
             telemetry.update();
 
 
@@ -511,6 +731,7 @@ public class AD_TeleOp extends LinearOpMode{
         telemetry.addData("Status", "Reset complete");
         telemetry.update();
     }
+
     public void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
         double leftFrontPower =  x -y -yaw;
