@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Config
-@Autonomous(name = "SPEC -- RED", group = "Autonomous")
+@Autonomous(name = "spec -- red", group = "Autonomous")
 public class red_specimen extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
