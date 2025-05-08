@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,9 +12,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
-@TeleOp(name="SAMPLE -- RED")
+@TeleOp(name="spec - blue")
 
-public class red_sample_tele extends LinearOpMode{
+public class Blue_spec_tele extends LinearOpMode{
+
     String placeholder = "----";
 
 
@@ -48,7 +48,6 @@ public class red_sample_tele extends LinearOpMode{
 
     //Sensors & Cameras
     private ColorSensor col = null;
-
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -110,13 +109,14 @@ public class red_sample_tele extends LinearOpMode{
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
-        int cycleCase = 0; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
+        int cycleCase = 1; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
 
         //Intake/Scoring Trigger Cycle Variables
         int inCurrCase = 0;
         boolean inLastButtonStateR = false;
         boolean inLastButtonStateL = false;
-        boolean red = true; //red alliance - true, blue alliance - false
+        boolean red = false;; //red alliance - true, blue alliance - false
+
 
         // Linear Slide Cycle Variables
         int scCurrCase = 0;
@@ -151,8 +151,8 @@ public class red_sample_tele extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / (1.8 + gamepad1.right_trigger * 0.5);  // Reduce drive rate to 27-80%.
-            strafe = gamepad1.left_stick_x  / (1.8  + gamepad1.right_trigger * 0.5);  // Reduce strafe rate to 27-80%.
+            drive  = gamepad1.left_stick_y  / (1.4 + gamepad1.right_trigger * 0.5);  // Reduce drive rate to 27-80%.
+            strafe = gamepad1.left_stick_x  / (1.4  + gamepad1.right_trigger * 0.5);  // Reduce strafe rate to 27-80%.
             turn   = -gamepad1.right_stick_x / (2 + gamepad1.right_trigger * 0.5);  // turn rate 22-67%.
             moveRobot(drive, strafe, turn);
 
@@ -182,7 +182,7 @@ public class red_sample_tele extends LinearOpMode{
             //Sample Automation
             if(cycleCase == 0){
                 int transferFrom = 0;
-                int numCycles = 7; // # of last case
+                int numCycles = 7;
                 if(rightBumperState && !inLastButtonStateR){
                     inCurrCase = (inCurrCase + 1) % (numCycles + 1);
                     scCurrCase = 0;
@@ -224,7 +224,7 @@ public class red_sample_tele extends LinearOpMode{
                             inPiv.setPosition(0.16);
                             inUD.setPosition(0.5);
                         }
-                        if(gamepad1.triangle || col.blue() > 500){
+                        if(gamepad1.triangle || col.red() > 500){
                             inPiv.setPosition(0.5);
                             inWR.setPower(1);
                             inWL.setPower(-1);
@@ -233,7 +233,7 @@ public class red_sample_tele extends LinearOpMode{
                             inWR.setPower(-0.6);
                             inWL.setPower(0.6);
 
-                            if(col.red() > 500){
+                            if(col.blue() > 500 || col.green() > 500){
                                 timer.reset();
                                 inCurrCase = 3;
                             }
@@ -256,7 +256,7 @@ public class red_sample_tele extends LinearOpMode{
                             inUD.setPosition(0.5);
                         }
 
-                        if (gamepad1.triangle || col.blue() > 500) {
+                        if (gamepad1.triangle || col.red() > 500) {
                             inPiv.setPosition(0.5);
                             inWR.setPower(1);
                             inWL.setPower(-1);
@@ -265,7 +265,8 @@ public class red_sample_tele extends LinearOpMode{
                             inWL.setPower(0.6);
                         }
 
-                        if(col.red() > 500){
+                        if(col.blue() > 500 || col.green() > 500){
+
                             timer.reset();
                             inCurrCase = 3;
                         }
@@ -297,7 +298,6 @@ public class red_sample_tele extends LinearOpMode{
                     case 4: // transfer collapse
                         inR.setPosition(0.32);
                         inB.setPosition(0.32);
-
                         inUD.setPosition(0.65);
                         inPiv.setPosition(0.85);
                         if(timer.milliseconds() > 400){
@@ -309,7 +309,7 @@ public class red_sample_tele extends LinearOpMode{
                         inWR.setPower(1);
                         inWL.setPower(-1);
 
-                        if(col.red() < 550){
+                        if(col.blue() < 550 && col.green() < 550){
                             inCurrCase = 6;
                         }
                         break;
@@ -336,6 +336,7 @@ public class red_sample_tele extends LinearOpMode{
 
                 if(inCurrCase == 0){
                     int lower = 0;
+
                     if((gamepad2.triangle || gamepad1.triangle) && scCurrCase > 1){
                         scUD.setPosition(0.775);
                         triangleCounter = 1;
@@ -353,8 +354,8 @@ public class red_sample_tele extends LinearOpMode{
 
                     switch(scCurrCase){
                         case 0:
-                            lower = 0;
                             timer.reset();
+                            lower = 0;
 
                             sL.setPower(0.7);
                             sL.setTargetPosition(0);
@@ -401,10 +402,8 @@ public class red_sample_tele extends LinearOpMode{
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 sR.setPower(1);
                                 sR.setTargetPosition(750);
-
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             }
-
                             break;
                     }
 
@@ -456,7 +455,7 @@ public class red_sample_tele extends LinearOpMode{
                             inPiv.setPosition(0.125);
                             inUD.setPosition(0.5);
                         }
-                        if( gamepad1.triangle || ( col.blue() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ){
+                        if( gamepad1.triangle || ( col.red() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ){
                             inPiv.setPosition(0.5);
                             inWR.setPower(1);
                             inWL.setPower(-1);
@@ -465,7 +464,7 @@ public class red_sample_tele extends LinearOpMode{
                             inWR.setPower(-0.6);
                             inWL.setPower(0.6);
 
-                            if(col.red() > 500){
+                            if(col.blue() > col.green() && col.blue() > 500){
                                 timer.reset();
                                 inCurrCase = 3;
                             }
@@ -476,8 +475,8 @@ public class red_sample_tele extends LinearOpMode{
                     case 2: // intaking until distance find element - push outminor/major switch
                         timer.reset();
 
-                        inB.setPosition(0.52);
-                        inR.setPosition(0.52);
+                        inB.setPosition(0.46);
+                        inR.setPosition(0.46);
 
                         if (gamepad1.left_trigger > 0.5) {
                             inUD.setPosition(0.42);
@@ -487,24 +486,26 @@ public class red_sample_tele extends LinearOpMode{
                             inUD.setPosition(0.5);
                         }
 
-                        if (gamepad1.triangle || ( col.blue() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ) {
+                        if( gamepad1.triangle || ( col.red() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ){
                             inPiv.setPosition(0.5);
                             inWR.setPower(1);
                             inWL.setPower(-1);
-                        } else {
+                        }
+                        else{
                             inWR.setPower(-0.6);
                             inWL.setPower(0.6);
-                        }
 
-                        if(col.red() > 500){
-                            timer.reset();
-                            inCurrCase = 3;
+                            if(col.blue() > col.green() && col.blue() > 500){
+                                timer.reset();
+                                inCurrCase = 3;
+                            }
                         }
 
                         break;
 
 
                     case 3: // intake collapse
+
                         inR.setPosition(0.34);
                         inB.setPosition(0.34);
 
@@ -517,21 +518,23 @@ public class red_sample_tele extends LinearOpMode{
 
                     case 4: // HP push
                         timer.reset();
-                        inR.setPosition(0.55);
-                        inB.setPosition(0.55);
+                        inR.setPosition(0.45);
+                        inB.setPosition(0.45);
 
                         inUD.setPosition(0.5);
                         inPiv.setPosition(0.5);
-                        if(timer.milliseconds() > 200){
-                            inCurrCase = 5;
-                        }
+
+                        inCurrCase = 5;
                         break;
 
                     case 5: // outake to HP
-                        inWR.setPower(1);
-                        inWL.setPower(-1);
 
-                        if(col.red() < 550){
+                        if(timer.milliseconds() > 200){
+                            inWR.setPower(1);
+                            inWL.setPower(-1);
+
+                        }
+                        if(col.blue() < 300 && timer.milliseconds() > 500){
                             inCurrCase = 0;
                         }
                         break;
@@ -647,7 +650,7 @@ public class red_sample_tele extends LinearOpMode{
             if(triangleCounter == 1){
                 telemetry.addData("Current Score Case", scCurrCase + 0.5);
             }
-            else if(triangleCounter == 0) {
+            else if(triangleCounter == 0){
                 telemetry.addData("Current Score Case", scCurrCase);
 
             }
@@ -658,8 +661,6 @@ public class red_sample_tele extends LinearOpMode{
             telemetry.addData("Red", col.red());
             telemetry.addData("Green", col.green());
             telemetry.addData("Blue", col.blue());
-
-
 
             telemetry.update();
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,9 +13,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
-@TeleOp(name="spec -- red")
+@TeleOp(name="SAMPLE - RED")
 
-public class red_spec_tele extends LinearOpMode{
+public class Red_sample_tele extends LinearOpMode{
     String placeholder = "----";
 
 
@@ -109,7 +110,7 @@ public class red_spec_tele extends LinearOpMode{
         scC = hardwareMap.get(Servo.class, "scClaw"); //0.27 close, 0.8 open
 
         //Sample-Specimen Cycle
-        int cycleCase = 1; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
+        int cycleCase = 0; // 0 - Sample, 1 - Specimen, 2 - Individual System Testing
 
         //Intake/Scoring Trigger Cycle Variables
         int inCurrCase = 0;
@@ -150,8 +151,8 @@ public class red_spec_tele extends LinearOpMode{
         while (opModeIsActive())
         {
 
-            drive  = gamepad1.left_stick_y  / (1.8 + gamepad1.right_trigger * 0.5);  // Reduce drive rate to 27-80%.
-            strafe = gamepad1.left_stick_x  / (1.8  + gamepad1.right_trigger * 0.5);  // Reduce strafe rate to 27-80%.
+            drive  = gamepad1.left_stick_y  / (1.4 + gamepad1.right_trigger * 0.5);  // Reduce drive rate to 27-80%.
+            strafe = gamepad1.left_stick_x  / (1.4  + gamepad1.right_trigger * 0.5);  // Reduce strafe rate to 27-80%.
             turn   = -gamepad1.right_stick_x / (2 + gamepad1.right_trigger * 0.5);  // turn rate 22-67%.
             moveRobot(drive, strafe, turn);
 
@@ -299,7 +300,7 @@ public class red_spec_tele extends LinearOpMode{
 
                         inUD.setPosition(0.65);
                         inPiv.setPosition(0.85);
-                        if(timer.milliseconds() > 400){
+                        if(timer.milliseconds() > 800){
                             inCurrCase = 5;
                         }
                         break;
@@ -308,7 +309,7 @@ public class red_spec_tele extends LinearOpMode{
                         inWR.setPower(1);
                         inWL.setPower(-1);
 
-                        if(col.red() < 550){
+                        if(col.red() < 250){
                             inCurrCase = 6;
                         }
                         break;
@@ -388,10 +389,10 @@ public class red_spec_tele extends LinearOpMode{
 
                             if(lower == 0){
                                 sL.setPower(1);
-                                sL.setTargetPosition(1900);
+                                sL.setTargetPosition(1950);
                                 sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                                 sR.setPower(1);
-                                sR.setTargetPosition(1900);
+                                sR.setTargetPosition(1950);
                                 sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                             }
                             else{
@@ -464,7 +465,7 @@ public class red_spec_tele extends LinearOpMode{
                             inWR.setPower(-0.6);
                             inWL.setPower(0.6);
 
-                            if(col.red() > 500){
+                            if(col.red() > 500 && col.red() > col.green()){
                                 timer.reset();
                                 inCurrCase = 3;
                             }
@@ -495,7 +496,7 @@ public class red_spec_tele extends LinearOpMode{
                             inWL.setPower(0.6);
                         }
 
-                        if(col.red() > 500){
+                        if(col.red() > 500 && col.red() > col.green()){
                             timer.reset();
                             inCurrCase = 3;
                         }
@@ -512,6 +513,7 @@ public class red_spec_tele extends LinearOpMode{
 
                         inWR.setPower(0);
                         inWL.setPower(0);
+
                         break;
 
                     case 4: // HP push
@@ -521,16 +523,17 @@ public class red_spec_tele extends LinearOpMode{
 
                         inUD.setPosition(0.5);
                         inPiv.setPosition(0.5);
-                        if(timer.milliseconds() > 200){
-                            inCurrCase = 5;
-                        }
+
+                        inCurrCase = 5;
                         break;
 
                     case 5: // outake to HP
-                        inWR.setPower(1);
-                        inWL.setPower(-1);
+                        if(timer.milliseconds() > 200){
+                            inWR.setPower(1);
+                            inWL.setPower(-1);
 
-                        if(col.red() < 550){
+                        }
+                        if(col.red() < 300 && timer.milliseconds() > 500){
                             inCurrCase = 0;
                         }
                         break;
