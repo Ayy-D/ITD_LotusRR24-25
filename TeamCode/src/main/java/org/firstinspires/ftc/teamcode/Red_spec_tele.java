@@ -127,8 +127,9 @@ public class Red_spec_tele extends LinearOpMode{
         //Scoring Arm Counter - SAMPLE AUTOMATION ONLY
         int triangleCounter = 0;
 
-        //Specimen Switch Counter
+        //Specimen Variables
         int specCount = 0;
+        int specScoring = 0;
 
         waitForStart();
         telemetry.addData(">>", "Wait for Start");
@@ -172,6 +173,7 @@ public class Red_spec_tele extends LinearOpMode{
                 cycleCase = 0;
                 inCurrCase = 0;
                 scCurrCase = 0;
+                specScoring = 0;
                 specCount = 0;
             }
             if (((sL.getCurrent(CurrentUnit.AMPS) > 3.5 || sR.getCurrent(CurrentUnit.AMPS ) > 3.5) || gamepad2.dpad_down) && (sL.getCurrentPosition() < 50 && sR.getCurrentPosition() < 50) && scCurrCase == 0) {
@@ -196,7 +198,6 @@ public class Red_spec_tele extends LinearOpMode{
                 }
                 inLastButtonStateL = leftBumperState;
 
-
                 switch(inCurrCase){
                     case 0: // full collapsed
                         inR.setPosition(0.32);
@@ -204,6 +205,9 @@ public class Red_spec_tele extends LinearOpMode{
                         if(scCurrCase == 0 && (sL.getCurrentPosition() < 100 || sR.getCurrentPosition() < 100)){
                             inUD.setPosition(0.67);
                             inPiv.setPosition(0.6);
+                        }
+                        if(scCurrCase == 0 && timer.milliseconds() < 1000) {
+
                         }
                         inWR.setPower(0);
                         inWL.setPower(-0);
@@ -334,6 +338,7 @@ public class Red_spec_tele extends LinearOpMode{
 
                 }
 
+
                 if(inCurrCase == 0){
                     int lower = 0;
                     if((gamepad2.triangle || gamepad1.triangle) && scCurrCase > 1){
@@ -411,216 +416,279 @@ public class Red_spec_tele extends LinearOpMode{
                 }
             }
 
+
+
             //Specimen Automation
             if(cycleCase == 1){
-
-                int numCycles = 5; // # of last case
-                if(rightBumperState && !inLastButtonStateR){
-                    inCurrCase = (inCurrCase + 1) % (numCycles + 1);
-                    scCurrCase = 0;
-
+                if(gamepad1.cross && specScoring == 0){
+                    specScoring = 1;
                 }
-                inLastButtonStateR = rightBumperState;
-
-                if(leftBumperState && !inLastButtonStateL){
-                    inCurrCase = (inCurrCase - 1 + (numCycles + 1)) % (numCycles + 1);
-                    scCurrCase = 0;
-
+                if(gamepad1.cross && specScoring == 1){
+                    specScoring = 0;
                 }
-                inLastButtonStateL = leftBumperState;
+
+                if(specScoring == 0) {
+                    scArm.setPosition(0.48);
+                    inUD.setPosition(0.4);
+                    int numCycles = 5; // # of last case
+                    if (rightBumperState && !inLastButtonStateR) {
+                        inCurrCase = (inCurrCase + 1) % (numCycles + 1);
+                        scCurrCase = 0;
+
+                    }
+                    inLastButtonStateR = rightBumperState;
+
+                    if (leftBumperState && !inLastButtonStateL) {
+                        inCurrCase = (inCurrCase - 1 + (numCycles + 1)) % (numCycles + 1);
+                        scCurrCase = 0;
+
+                    }
+                    inLastButtonStateL = leftBumperState;
 
 
-                switch(inCurrCase){
+                    switch (inCurrCase) {
 
-                    case 0: // full collapsed
-                        inR.setPosition(0.32);
-                        inB.setPosition(0.32);
+                        case 0: // full collapsed
+                            inR.setPosition(0.32);
+                            inB.setPosition(0.32);
 
-                        inUD.setPosition(0.5);
-                        inPiv.setPosition(0.5);
-
-                        inWR.setPower(0);
-                        inWL.setPower(0);
-                        break;
-
-                    case 1: //prep intake pos
-                        inR.setPosition(0.39);
-                        inB.setPosition(0.39);
-
-                        if(gamepad1.left_trigger > 0.5){
-                            inUD.setPosition(0.42);
-                            inPiv.setPosition(0.18);
-
-                        }
-                        else{
-                            inPiv.setPosition(0.125);
                             inUD.setPosition(0.5);
-                        }
-                        if( gamepad1.triangle || ( col.blue() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ){
                             inPiv.setPosition(0.5);
-                            inWR.setPower(1);
-                            inWL.setPower(-1);
-                        }
-                        else{
-                            inWR.setPower(-0.6);
-                            inWL.setPower(0.6);
 
-                            if(col.red() > 500){
+                            inWR.setPower(0);
+                            inWL.setPower(0);
+                            break;
+
+                        case 1: //prep intake pos
+                            inR.setPosition(0.39);
+                            inB.setPosition(0.39);
+
+                            if (gamepad1.left_trigger > 0.5) {
+                                inUD.setPosition(0.42);
+                                inPiv.setPosition(0.18);
+
+                            } else {
+                                inPiv.setPosition(0.125);
+                                inUD.setPosition(0.5);
+                            }
+                            if (gamepad1.triangle || (col.blue() > 500 || (col.green() > col.red() && col.green() > 500))) {
+                                inPiv.setPosition(0.5);
+                                inWR.setPower(1);
+                                inWL.setPower(-1);
+                            } else {
+                                inWR.setPower(-0.6);
+                                inWL.setPower(0.6);
+
+                                if (col.red() > 500) {
+                                    timer.reset();
+                                    inCurrCase = 3;
+                                }
+                            }
+
+                            break;
+
+                        case 2: // intaking until distance find element - push outminor/major switch
+                            timer.reset();
+
+                            inB.setPosition(0.46);
+                            inR.setPosition(0.46);
+
+                            if (gamepad1.left_trigger > 0.5) {
+                                inUD.setPosition(0.42);
+                                inPiv.setPosition(0.18);
+                            } else {
+                                inPiv.setPosition(0.125);
+                                inUD.setPosition(0.5);
+                            }
+
+                            if (gamepad1.triangle || (col.blue() > 500 || (col.green() > col.red() && col.green() > 500))) {
+                                inPiv.setPosition(0.5);
+                                inWR.setPower(1);
+                                inWL.setPower(-1);
+                            } else {
+                                inWR.setPower(-0.6);
+                                inWL.setPower(0.6);
+                            }
+
+                            if (col.red() > 500) {
                                 timer.reset();
                                 inCurrCase = 3;
                             }
-                        }
 
-                        break;
+                            break;
 
-                    case 2: // intaking until distance find element - push outminor/major switch
-                        timer.reset();
 
-                        inB.setPosition(0.46);
-                        inR.setPosition(0.46);
+                        case 3: // intake collapse
+                            inR.setPosition(0.34);
+                            inB.setPosition(0.34);
 
-                        if (gamepad1.left_trigger > 0.5) {
-                            inUD.setPosition(0.42);
-                            inPiv.setPosition(0.18);
-                        } else {
-                            inPiv.setPosition(0.125);
                             inUD.setPosition(0.5);
-                        }
-
-                        if (gamepad1.triangle || ( col.blue() > 500 || ( col.green() > col.red() && col.green() > 500 ) ) ) {
                             inPiv.setPosition(0.5);
-                            inWR.setPower(1);
-                            inWL.setPower(-1);
-                        } else {
-                            inWR.setPower(-0.6);
-                            inWL.setPower(0.6);
-                        }
 
-                        if(col.red() > 500){
+                            inWR.setPower(0);
+                            inWL.setPower(0);
+                            break;
+
+                        case 4: // HP push
                             timer.reset();
-                            inCurrCase = 3;
-                        }
+                            inR.setPosition(0.46);
+                            inB.setPosition(0.46);
 
-                        break;
+                            inUD.setPosition(0.5);
+                            inPiv.setPosition(0.5);
 
+                            inCurrCase = 5;
+                            break;
 
-                    case 3: // intake collapse
-                        inR.setPosition(0.34);
-                        inB.setPosition(0.34);
+                        case 5: // outake to HP
 
-                        inUD.setPosition(0.5);
-                        inPiv.setPosition(0.5);
+                            if (timer.milliseconds() > 200) {
+                                inWR.setPower(1);
+                                inWL.setPower(-1);
+                            }
+                            if (col.red() < 300 && timer.milliseconds() > 500) {
+                                inCurrCase = 0;
+                            }
+                            break;
 
-                        inWR.setPower(0);
-                        inWL.setPower(0);
-                        break;
+                    }
 
-                    case 4: // HP push
-                        timer.reset();
-                        inR.setPosition(0.46);
-                        inB.setPosition(0.46);
-
-                        inUD.setPosition(0.5);
-                        inPiv.setPosition(0.5);
-
-                        inCurrCase = 5;
-                        break;
-
-                    case 5: // outake to HP
-
-                        if(timer.milliseconds() > 200){
-                            inWR.setPower(1);
-                            inWL.setPower(-1);
-                        }
-                        if(col.red() < 300 && timer.milliseconds() > 500){
-                            inCurrCase = 0;
-                        }
-                        break;
 
                 }
 
-                if(inCurrCase == 0){
-                    if(timer.milliseconds() > 1000 && specCount == 0){
-                        scC.setPosition(0.9);
-                        specCount = 1;
-                    }
-
-                    if(xButtonState && !scLastButtonState && triangleCounter != 1){
-                        scCurrCase = (scCurrCase + 1) % 5;
-                    }
-                    if(xButtonState && !scLastButtonState && triangleCounter == 1){
+                if(specScoring == 1){
+                    int numCycles = 5; // # of last case
+                    if (rightBumperState && !inLastButtonStateR) {
+                        inCurrCase = (inCurrCase + 1) % (numCycles + 1);
                         scCurrCase = 0;
+
                     }
+                    inLastButtonStateR = rightBumperState;
 
-                    scLastButtonState = xButtonState;
+                    if (leftBumperState && !inLastButtonStateL) {
+                        inCurrCase = (inCurrCase - 1 + (numCycles + 1)) % (numCycles + 1);
+                        scCurrCase = 0;
 
-                    switch(scCurrCase){
-                        case 0: // grab from wall
+                    }
+                    inLastButtonStateL = leftBumperState;
 
-                            sL.setPower(0.8);
+                    switch (inCurrCase) {
+                        case 0: // full collapsed
+                            inR.setPosition(0.32);
+                            inB.setPosition(0.32);
+
+                            inUD.setPosition(0.5);
+                            inPiv.setPosition(0.5);
+
+                            inWR.setPower(0);
+                            inWL.setPower(0);
+
+                            sL.setPower(0.7);
                             sL.setTargetPosition(0);
                             sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                            sR.setPower(0.8);
+                            sR.setPower(0.7);
                             sR.setTargetPosition(0);
                             sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                            scArm.setPosition(0.05);
-                            scUD.setPosition(0.87);
-
-                            triangleCounter = 0;
+                            scArm.setPosition(0.6);
+                            scUD.setPosition(0.76);
+                            scC.setPosition(0.3);
 
                             break;
 
-                        case 1: // out to score
+                        case 1: //full out intake
+                            inR.setPosition(0.46);
+                            inB.setPosition(0.46);
+
+                            inPiv.setPosition(0.7);
+                            inUD.setPosition(0.2);
+
+                            inWR.setPower(-0.4);
+                            inWL.setPower(0.4);
+
+                            if (col.red() > 500) {
+                                inCurrCase = 2;
+                            }
+
+                            break;
+
+                        case 2: // collapse, prep transfer
                             timer.reset();
-                            scC.setPosition(0.25);
-                            scCurrCase = 2;
+                            inB.setPosition(0.32);
+                            inR.setPosition(0.32);
+
+                            inUD.setPosition(0.67);
+                            inPiv.setPosition(0.6);
+
+                            inWR.setPower(0);
+                            inWL.setPower(0);
+
+                            scC.setPosition(0.9);
+
+                            inCurrCase = 3;
                             break;
 
-                        case 2: // wait for delay
-                            if(timer.milliseconds() > 250) {
-                                scArm.setPosition(0.2);
-                                scUD.setPosition(0.94);
 
-                                sL.setPower(1);
-                                sL.setTargetPosition(600);
-                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                                sR.setPower(1);
-                                sR.setTargetPosition(600);
-                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        case 3: // delay, then transfer
 
-                                scCurrCase = 3;
-                                break;
+                            scArm.setPosition(0.6);
+                            scUD.setPosition(0.76);
+
+                            if(timer.milliseconds() > 500){
+                                scC.setPosition(0.3);
                             }
+                            if(timer.milliseconds() > 800){
+                                inWR.setPower(0.4);
+                                inWL.setPower(-0.4);
+                                inB.setPosition(0.39);
+                                inR.setPosition(0.39);
+                                inCurrCase = 4;
+                            }
+
                             break;
 
-                        case 3:
-                            if(gamepad2.triangle || gamepad1.triangle){ //pull to clip
+                        case 4: // up to score
+
+                            sL.setPower(0.9);
+                            sL.setTargetPosition(100);
+                            sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            sR.setPower(0.9);
+                            sR.setTargetPosition(100);
+                            sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            scUD.setPosition(0.9);
+
+
+                            if(sL.getCurrentPosition() > 50){
+                                inB.setPosition(0.32);
+                                inR.setPosition(0.32);
+
+                                inUD.setPosition(0.67);
+                                inPiv.setPosition(0.6);
+
+                                inWR.setPower(0);
+                                inWL.setPower(0);
+                            }
+
+                            if(gamepad1.right_bumper){
                                 timer.reset();
-
-                                sL.setPower(1);
-                                sL.setTargetPosition(20);
-                                sL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                                sR.setPower(1);
-                                sR.setTargetPosition(20);
-                                sR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                                scArm.setPosition(0.05);
-
-                                triangleCounter = 1;
-                                scCurrCase = 4;
+                                inCurrCase = 5;
                             }
+
                             break;
 
-                        case 4: //claw open
-                            if(timer.milliseconds() > 200) {
-                                scC.setPosition(1);
-                                scCurrCase = 0;
+                        case 5: // clip and reset
+                            scArm.setPosition(0.3);
+
+                            if (timer.milliseconds() > 600) {
+                                scC.setPosition(0.9);
+                                scArm.setPosition(0.6);
+                                inCurrCase = 0;
                             }
+
                             break;
 
                     }
-
                 }
             }
 
