@@ -617,7 +617,7 @@ public class Red_sample_tele extends LinearOpMode{
                             inWR.setPower(0);
                             inWL.setPower(0);
 
-                            scC.setPosition(0.9);
+                            scC.setPosition(0.5);
 
                             inCurrCase = 3;
                             break;
@@ -675,7 +675,7 @@ public class Red_sample_tele extends LinearOpMode{
                             scArm.setPosition(0.3);
 
                             if (timer.milliseconds() > 600) {
-                                scC.setPosition(0.9);
+                                scC.setPosition(0.5);
                                 scArm.setPosition(0.6);
                                 inCurrCase = 0;
                             }
